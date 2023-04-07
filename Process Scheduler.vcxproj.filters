@@ -44,5 +44,17 @@
     <ClInclude Include="DS Implementations\BTNode.h">
       <Filter>Header Files\DS Implementations</Filter>
     </ClInclude>
+    <ClInclude Include="D:\Sophomore Level\Second Term\Data Structure\Project\DS Implementations\LinkedList.h">
+      <Filter>Header Files\DS Implementations</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Sophomore Level\Second Term\Data Structure\Project\DS Implementations\LinkedQueue.h">
+      <Filter>Header Files\DS Implementations</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Sophomore Level\Second Term\Data Structure\Project\DS Implementations\Node.h">
+      <Filter>Header Files\DS Implementations</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Sophomore Level\Second Term\Data Structure\Project\DS Implementations\QueueADT.h">
+      <Filter>Header Files\DS Implementations</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

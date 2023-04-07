@@ -132,6 +132,10 @@
     <ClCompile Include="Program Classes\Process.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="D:\Sophomore Level\Second Term\Data Structure\Project\DS Implementations\LinkedList.h" />
+    <ClInclude Include="D:\Sophomore Level\Second Term\Data Structure\Project\DS Implementations\LinkedQueue.h" />
+    <ClInclude Include="D:\Sophomore Level\Second Term\Data Structure\Project\DS Implementations\Node.h" />
+    <ClInclude Include="D:\Sophomore Level\Second Term\Data Structure\Project\DS Implementations\QueueADT.h" />
     <ClInclude Include="DS Implementations\BTNode.h" />
     <ClInclude Include="Program Classes\Process.h" />
   </ItemGroup>
