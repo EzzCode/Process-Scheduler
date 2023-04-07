@@ -13,15 +13,36 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="Process class.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
+    <Filter Include="Header Files\Program Classes">
+      <UniqueIdentifier>{3a8ecb4e-3475-49f9-8415-ca96a32aef61}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\DS Implementations">
+      <UniqueIdentifier>{986180f8-0bcb-42d0-a4de-898e280955db}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\DS Implementations">
+      <UniqueIdentifier>{0aadb780-d097-4d0a-80e9-563e4092d473}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Program Classes">
+      <UniqueIdentifier>{000e6748-3234-4c38-8e7e-62618b4d97e4}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="DS Implementations\BTNode.cpp">
+      <Filter>Source Files\DS Implementations</Filter>
+    </ClCompile>
+    <ClCompile Include="Program Classes\Process.cpp">
+      <Filter>Source Files\Program Classes</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Program Classes\Process.h">
+      <Filter>Header Files\Program Classes</Filter>
+    </ClInclude>
+    <ClInclude Include="DS Implementations\BTNode.h">
+      <Filter>Header Files\DS Implementations</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
