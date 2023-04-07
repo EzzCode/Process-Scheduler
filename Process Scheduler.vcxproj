@@ -127,10 +127,13 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="Process class.h" />
+    <ClCompile Include="DS Implementations\BTNode.cpp" />
+    <ClCompile Include="main.cpp" />
+    <ClCompile Include="Program Classes\Process.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="main.cpp" />
+    <ClInclude Include="DS Implementations\BTNode.h" />
+    <ClInclude Include="Program Classes\Process.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
