@@ -1,13 +1,12 @@
 #ifndef _NODE
 #define _NODE
-
+#include "../Program Classes/Process.h"
 //First let's declare a single node in the list
-template<typename T>
 class Node
 {
 private :
-	T item;	// A data item (can be any complex sturcture)
-	Node<T>* next;	// Pointer to next node
+	Process* item;	// A data item (can be any complex sturcture)
+	Node* next;	// Pointer to next node
 public :
 
 	Node( ) //default constructor
@@ -15,35 +14,35 @@ public :
 		next= nullptr;
 	} 
 
-	Node( T newItem) //non-default constructor
+	Node(Process* newItem) //non-default constructor
 	{
 		item = newItem;
 		next= nullptr;
 
 	}
 
-	Node(const T& r_Item, Node<T>* nextNodePtr)
+	Node(const Process* r_Item, Node* nextNodePtr)
 	{
 		item = r_Item;
 		next = nextNodePtr;
 	}
 
-	void setItem( T newItem)
+	void setItem(Process newItem)
 	{
 		item = newItem;
 	} // end setItem
 
-	void setNext(Node<T>* nextNodePtr)
+	void setNext(Node* nextNodePtr)
 	{
 	next = nextNodePtr;
 	} // end setNext
 
-	T getItem() const
+	Process getItem() const
 	{
 		return item;
 	} // end getItem
 
-	Node<T>* getNext() const
+	Node* getNext() const
 	{
 		return next;
 	}
