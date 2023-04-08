@@ -1,12 +1,13 @@
 #include "Process.h"
 
-Process::Process(int at, int id, int ct, int ior, int iod){
+Process::Process(int at, int id, int ct, int STT, int ior, int iod){
 	set_PID(id);
 	set_AT(at);
 	set_CT(ct);
+	set_state(STT);
 	set_IO_R(ior);
 	set_IO_D(iod);
-	set_state(0);
+	set_RT(-1);		//-1 indicates that process has never entered CPU
 }
 
 //setters

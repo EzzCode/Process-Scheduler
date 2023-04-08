@@ -30,7 +30,7 @@ private:
 	void set_WT();
 
 public:
-	Process(int at, int id, int ct, int ior, int iod); //Other data members are either calculate or recieved after creation
+	Process(int at, int id, int ct, int STT, int ior, int iod); //Other data members are either calculate or recieved after creation
 
 	//Public setters
 	void set_PID(int id);
