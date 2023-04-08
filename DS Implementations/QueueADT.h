@@ -6,7 +6,6 @@
 #ifndef QUEUE_ADT_
 #define QUEUE_ADT_
 
-template<class ItemType>
 class QueueADT
 {
 public:

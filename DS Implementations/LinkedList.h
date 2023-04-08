@@ -1,125 +1,191 @@
-#ifndef _LINKEDLIST
-#define _LINKEDLIST
-
+#pragma once
 #include "Node.h"
-
-template <typename T>
 class LinkedList
 {
 private:
-	Node<T> *Head;	//Pointer to the head of the list
-	//You can add tail pointer too (depending on your problem)
+	Node* Head;
+	Node* Tail;
+	void UpdateTail()				//Functional
+	{
+		Node* P = Head;
+		while (P != NULL)
+		{
+			Tail = P;
+			P = P->GetNext();
+		}
+	}
 public:
-
-
 	LinkedList()
 	{
-		Head = nullptr;
+		Head = NULL;
+		Tail = NULL;
 	}
-
-	//List is being desturcted ==> delete all items in the list
 	~LinkedList()
 	{
-		DeleteAll(); 
+		DeleteAll();
 	}
-	////////////////////////////////////////////////////////////////////////
-	/*
-	* Function: PrintList.
-	* prints the values of all nodes in a linked list.
-	*/
-	void PrintList()	const
-	{		
-		cout<<"\nprinting list contents:\n\n";
-		Node<T> *p = Head;
 
-		while(p)
-		{
-			cout << "[ " << p->getItem() << " ]";
-			cout << "--->";
-			p = p->getNext();
-		}
-		cout << "NULL\n";
-	}
-	////////////////////////////////////////////////////////////////////////
-	/*
-	* Function: InsertBeg.
-	* Creates a new node and adds it to the beginning of a linked list.
-	* 
-	* Parameters:
-	*	- data : The value to be stored in the new node.
-	*/
-	void InsertBeg(const T &data)
+
+	void InsertBeg(Process* data)			//Functional
 	{
-		Node<T> *R = new Node<T>(data);
-		R->setNext(Head);
+		Node* R = new Node;
+		R->SetItem(data);
+		R->SetNext(Head);
 		Head = R;
-
+		UpdateTail();
 	}
-	////////////////////////////////////////////////////////////////////////
-	/*
-	* Function: DeleteAll.
-	* Deletes all nodes of the list.
-	*/
-	void DeleteAll()
+
+	void DeleteAll()				//Functional
 	{
-		Node<T> *P = Head;
+		Node* P = Head;
 		while (Head)
 		{
-			P = Head->getNext();
+			P = Head->GetNext();
 			delete Head;
 			Head = P;
 		}
 	}
 
+	void PrintList()			//Functional
+	{
+		Node* P = Head;
 
+		while (P != NULL)
+		{
+			cout << "[" << P->GetItem() << "]" << "-->";
+			P = P->GetNext();
+		}
+		cout << "NULL" << endl;
+	}
 
-	////////////////     Requirements   ///////////////////
-	//
-	// Implement the following member functions
+	void InsertEnd(Process* data)		//Functional
+	{
+		Node* P = new Node;
+		P->SetItem(data);
+		if (Head != NULL)
+		{
+			Tail->SetNext(P);
+			Tail = P;
+		}
+		else
+		{
+			Head = P;
+			Tail = P;
+		}
+	}
 
+	bool Find(Process* data)			//Functional
+	{
+		if (Head != NULL)
+		{
+			Node* P = Head;
+			while (P != NULL)
+			{
+				if (P->GetItem() == data)
+					return true;
+				P = P->GetNext();
+			}
+		}
+		return false;
+	}
 
-	//[1]InsertEnd 
-	//inserts a new node at end if the list
-	void InsertEnd(const T &data);	
+	int CountOccurance(Process* data)		//Functional
+	{
+		int count = 0;
+		if (Head != NULL)
+		{
+			Node* P = Head;
+			while (P != NULL)
+			{
+				if (P->GetItem() == data)
+					count++;
+				P = P->GetNext();
+			}
+		}
+		return count;
+	}
 
-	//[2]Find 
-	//searches for a given value in the list, returns true if found; false otherwise.
-	bool Find(int Key);
+	void DeleteFirst()			//Functional
+	{
+		if (Head != NULL)
+		{
+			Node* P = Head->GetNext();
+			delete Head;
+			Head = P;
+		}
+	}
 
-	//[3]CountOccurance
-	//returns how many times a certain value appeared in the list
-	int CountOccurance(const T &value);
+	void DeleteLast()			//Functional
+	{
+		if (Tail != NULL)
+		{
+			Node* P = Head;
+			while (P->GetNext() != Tail)
+			{
+				P = P->GetNext();
+			}
+			P->SetNext(NULL);
+			delete Tail;
+			Tail = P;
+		}
+	}
 
-	//[4] DeleteFirst
-	//Deletes the first node in the list
-	void DeleteFirst();
+	bool DeleteNode(Process* data)				//Functional
+	{
+		Node* P = Head;
+		if (P != NULL)
+		{
+			if (P->GetItem() == data)
+			{
+				Head = P->GetNext();
+				delete P;
+				return true;
+			}
+			while (P->GetNext() != NULL)
+			{
+				if (P->GetNext()->GetItem() == data)
+				{
+					Node* R = P->GetNext()->GetNext();
+					delete P->GetNext();
+					P->SetNext(R);
+					return true;
+					UpdateTail();
+				}
+				P = P->GetNext();
+			}
+		}
+		UpdateTail();
+		return false;
+	}
 
+	bool DeleteNodes(Process* data)				//Functional
+	{
+		bool b = false;
+		Node* P = Head;
+		if (P != NULL)
+		{
+			if (P->GetItem() == data)
+			{
+				Head = P->GetNext();
+				delete P;
+				b = true;
+			}
+			while (P->GetNext() != NULL)
+			{
+				if (P->GetNext()->GetItem() == data)
+				{
+					Node<T>* R = P->GetNext()->GetNext();
+					delete P->GetNext();
+					P->SetNext(R);
+					b = true;
+					UpdateTail();
+				}
+				P = P->GetNext();
+			}
+		}
+		UpdateTail();
+		return b;
+	}
 
-	//[5] DeleteLast
-	//Deletes the last node in the list
-	void DeleteLast();
-
-	//[6] DeleteNode
-	//deletes the first node with the given value (if found) and returns true
-	//if not found, returns false
-	//Note: List is not sorted
-	bool DeleteNode(const T &value);	
-
-	//[7] DeleteNodes
-	//deletes ALL node with the given value (if found) and returns true
-	//if not found, returns false
-	//Note: List is not sorted
-	bool DeleteNodes(const T &value);	
-
-	//[8]Merge
-	//Merges the current list to another list L by making the last Node in the current list 
-	//point to the first Node in list L
-	void Merge(const LinkedList& L);
-
-	//[9] Reverse
-	//Reverses the linked list (without allocating any new Nodes)
-	void Reverse();
-		
 };
 
-#endif	
