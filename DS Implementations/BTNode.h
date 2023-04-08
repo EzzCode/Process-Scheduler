@@ -5,7 +5,6 @@ private:
     Process* prcs;
     BTNode* lch;
     BTNode* rch;
-
 public:
     BTNode(Process* process);
 
