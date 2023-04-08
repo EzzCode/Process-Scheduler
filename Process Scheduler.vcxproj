@@ -135,6 +135,9 @@
     <ClInclude Include="DS Implementations\BTNode.h" />
     <ClInclude Include="Program Classes\Process.h" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="README.md" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
