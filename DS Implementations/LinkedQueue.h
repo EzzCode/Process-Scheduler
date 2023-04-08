@@ -47,23 +47,22 @@ Single Node Case:
 using namespace std;
 
 
-template <typename T>
-class LinkedQueue:public QueueADT<T>
+class LinkedQueue:public QueueADT
 {
 private :
 	
-	Node<T>* backPtr;
-	Node<T>* frontPtr;
+	Node* backPtr;
+	Node* frontPtr;
 public :
 	LinkedQueue();	
 	bool isEmpty() const ;
-	bool enqueue(const T& newEntry);
-	bool dequeue(T& frntEntry);  
-	bool peek(T& frntEntry)  const;	
+	bool enqueue(const Process* newEntry);
+	bool dequeue(Process* frntEntry);  
+	bool peek(Process* frntEntry)  const;	
 	~LinkedQueue();
 
 	//copy constructor
-	LinkedQueue(const LinkedQueue<T> & LQ);
+	LinkedQueue(const LinkedQueue & LQ);
 };
 /////////////////////////////////////////////////////////////////////////////////////////
 
@@ -73,8 +72,8 @@ The constructor of the Queue class.
 
 */
 
-template <typename T>
-LinkedQueue<T>::LinkedQueue()
+
+LinkedQueue::LinkedQueue()
 {
 	backPtr=nullptr;
 	frontPtr=nullptr;
@@ -89,8 +88,7 @@ Sees whether this queue is empty.
 Input: None.
 Output: True if the queue is empty; otherwise false.
 */
-template <typename T>
-bool LinkedQueue<T>::isEmpty() const
+bool LinkedQueue::isEmpty() const
 {
 	return (frontPtr==nullptr);
 }
@@ -104,10 +102,9 @@ Input: newEntry .
 Output: True if the operation is successful; otherwise false.
 */
 
-template <typename T>
-bool LinkedQueue<T>::enqueue( const T& newEntry)
+bool LinkedQueue::enqueue( const Process* newEntry)
 {
-	Node<T>* newNodePtr = new Node<T>(newEntry);
+	Node* newNodePtr = new Node(newEntry);
 	// Insert the new node
 	if (isEmpty())	//special case if this is the first node to insert
 		frontPtr = newNodePtr; // The queue is empty
@@ -129,13 +126,12 @@ Input: None.
 Output: True if the operation is successful; otherwise false.
 */
 
-template <typename T>
-bool LinkedQueue<T>:: dequeue(T& frntEntry)  
+bool LinkedQueue:: dequeue(Process* frntEntry)  
 {
 	if(isEmpty())
 		return false;
 
-	Node<T>* nodeToDeletePtr = frontPtr;
+	Node* nodeToDeletePtr = frontPtr;
 	frntEntry = frontPtr->getItem();
 	frontPtr = frontPtr->getNext();
 	// Queue is not empty; remove front
@@ -156,8 +152,8 @@ copies the front of this queue to the passed param. The operation does not modif
 Input: None.
 Output: The front of the queue.
 */
-template <typename T>
-bool LinkedQueue<T>:: peek(T& frntEntry) const 
+
+bool LinkedQueue:: peek(Process* frntEntry) const 
 {
 	if(isEmpty())
 		return false;
@@ -171,10 +167,9 @@ bool LinkedQueue<T>:: peek(T& frntEntry) const
 Function: destructor
 removes all nodes from the queue by dequeuing them
 */
-template <typename T>
-LinkedQueue<T>::~LinkedQueue()
+LinkedQueue::~LinkedQueue()
 {
-	T temp;
+	Process* temp;
 	
 	//Free (Dequeue) all nodes in the queue
 	while(dequeue(temp));	
@@ -189,10 +184,9 @@ Input: LinkedQueue<T>: The Queue to be copied
 Output: none
 */
 
-template <typename T>
-LinkedQueue<T>::LinkedQueue(const LinkedQueue<T> & LQ)
+LinkedQueue::LinkedQueue(const LinkedQueue & LQ)
 {	
-	Node<T>* NodePtr = LQ.frontPtr;
+	Node* NodePtr = LQ.frontPtr;
 	if (!NodePtr) //LQ is empty
 	{
 		frontPtr = backPtr = nullptr;
@@ -200,14 +194,14 @@ LinkedQueue<T>::LinkedQueue(const LinkedQueue<T> & LQ)
 	}
 
 	//insert the first node
-	Node<T>* ptr = new Node<T>(NodePtr->getItem());
+	Node* ptr = new Node(NodePtr->getItem());
 	frontPtr = backPtr = ptr;
 	NodePtr = NodePtr->getNext();
 
 	//insert remaining nodes
 	while (NodePtr)
 	{
-		Node<T>* ptr = new Node<T>(NodePtr->getItem());
+		Node* ptr = new Node(NodePtr->getItem());
 		backPtr->setNext(ptr);
 		backPtr = ptr;
 		NodePtr = NodePtr->getNext();
