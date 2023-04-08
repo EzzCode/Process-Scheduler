@@ -1,6 +1,6 @@
 #include "Process.h"
 
-Process::Process(int at, int id, int ct, int STT, int ior, int iod){
+Process::Process(int at, int id, int ct, int STT, int ior, int iod) {
 	set_PID(id);
 	set_AT(at);
 	set_CT(ct);
@@ -82,4 +82,11 @@ bool Process::get_SIGKILL() {
 	return SIGKILL;
 }
 
-Process::~Process(){}
+//Overload << operator
+ostream& Process::operator<<(ostream& os) {
+	os << get_TT() << "    " << get_PID() << "    " << get_AT() << "    " << get_CT() << "    ";
+	os << get_IO_D() << "    " << get_WT() << "    " << get_RT() << "    " << get_TRT() << endl;
+	return os;
+}
+
+Process::~Process() {}

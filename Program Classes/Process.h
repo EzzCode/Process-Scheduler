@@ -14,14 +14,14 @@ private:
 	int TT;		//Termination time
 	int TRT;	//Turnaround duration
 	int WT;		//Waiting time
-	
+
 	//Process State
 	int state;
-	
+
 	//Input/Output Request time & Duration
 	int IO_R;
 	int IO_D;
-	
+
 	//Kill Signal
 	bool SIGKILL;
 
@@ -55,6 +55,9 @@ public:
 	int get_IO_R();
 	int get_IO_D();
 	bool get_SIGKILL();
+
+	//Overload << operator
+	ostream& operator<<(ostream& os);
 
 	~Process();
 };
