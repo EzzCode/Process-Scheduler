@@ -6,4 +6,5 @@ class SJF :
 {
 private:
 public:
+	virtual void ScheduleAlgo();
 };

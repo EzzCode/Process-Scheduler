@@ -36,6 +36,15 @@
     <ClCompile Include="Program Classes\Process.cpp">
       <Filter>Source Files\Program Classes</Filter>
     </ClCompile>
+    <ClCompile Include="Program Classes\FCFS.cpp">
+      <Filter>Source Files\Program Classes</Filter>
+    </ClCompile>
+    <ClCompile Include="Program Classes\SJF.cpp">
+      <Filter>Source Files\Program Classes</Filter>
+    </ClCompile>
+    <ClCompile Include="Program Classes\RR.cpp">
+      <Filter>Source Files\Program Classes</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Program Classes\Process.h">

@@ -129,7 +129,10 @@
   <ItemGroup>
     <ClCompile Include="DS Implementations\BTNode.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="Program Classes\FCFS.cpp" />
     <ClCompile Include="Program Classes\Process.cpp" />
+    <ClCompile Include="Program Classes\RR.cpp" />
+    <ClCompile Include="Program Classes\SJF.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="D:\Sophomore Level\Second Term\Data Structure\Project\DS Implementations\LinkedList.h" />

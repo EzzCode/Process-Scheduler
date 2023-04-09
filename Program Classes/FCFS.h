@@ -6,4 +6,5 @@ class FCFS :
 {
 private:
 public:
+	virtual void ScheduleAlgo();
 };

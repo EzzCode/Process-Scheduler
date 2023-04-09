@@ -6,4 +6,5 @@ class RR :
 {
 private:
 public:
+	virtual void ScheduleAlgo();
 };
