@@ -45,6 +45,9 @@
     <ClCompile Include="Program Classes\RR.cpp">
       <Filter>Source Files\Program Classes</Filter>
     </ClCompile>
+    <ClCompile Include="DS Implementations\BTree.cpp">
+      <Filter>Source Files\DS Implementations</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Program Classes\Process.h">
@@ -75,6 +78,9 @@
       <Filter>Header Files\DS Implementations</Filter>
     </ClInclude>
     <ClInclude Include="DS Implementations\QueueADT.h">
+      <Filter>Header Files\DS Implementations</Filter>
+    </ClInclude>
+    <ClInclude Include="DS Implementations\BTree.h">
       <Filter>Header Files\DS Implementations</Filter>
     </ClInclude>
   </ItemGroup>

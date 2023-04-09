@@ -56,8 +56,8 @@ public:
 	int get_IO_D();
 	bool get_SIGKILL();
 
-	//Overload << operator
-	ostream& operator<<(ostream& os);
+	//Print ID
+	void printID();
 
 	~Process();
 };
