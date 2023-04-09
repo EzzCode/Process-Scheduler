@@ -1,14 +1,13 @@
 #pragma once
 #include <iostream>
-#include "LinkedList.h"
-#include "LinkedQueue.h"
+#include "../DS Implementations/LinkedList.h"
+#include "../DS Implementations/LinkedQueue.h"
 using namespace std;
-
 class Scheduler;
 
-class Processer
+class Processor
 {
 private:
 public:
-	void ScheduleAlgo() {} = o;
+	virtual void ScheduleAlgo() = 0;
 };

@@ -56,6 +56,18 @@
     <ClInclude Include="D:\Sophomore Level\Second Term\Data Structure\Project\DS Implementations\QueueADT.h">
       <Filter>Header Files\DS Implementations</Filter>
     </ClInclude>
+    <ClInclude Include="Program Classes\FCFS.h">
+      <Filter>Header Files\Program Classes</Filter>
+    </ClInclude>
+    <ClInclude Include="Program Classes\Processor.h">
+      <Filter>Header Files\Program Classes</Filter>
+    </ClInclude>
+    <ClInclude Include="Program Classes\RR.h">
+      <Filter>Header Files\Program Classes</Filter>
+    </ClInclude>
+    <ClInclude Include="Program Classes\SJF.h">
+      <Filter>Header Files\Program Classes</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="README.md" />

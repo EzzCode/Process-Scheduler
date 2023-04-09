@@ -137,7 +137,11 @@
     <ClInclude Include="D:\Sophomore Level\Second Term\Data Structure\Project\DS Implementations\Node.h" />
     <ClInclude Include="D:\Sophomore Level\Second Term\Data Structure\Project\DS Implementations\QueueADT.h" />
     <ClInclude Include="DS Implementations\BTNode.h" />
+    <ClInclude Include="Program Classes\FCFS.h" />
     <ClInclude Include="Program Classes\Process.h" />
+    <ClInclude Include="Program Classes\Processor.h" />
+    <ClInclude Include="Program Classes\RR.h" />
+    <ClInclude Include="Program Classes\SJF.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="README.md" />
