@@ -8,6 +8,7 @@ Process::Process(int at, int id, int ct, int STT, int ior, int iod) {
 	set_IO_R(ior);
 	set_IO_D(iod);
 	set_RT(-1);		//-1 indicates that process has never entered CPU
+	set_SIGKILL(false);
 }
 
 //setters
@@ -82,11 +83,9 @@ bool Process::get_SIGKILL() {
 	return SIGKILL;
 }
 
-//Overload << operator
-ostream& Process::operator<<(ostream& os) {
-	os << get_TT() << "    " << get_PID() << "    " << get_AT() << "    " << get_CT() << "    ";
-	os << get_IO_D() << "    " << get_WT() << "    " << get_RT() << "    " << get_TRT() << endl;
-	return os;
+//Print ID
+void Process::printID() {
+	cout << this->get_PID();
 }
 
 Process::~Process() {}

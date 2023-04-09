@@ -1,8 +1,8 @@
 #include "BTNode.h"
-BTNode::BTNode(Process* process) {
-	setPrcs(process);
-	setLch(NULL);
-	setRch(NULL);
+BTNode::BTNode() {
+	setPrcs(nullptr);
+	setLch(nullptr);
+	setRch(nullptr);
 }
 
 //setters
@@ -19,16 +19,23 @@ void BTNode::setRch(BTNode* right) {
 }
 
 //getters
-Process* BTNode::getPrcs() {
+Process*& BTNode::getPrcs() {
 	return prcs;
 }
 
-BTNode* BTNode::getLch() {
+BTNode*& BTNode::getLch() {
 	return lch;
 }
 
-BTNode* BTNode::getRch() {
+BTNode*& BTNode::getRch() {
 	return rch;
 }
 
-BTNode::~BTNode(){}
+BTNode::~BTNode(){
+	delete prcs;
+	setPrcs(nullptr);
+	delete lch;
+	setLch(nullptr);
+	delete rch;
+	setRch(nullptr);
+}

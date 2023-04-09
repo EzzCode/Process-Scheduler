@@ -6,7 +6,7 @@ private:
     BTNode* lch;
     BTNode* rch;
 public:
-    BTNode(Process* process);
+    BTNode();
 
     //setters
     void setPrcs(Process* process);
@@ -14,9 +14,9 @@ public:
     void setRch(BTNode* right);
 
     //getters
-    Process* getPrcs();
-    BTNode* getLch();
-    BTNode* getRch();
+    Process*& getPrcs();
+    BTNode*& getLch();
+    BTNode*& getRch();
     
     ~BTNode();
 };
