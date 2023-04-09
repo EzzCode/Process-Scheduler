@@ -7,7 +7,9 @@ class Scheduler;
 
 class Processor
 {
-private:
+protected:
+	Scheduler* pScheduler;
 public:
+	Processor(Scheduler* pSch) { pScheduler = pSch; };
 	virtual void ScheduleAlgo() = 0;
 };

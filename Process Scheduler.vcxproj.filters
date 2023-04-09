@@ -53,18 +53,6 @@
     <ClInclude Include="DS Implementations\BTNode.h">
       <Filter>Header Files\DS Implementations</Filter>
     </ClInclude>
-    <ClInclude Include="D:\Sophomore Level\Second Term\Data Structure\Project\DS Implementations\LinkedList.h">
-      <Filter>Header Files\DS Implementations</Filter>
-    </ClInclude>
-    <ClInclude Include="D:\Sophomore Level\Second Term\Data Structure\Project\DS Implementations\LinkedQueue.h">
-      <Filter>Header Files\DS Implementations</Filter>
-    </ClInclude>
-    <ClInclude Include="D:\Sophomore Level\Second Term\Data Structure\Project\DS Implementations\Node.h">
-      <Filter>Header Files\DS Implementations</Filter>
-    </ClInclude>
-    <ClInclude Include="D:\Sophomore Level\Second Term\Data Structure\Project\DS Implementations\QueueADT.h">
-      <Filter>Header Files\DS Implementations</Filter>
-    </ClInclude>
     <ClInclude Include="Program Classes\FCFS.h">
       <Filter>Header Files\Program Classes</Filter>
     </ClInclude>
@@ -76,6 +64,18 @@
     </ClInclude>
     <ClInclude Include="Program Classes\SJF.h">
       <Filter>Header Files\Program Classes</Filter>
+    </ClInclude>
+    <ClInclude Include="DS Implementations\LinkedList.h">
+      <Filter>Header Files\DS Implementations</Filter>
+    </ClInclude>
+    <ClInclude Include="DS Implementations\LinkedQueue.h">
+      <Filter>Header Files\DS Implementations</Filter>
+    </ClInclude>
+    <ClInclude Include="DS Implementations\Node.h">
+      <Filter>Header Files\DS Implementations</Filter>
+    </ClInclude>
+    <ClInclude Include="DS Implementations\QueueADT.h">
+      <Filter>Header Files\DS Implementations</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
