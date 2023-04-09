@@ -1,5 +1,6 @@
 #pragma once
 #include "Processor.h"
+class Scheduler;
 class FCFS :
 	public Processor
 {
