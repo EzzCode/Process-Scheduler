@@ -6,8 +6,13 @@ class SJF :
 {
 private:
 	Process* RUN;
-	int pLoad, pUtil, state;
+	float pLoad, pUtil;
+	int state;
 public:
 	SJF(Scheduler* pSch);
+	virtual void moveToRDY();
+	virtual void moveToRUN();
+	virtual void moveToBLK();
 	virtual void ScheduleAlgo();
+	~SJF() {};
 };

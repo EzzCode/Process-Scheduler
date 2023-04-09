@@ -7,8 +7,13 @@ class RR :
 private:
 	LinkedQueue RDY;
 	Process* RUN;
-	int pLoad, pUtil, state;
+	float pLoad, pUtil;
+	int state;
 public:
 	RR(Scheduler* pSch);
 	virtual void ScheduleAlgo();
+	virtual void moveToRDY();
+	virtual void moveToRUN();
+	virtual void moveToBLK();
+	~RR() {};
 };

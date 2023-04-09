@@ -11,5 +11,9 @@ private:
 	int state;
 public:
 	FCFS(Scheduler* pSch);
+	virtual void moveToRDY(Process* Rptr);
+	virtual void moveToRUN(Process* Rptr);
+	virtual void moveToBLK();
 	virtual void ScheduleAlgo();
+	~FCFS() {};
 };
