@@ -202,6 +202,7 @@ public:
 			UpdateTail();
 			return P1;
 		}
+		return NULL;
 	}
 
 };
