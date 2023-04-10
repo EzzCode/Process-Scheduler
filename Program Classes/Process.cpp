@@ -10,7 +10,7 @@ Process::Process(int at, int id, int ct, int STT, int ior, int iod) {
 	set_RT(-1);		//-1 indicates that process has never entered CPU
 	set_SIGKILL(false);
 }
-
+Process::Process() {}
 //setters
 void Process::set_PID(int id) {
 	PID = id;
@@ -82,7 +82,10 @@ int Process::get_IO_D() {
 bool Process::get_SIGKILL() {
 	return SIGKILL;
 }
-
+void Process::Load(ifstream& Infile)
+{
+	Infile >> AT >> PID >> CT >> IO_R >> IO_D;
+}
 //Print ID
 ostream& operator<<(ostream& os, Process& p) {
 	return os << p.get_PID();

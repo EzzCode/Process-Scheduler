@@ -1,5 +1,6 @@
 #pragma once
 #include <iostream>
+#include <fstream>
 using namespace std;
 class Process
 {
@@ -31,7 +32,7 @@ private:
 
 public:
 	Process(int at, int id, int ct, int STT, int ior, int iod); //Other data members are either calculate or recieved after creation
-
+	Process();
 	//Public setters
 	void set_PID(int id);
 	void set_AT(int at);
@@ -55,7 +56,7 @@ public:
 	int get_IO_R();
 	int get_IO_D();
 	bool get_SIGKILL();
-
+	void Load(ifstream& Infile); // load its data mem from input file
 	//Print ID
 	friend ostream& operator<<(ostream& os, Process& p);
 
