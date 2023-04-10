@@ -142,8 +142,8 @@
     <ClInclude Include="DS Implementations\LinkedList.h" />
     <ClInclude Include="DS Implementations\LinkedQueue.h" />
     <ClInclude Include="DS Implementations\Node.h" />
+    <ClInclude Include="DS Implementations\PQueue.h" />
     <ClInclude Include="DS Implementations\QueueADT.h" />
-    <ClInclude Include="PQueue.h" />
     <ClInclude Include="Program Classes\FCFS.h" />
     <ClInclude Include="Program Classes\Process.h" />
     <ClInclude Include="Program Classes\Processor.h" />
