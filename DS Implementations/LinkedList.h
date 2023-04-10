@@ -13,6 +13,8 @@ private:
 			Tail = P;
 			P = P->GetNext();
 		}
+		if (P == NULL)
+			Tail = NULL;
 	}
 public:
 	LinkedList()
@@ -185,6 +187,20 @@ public:
 		}
 		UpdateTail();
 		return b;
+	}
+
+	Process* GetHeadData()
+	{
+		if (Head != NULL)
+		{
+			Process* P1 = new Process(*(Head->GetItem()));
+			Node* R = Head;
+			Head = Head->GetNext();
+			delete R;
+			R = NULL;
+			UpdateTail();
+			return P1;
+		}
 	}
 
 };
