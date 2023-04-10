@@ -84,7 +84,7 @@ The constructor of the Queue class.
 	Output: True if the operation is successful; otherwise false.
 	*/
 
-	bool enqueue(T* newEntry)
+	bool enqueue(T*& newEntry)
 	{
 		Node<T>* newNodePtr = new Node<T>(newEntry);
 		// Insert the new node
