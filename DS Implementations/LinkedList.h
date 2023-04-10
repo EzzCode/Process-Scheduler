@@ -172,6 +172,7 @@ public:
 				delete P;
 				b = true;
 			}
+			P = Head;
 			while (P->GetNext() != NULL)
 			{
 				if (P->GetNext()->GetItem() == data)
