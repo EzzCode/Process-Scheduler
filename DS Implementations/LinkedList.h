@@ -1,13 +1,15 @@
 #pragma once
 #include "Node.h"
+#include "../Program Classes/Process.h"
+template < typename T>
 class LinkedList
 {
 private:
-	Node* Head;
-	Node* Tail;
+	Node<T>* Head;
+	Node<T>* Tail;
 	void UpdateTail()				//Functional
 	{
-		Node* P = Head;
+		Node<T>* P = Head;
 		while (P != NULL)
 		{
 			Tail = P;
@@ -28,9 +30,9 @@ public:
 	}
 
 
-	void InsertBeg(Process* data)			//Functional
+	void InsertBeg(T* data)			//Functional
 	{
-		Node* R = new Node;
+		Node<T>* R = new Node<T>;
 		R->SetItem(data);
 		R->SetNext(Head);
 		Head = R;
@@ -39,10 +41,10 @@ public:
 
 	void DeleteAll()				//Functional
 	{
-		Node* P = Head;
+		Node<T>* P = Head;
 		while (Head)
 		{
-			P = Head->GetNext();
+			P = Head->getNext();
 			delete Head;
 			Head = P;
 		}
@@ -50,7 +52,7 @@ public:
 
 	void PrintList()			//Functional
 	{
-		Node* P = Head;
+		Node<T>* P = Head;
 
 		while (P != NULL)
 		{
@@ -60,9 +62,9 @@ public:
 		cout << "NULL" << endl;
 	}
 
-	void InsertEnd(Process* data)		//Functional
+	void InsertEnd(T* data)		//Functional
 	{
-		Node* P = new Node;
+		Node<T>* P = new Node<T>;
 		P->SetItem(data);
 		if (Head != NULL)
 		{
@@ -76,14 +78,14 @@ public:
 		}
 	}
 
-	bool Find(Process* data)			//Functional
+	bool Find(T* data)			//Functional
 	{
 		if (Head != NULL)
 		{
-			Node* P = Head;
+			Node<Process>* P = Head;
 			while (P != NULL)
 			{
-				if (P->GetItem() == data)
+				if (P->GetItem()->get_PID() == data)
 					return true;
 				P = P->GetNext();
 			}
@@ -91,27 +93,12 @@ public:
 		return false;
 	}
 
-	int CountOccurance(Process* data)		//Functional
-	{
-		int count = 0;
-		if (Head != NULL)
-		{
-			Node* P = Head;
-			while (P != NULL)
-			{
-				if (P->GetItem() == data)
-					count++;
-				P = P->GetNext();
-			}
-		}
-		return count;
-	}
 
 	void DeleteFirst()			//Functional
 	{
 		if (Head != NULL)
 		{
-			Node* P = Head->GetNext();
+			Node<T>* P = Head->GetNext();
 			delete Head;
 			Head = P;
 		}
@@ -121,7 +108,7 @@ public:
 	{
 		if (Tail != NULL)
 		{
-			Node* P = Head;
+			Node<T>* P = Head;
 			while (P->GetNext() != Tail)
 			{
 				P = P->GetNext();
@@ -132,9 +119,36 @@ public:
 		}
 	}
 
-	bool DeleteNode(Process* data)				//Functional
+	bool DeleteNode(int data)		//Only works for Processes
 	{
-		Node* P = Head;
+		Node<Process>* P = Head;
+		if (P != NULL)
+		{
+			if (P->GetItem()->get_PID() == data)
+			{
+				Head = P->GetNext();
+				delete P;
+				return true;
+			}
+			while (P->GetNext() != NULL)
+			{
+				if (P->GetNext()->GetItem()->get_PID() == data)
+				{
+					Node<Process>* R = P->GetNext()->GetNext();
+					delete P->GetNext();
+					P->SetNext(R);
+					return true;
+				}
+				P = P->GetNext();
+			}
+		}
+		UpdateTail();
+		return false;
+	}
+
+	bool DeleteNode(T* data)				//Functional
+	{
+		Node<T>* P = Head;
 		if (P != NULL)
 		{
 			if (P->GetItem() == data)
@@ -147,7 +161,7 @@ public:
 			{
 				if (P->GetNext()->GetItem() == data)
 				{
-					Node* R = P->GetNext()->GetNext();
+					Node<T>* R = P->GetNext()->GetNext();
 					delete P->GetNext();
 					P->SetNext(R);
 					return true;
@@ -160,10 +174,40 @@ public:
 		return false;
 	}
 
-	bool DeleteNodes(Process* data)				//Functional
+	bool DeleteNodes(int data)			//Only works for Processes
 	{
 		bool b = false;
-		Node* P = Head;
+		Node<Process>* P = Head;
+		if (P != NULL)
+		{
+			if (P->GetItem()->get_PID() == data)
+			{
+				Head = P->GetNext();
+				delete P;
+				b = true;
+			}
+			P = Head;
+			while (P->GetNext() != NULL)
+			{
+				if (P->GetNext()->GetItem()->get_PID() == data)
+				{
+					Node<Process>* R = P->GetNext()->GetNext();
+					delete P->GetNext();
+					P->SetNext(R);
+					b = true;
+					UpdateTail();
+				}
+				P = P->GetNext();
+			}
+		}
+		UpdateTail();
+		return b;
+	}
+
+	bool DeleteNodes(T* data)		//Functional
+	{
+		bool b = false;
+		Node<T>* P = Head;
 		if (P != NULL)
 		{
 			if (P->GetItem() == data)
@@ -177,7 +221,7 @@ public:
 			{
 				if (P->GetNext()->GetItem() == data)
 				{
-					Node* R = P->GetNext()->GetNext();
+					Node<T>* R = P->GetNext()->GetNext();
 					delete P->GetNext();
 					P->SetNext(R);
 					b = true;
@@ -190,12 +234,12 @@ public:
 		return b;
 	}
 
-	Process* GetHeadData()
+	T* GetHeadData()
 	{
 		if (Head != NULL)
 		{
-			Process* P1 = new Process(*(Head->GetItem()));
-			Node* R = Head;
+			T* P1 = new T(*(Head->GetItem()));
+			Node<T>* R = Head;
 			Head = Head->GetNext();
 			delete R;
 			R = NULL;
@@ -204,6 +248,5 @@ public:
 		}
 		return NULL;
 	}
-
 };
 

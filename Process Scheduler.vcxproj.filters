@@ -92,6 +92,9 @@
     <ClInclude Include="DS Implementations\PQueue.h">
       <Filter>Header Files\DS Implementations</Filter>
     </ClInclude>
+    <ClInclude Include="DS Implementations\PNode.h">
+      <Filter>Header Files\DS Implementations</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="README.md" />
