@@ -1,51 +1,58 @@
 #ifndef _NODE
 #define _NODE
 #include "../Program Classes/Process.h"
-//First let's declare a single node in the list
+#pragma once
+#include <iostream>
+using namespace std;
 class Node
 {
-private :
-	Process* item;	// A data item (can be any complex sturcture)
-	Node* next;	// Pointer to next node
-public :
-
-	Node( ) //default constructor
+private:
+	Process* Item;
+	Node* Next;
+public:
+	Node()			// default constructor
 	{
-		next= nullptr;
-	} 
+		Item = NULL;
+		Next = NULL;
+	}
 
 	Node(Process* newItem) //non-default constructor
 	{
-		item = newItem;
-		next= nullptr;
-
+		Item = newItem;
+		Next = NULL;
 	}
 
-	Node(const Process* r_Item, Node* nextNodePtr)
+	Node(Process* item, Node* nextNodePtr)
 	{
-		item = r_Item;
-		next = nextNodePtr;
+		Item = item;
+		Next = nextNodePtr;
 	}
 
-	void setItem(Process newItem)
+	~Node()
 	{
-		item = newItem;
-	} // end setItem
-
-	void setNext(Node* nextNodePtr)
-	{
-	next = nextNodePtr;
-	} // end setNext
-
-	Process getItem() const
-	{
-		return item;
-	} // end getItem
-
-	Node* getNext() const
-	{
-		return next;
+		delete Item;
+		Item = NULL;
+		delete Next;
+		Next = NULL;
 	}
-}; // end Node
 
-#endif	
+	Process* GetItem() const
+	{
+		return Item;
+	}
+	Node* GetNext()
+	{
+		return Next;
+	}
+
+	void SetItem(Process* item)
+	{
+		Item = item;
+	}
+	void SetNext(Node* next)
+	{
+		Next = next;
+	}
+};
+
+#endif
