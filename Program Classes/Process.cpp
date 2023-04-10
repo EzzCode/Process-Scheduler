@@ -84,8 +84,8 @@ bool Process::get_SIGKILL() {
 }
 
 //Print ID
-void Process::printID() {
-	cout << this->get_PID();
+ostream& operator<<(ostream& os, Process& p) {
+	return os << p.get_PID();
 }
 
 Process::~Process() {}
