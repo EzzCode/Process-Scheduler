@@ -11,7 +11,7 @@ private:
 	int state;
 public:
 	SJF(Scheduler* pSch);
-	virtual void moveToRDY();
+	virtual void moveToRDY(Process* Rptr);
 	virtual void moveToRUN();
 	virtual void moveToBLK();
 	virtual void ScheduleAlgo();

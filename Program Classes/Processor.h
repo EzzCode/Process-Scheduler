@@ -13,7 +13,7 @@ protected:
 public:
 	Processor(Scheduler* pSch) { pScheduler = pSch; };
 	virtual void ScheduleAlgo() = 0;
-	virtual void moveToRDY() = 0;
+	virtual void moveToRDY(Process* Rptr) = 0;
 	virtual void moveToRUN() = 0;
 	virtual void moveToBLK() = 0;
 	~Processor() {};

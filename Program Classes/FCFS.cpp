@@ -9,10 +9,9 @@ void FCFS::moveToRDY(Process* Rptr)
 	RDY.InsertEnd(Rptr);
 }
 
-void FCFS::moveToRUN(Process* Rptr)
+void FCFS::moveToRUN()
 {
-	RUN = Rptr;
-	RDY.DeleteNode(Rptr);
+	RUN=RDY.GetHeadData();
 }
 
 void FCFS::moveToBLK()

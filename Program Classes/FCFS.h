@@ -12,7 +12,7 @@ private:
 public:
 	FCFS(Scheduler* pSch);
 	virtual void moveToRDY(Process* Rptr);
-	virtual void moveToRUN(Process* Rptr);
+	virtual void moveToRUN();
 	virtual void moveToBLK();
 	virtual void ScheduleAlgo();
 	~FCFS() {};
