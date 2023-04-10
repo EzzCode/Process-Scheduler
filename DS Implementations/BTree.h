@@ -6,7 +6,6 @@ private:
 
 	//Assisting recursive functions
 	void insertHelper(BTNode*& subroot, Process* p);
-	bool preorderSearchHelper(BTNode* subroot, int pid, Process*& p);
 	bool removeHelper(BTNode* subroot, int pid, Process*& p);
 	void markOrphan(BTNode*& subroot);
 	void removeSubTree(BTNode*& subroot);
@@ -20,7 +19,6 @@ public:
 
 	//Public Tree methods
 	void insert(Process* p);
-	bool preorderSearch(int pid, Process*& p);
 	bool remove(int pid, Process*& p);
 
 	~BTree();

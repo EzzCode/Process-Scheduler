@@ -16,9 +16,6 @@ BTNode* BTree::get_root() {
 void BTree::insert(Process* p) {
     insertHelper(root, p);
 }
-bool BTree::preorderSearch(int pid, Process*& p) {
-    return preorderSearchHelper(root, pid, p);
-}
 bool BTree::remove(int pid, Process*& p) {
     return removeHelper(root, pid, p);
 }
@@ -32,16 +29,6 @@ void BTree::insertHelper(BTNode*& subroot, Process* p) {
     }
     //Currently a process can only fork once
     insertHelper(subroot->getLch(), p);
-}
-bool BTree::preorderSearchHelper(BTNode* subroot, int pid, Process*& p) {
-    if (!subroot) return false;
-    int id = subroot->getPrcs()->get_PID();
-    if (id == pid) {
-        p = subroot->getPrcs();
-        return true;
-    }
-    //Currently a process can only fork once
-    return preorderSearchHelper(subroot->getLch(), pid, p);
 }
 bool BTree::removeHelper(BTNode* subroot, int pid, Process*& p) {
     if (!subroot) return false;
