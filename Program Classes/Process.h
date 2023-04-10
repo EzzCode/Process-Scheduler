@@ -57,7 +57,7 @@ public:
 	bool get_SIGKILL();
 
 	//Print ID
-	void printID();
+	friend ostream& operator<<(ostream& os, Process& p);
 
 	~Process();
 };
