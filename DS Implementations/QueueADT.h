@@ -1,5 +1,6 @@
 #ifndef QUEUE_ADT_
 #define QUEUE_ADT_
+#pragma once
 #include "../Program Classes/Process.h"
 class QueueADT
 {
