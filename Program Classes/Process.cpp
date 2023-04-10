@@ -10,7 +10,7 @@ Process::Process(int at, int id, int ct, int STT, int ior, int iod) {
 	set_RT(-1);		//-1 indicates that process has never entered CPU
 	set_SIGKILL(false);
 }
-Process::Process() {}
+Process::Process() {}//:PID(0), AT(0),RT(0),CT(0),state(0),IO_D(0),IO_R(0),SIGKILL(false) {}
 //setters
 void Process::set_PID(int id) {
 	PID = id;
@@ -84,7 +84,11 @@ bool Process::get_SIGKILL() {
 }
 void Process::Load(ifstream& Infile)
 {
-	Infile >> AT >> PID >> CT >> IO_R >> IO_D;
+	Infile >> AT >> PID >> CT >> N_IO;
+	for (int i = 0; i < N_IO; i++) {
+		char c1, c2;
+		Infile >> c1 >> IO_R >> c2 >> IO_D >> c1 >> c2;
+	}
 }
 //Print ID
 ostream& operator<<(ostream& os, Process& p) {

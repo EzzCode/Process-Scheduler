@@ -26,10 +26,13 @@ class Scheduler
 		LinkedQueue NewList;
 		LinkedQueue BlkList;
 		LinkedQueue TrmLsit;
-		Processor** processorList = new Processor * [NF+NS+NR];
+		Processor** processorList;
+		Processor* SQF;
+		Processor* LQF;
 		enum processorStates
 		{
-			idle
+			idle,
+			busy
 		};
 		enum processStates {
 			NEW,
