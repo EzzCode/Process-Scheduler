@@ -84,12 +84,11 @@ bool Process::get_SIGKILL() {
 }
 void Process::Load(ifstream& Infile)
 {
-	Infile >> AT >> PID >> CT;
-	//for (int i = 0; i < N_IO; i++) 
-	//{
-	//	char c;// bracket or comma
-	//	Infile >> c >> IO_R >> c >> IO_D;
-	//}
+	Infile >> AT >> PID >> CT >> N_IO;
+	for (int i = 0; i < N_IO; i++) {
+		char c1, c2;
+		Infile >> c1 >> IO_R >> c2 >> IO_D >> c1 >> c2;
+	}
 }
 //Print ID
 ostream& operator<<(ostream& os, Process& p) {

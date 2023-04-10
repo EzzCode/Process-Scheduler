@@ -12,12 +12,12 @@ void Scheduler::fileLoading()
 {
 	ifstream Infile("input.txt");
 	Infile >> NF >> NS >> NR; 
-	//for (int i = 0; i < NF; i++) 
-	//{
-	//	myProcessor = new FCFS(this);
-	//	processorList[ProcessorsCounter] = myProcessor;
-	//	ProcessorsCounter++;
-	//}
+	for (int i = 0; i < NF; i++) 
+	{
+		myProcessor = new FCFS(this);
+		processorList[ProcessorsCounter] = myProcessor;
+		ProcessorsCounter++;
+	}
 	for (int i = 0; i < NS; i++)
 	{
 		myProcessor = new SJF(this);

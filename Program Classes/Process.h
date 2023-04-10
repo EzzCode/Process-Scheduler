@@ -22,7 +22,7 @@ private:
 	//Input/Output Request time & Duration
 	int IO_R;
 	int IO_D;
-	
+	int N_IO;
 	//Kill Signal
 	bool SIGKILL;
 
