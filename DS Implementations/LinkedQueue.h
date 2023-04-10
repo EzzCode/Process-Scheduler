@@ -39,13 +39,13 @@ Single Node Case:
 #include <vector>
 using namespace std;
 
-
-class LinkedQueue :public QueueADT
+template <typename T>
+class LinkedQueue :public QueueADT<T>
 {
 private:
 
-	Node* backPtr;
-	Node* frontPtr;
+	Node<T>* backPtr;
+	Node<T>* frontPtr;
 public:
 	/////////////////////////////////////////////////////////////////////////////////////////
 
@@ -84,9 +84,9 @@ The constructor of the Queue class.
 	Output: True if the operation is successful; otherwise false.
 	*/
 
-	bool enqueue(Process* newEntry)
+	bool enqueue(T* newEntry)
 	{
-		Node* newNodePtr = new Node(newEntry);
+		Node<T>* newNodePtr = new Node<T>(newEntry);
 		// Insert the new node
 		if (isEmpty())	//special case if this is the first node to insert
 			frontPtr = newNodePtr; // The queue is empty
@@ -107,12 +107,12 @@ Input: None.
 Output: True if the operation is successful; otherwise false.
 */
 
-	bool dequeue(Process*& frntEntry)
+	bool dequeue(T*& frntEntry)
 	{
 		if (isEmpty())
 			return false;
 
-		Node* nodeToDeletePtr = frontPtr;
+		Node<T>* nodeToDeletePtr = frontPtr;
 		//frntEntry->set_AT(frontPtr->GetItem()->get_AT());
 		//frntEntry->set_PID(frontPtr->GetItem()->get_PID());
 		//frntEntry->set_CT(frontPtr->GetItem()->get_CT());
@@ -123,7 +123,7 @@ Output: True if the operation is successful; otherwise false.
 		//frntEntry->set_IO_D(frontPtr->GetItem()->get_IO_D());
 		//frntEntry->set_SIGKILL(frontPtr->GetItem()->get_SIGKILL());
 
-		frntEntry = new Process(*(frontPtr->GetItem()));
+		frntEntry = new T(*(frontPtr->GetItem()));
 
 
 		frontPtr = frontPtr->GetNext();
@@ -147,7 +147,7 @@ Input: None.
 Output: The front of the queue.
 */
 
-	bool peek(Process*& frntEntry) const
+	bool peek(T*& frntEntry) const
 	{
 		if (isEmpty())
 			return false;
@@ -164,15 +164,10 @@ removes all nodes from the queue by dequeuing them
 */
 	~LinkedQueue()
 	{
+		T temp;
+
 		//Free (Dequeue) all nodes in the queue
-		while (!isEmpty())
-		{
-			Process* ptr;
-			dequeue(ptr);
-			frontPtr = frontPtr->GetNext();
-		}
-		frontPtr = NULL;
-		backPtr = NULL;
+		while (dequeue(temp));
 	}
 
 	/////////////////////////////////////////////////////////////////////////////////////////
@@ -187,7 +182,7 @@ Output: none
 
 	LinkedQueue(const LinkedQueue& LQ)
 	{
-		Node* NodePtr = LQ.frontPtr;
+		Node<T>* NodePtr = LQ.frontPtr;
 		if (!NodePtr) //LQ is empty
 		{
 			frontPtr = backPtr = nullptr;
@@ -195,26 +190,19 @@ Output: none
 		}
 
 		//insert the first node
-		Node* ptr = new Node(NodePtr->GetItem());
+		Node<T>* ptr = new Node<T>(NodePtr->GetItem());
 		frontPtr = backPtr = ptr;
 		NodePtr = NodePtr->GetNext();
 
 		//insert remaining nodes
 		while (NodePtr)
 		{
-			Node* ptr = new Node(NodePtr->GetItem());
+			Node<T>* ptr = new Node<T>(NodePtr->GetItem());
 			backPtr->SetNext(ptr);
 			backPtr = ptr;
 			NodePtr = NodePtr->GetNext();
 		}
 	}
 };
-
-
-
-
-
-
-
 
 #endif
