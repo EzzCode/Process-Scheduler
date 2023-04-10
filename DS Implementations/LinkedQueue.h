@@ -48,10 +48,10 @@ private:
 	Node* frontPtr;
 public:
 	LinkedQueue();
-	bool isEmpty() const;
-	bool enqueue(Process* newEntry);
-	bool dequeue(Process*& frntEntry);
-	bool peek(Process*& frntEntry)  const;
+	virtual bool isEmpty() const;
+	virtual bool enqueue(Process* newEntry);
+	virtual bool dequeue(Process*& frntEntry);
+	virtual bool peek(Process*& frntEntry)  const;
 	~LinkedQueue();
 
 	//copy constructor
