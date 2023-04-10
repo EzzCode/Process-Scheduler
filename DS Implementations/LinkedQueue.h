@@ -47,17 +47,7 @@ private:
 	Node* backPtr;
 	Node* frontPtr;
 public:
-	LinkedQueue();
-	virtual bool isEmpty() const;
-	virtual bool enqueue(Process* newEntry);
-	virtual bool dequeue(Process*& frntEntry);
-	virtual bool peek(Process*& frntEntry)  const;
-	~LinkedQueue();
-
-	//copy constructor
-	LinkedQueue(const LinkedQueue& LQ);
-};
-/////////////////////////////////////////////////////////////////////////////////////////
+	/////////////////////////////////////////////////////////////////////////////////////////
 
 /*
 Function: Queue()
@@ -66,49 +56,48 @@ The constructor of the Queue class.
 */
 
 
-LinkedQueue::LinkedQueue()
-{
-	backPtr = nullptr;
-	frontPtr = nullptr;
-}
-/////////////////////////////////////////////////////////////////////////////////////////
+	LinkedQueue()
+	{
+		backPtr = nullptr;
+		frontPtr = nullptr;
+	}
+	/////////////////////////////////////////////////////////////////////////////////////////
 
-/*
-Function: isEmpty
-Sees whether this queue is empty.
+	/*
+	Function: isEmpty
+	Sees whether this queue is empty.
 
-Input: None.
-Output: True if the queue is empty; otherwise false.
-*/
-bool LinkedQueue::isEmpty() const
-{
-	return (frontPtr == nullptr);
-}
+	Input: None.
+	Output: True if the queue is empty; otherwise false.
+	*/
+	bool isEmpty() const
+	{
+		return (frontPtr == nullptr);
+	}
 
-/////////////////////////////////////////////////////////////////////////////////////////
+	/////////////////////////////////////////////////////////////////////////////////////////
 
-/*Function:enqueue
-Adds newEntry at the back of this queue.
+	/*Function:enqueue
+	Adds newEntry at the back of this queue.
 
-Input: newEntry .
-Output: True if the operation is successful; otherwise false.
-*/
+	Input: newEntry .
+	Output: True if the operation is successful; otherwise false.
+	*/
 
-bool LinkedQueue::enqueue(Process* newEntry)
-{
-	Node* newNodePtr = new Node(newEntry);
-	// Insert the new node
-	if (isEmpty())	//special case if this is the first node to insert
-		frontPtr = newNodePtr; // The queue is empty
-	else
-		backPtr->SetNext(newNodePtr); // The queue was not empty
+	bool enqueue(Process* newEntry)
+	{
+		Node* newNodePtr = new Node(newEntry);
+		// Insert the new node
+		if (isEmpty())	//special case if this is the first node to insert
+			frontPtr = newNodePtr; // The queue is empty
+		else
+			backPtr->SetNext(newNodePtr); // The queue was not empty
 
-	backPtr = newNodePtr; // New node is the last node now
-	return true;
-} // end enqueue
+		backPtr = newNodePtr; // New node is the last node now
+		return true;
+	}
 
-
-/////////////////////////////////////////////////////////////////////////////////////////////////////////
+	/////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 /*Function: dequeue
 Removes the front of this queue. That is, removes the item that was added
@@ -118,37 +107,38 @@ Input: None.
 Output: True if the operation is successful; otherwise false.
 */
 
-bool LinkedQueue::dequeue(Process*& frntEntry)
-{
-	if (isEmpty())
-		return false;
+	bool dequeue(Process*& frntEntry)
+	{
+		if (isEmpty())
+			return false;
 
-	Node* nodeToDeletePtr = frontPtr;
-	//frntEntry->set_AT(frontPtr->GetItem()->get_AT());
-	//frntEntry->set_PID(frontPtr->GetItem()->get_PID());
-	//frntEntry->set_CT(frontPtr->GetItem()->get_CT());
-	//frntEntry->set_RT(frontPtr->GetItem()->get_RT());
-	//frntEntry->set_TT(frontPtr->GetItem()->get_TT());
-	//frntEntry->set_state(frontPtr->GetItem()->get_state());
-	//frntEntry->set_IO_R(frontPtr->GetItem()->get_IO_R());
-	//frntEntry->set_IO_D(frontPtr->GetItem()->get_IO_D());
-	//frntEntry->set_SIGKILL(frontPtr->GetItem()->get_SIGKILL());
+		Node* nodeToDeletePtr = frontPtr;
+		//frntEntry->set_AT(frontPtr->GetItem()->get_AT());
+		//frntEntry->set_PID(frontPtr->GetItem()->get_PID());
+		//frntEntry->set_CT(frontPtr->GetItem()->get_CT());
+		//frntEntry->set_RT(frontPtr->GetItem()->get_RT());
+		//frntEntry->set_TT(frontPtr->GetItem()->get_TT());
+		//frntEntry->set_state(frontPtr->GetItem()->get_state());
+		//frntEntry->set_IO_R(frontPtr->GetItem()->get_IO_R());
+		//frntEntry->set_IO_D(frontPtr->GetItem()->get_IO_D());
+		//frntEntry->set_SIGKILL(frontPtr->GetItem()->get_SIGKILL());
 
-	frntEntry = new Process(*(frontPtr->GetItem()));
+		frntEntry = new Process(*(frontPtr->GetItem()));
 
 
-	frontPtr = frontPtr->GetNext();
-	// Queue is not empty; remove front
-	if (nodeToDeletePtr == backPtr)	 // Special case: last node in the queue
-		backPtr = NULL;
+		frontPtr = frontPtr->GetNext();
+		// Queue is not empty; remove front
+		if (nodeToDeletePtr == backPtr)	 // Special case: last node in the queue
+			backPtr = NULL;
 
-	// Free memory reserved for the dequeued node
-	delete nodeToDeletePtr;
+		// Free memory reserved for the dequeued node
+		delete nodeToDeletePtr;
 
-	return true;
+		return true;
 
-}
-/////////////////////////////////////////////////////////////////////////////////////////
+	}
+
+	/////////////////////////////////////////////////////////////////////////////////////////
 /*
 Function: peek
 copies the front of this queue to the passed param. The operation does not modify the queue.
@@ -157,35 +147,37 @@ Input: None.
 Output: The front of the queue.
 */
 
-bool LinkedQueue::peek(Process*& frntEntry) const
-{
-	if (isEmpty())
-		return false;
+	bool peek(Process*& frntEntry) const
+	{
+		if (isEmpty())
+			return false;
 
-	frntEntry = frontPtr->GetItem();
-	return true;
+		frntEntry = frontPtr->GetItem();
+		return true;
 
-}
-///////////////////////////////////////////////////////////////////////////////////
+	}
+
+	///////////////////////////////////////////////////////////////////////////////////
 /*
 Function: destructor
 removes all nodes from the queue by dequeuing them
 */
-LinkedQueue::~LinkedQueue()
-{
-	//Free (Dequeue) all nodes in the queue
-	while (!isEmpty())
+	~LinkedQueue()
 	{
-		Process* ptr;
-		dequeue(ptr);
-		frontPtr = frontPtr->GetNext();
+		//Free (Dequeue) all nodes in the queue
+		while (!isEmpty())
+		{
+			Process* ptr;
+			dequeue(ptr);
+			frontPtr = frontPtr->GetNext();
+		}
+		frontPtr = NULL;
+		backPtr = NULL;
 	}
-	frontPtr = NULL;
-	backPtr = NULL;
-}
-/////////////////////////////////////////////////////////////////////////////////////////
-/*
-Function: Copy constructor
+
+	/////////////////////////////////////////////////////////////////////////////////////////
+	/*
+	Function: Copy constructor
 To avoid shallow copy,
 copy constructor is provided
 
@@ -193,28 +185,36 @@ Input: LinkedQueue<T>: The Queue to be copied
 Output: none
 */
 
-LinkedQueue::LinkedQueue(const LinkedQueue& LQ)
-{
-	Node* NodePtr = LQ.frontPtr;
-	if (!NodePtr) //LQ is empty
+	LinkedQueue(const LinkedQueue& LQ)
 	{
-		frontPtr = backPtr = nullptr;
-		return;
-	}
+		Node* NodePtr = LQ.frontPtr;
+		if (!NodePtr) //LQ is empty
+		{
+			frontPtr = backPtr = nullptr;
+			return;
+		}
 
-	//insert the first node
-	Node* ptr = new Node(NodePtr->GetItem());
-	frontPtr = backPtr = ptr;
-	NodePtr = NodePtr->GetNext();
-
-	//insert remaining nodes
-	while (NodePtr)
-	{
+		//insert the first node
 		Node* ptr = new Node(NodePtr->GetItem());
-		backPtr->SetNext(ptr);
-		backPtr = ptr;
+		frontPtr = backPtr = ptr;
 		NodePtr = NodePtr->GetNext();
+
+		//insert remaining nodes
+		while (NodePtr)
+		{
+			Node* ptr = new Node(NodePtr->GetItem());
+			backPtr->SetNext(ptr);
+			backPtr = ptr;
+			NodePtr = NodePtr->GetNext();
+		}
 	}
-}
+};
+
+
+
+
+
+
+
 
 #endif
