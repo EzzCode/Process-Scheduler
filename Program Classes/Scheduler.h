@@ -23,9 +23,9 @@ class Scheduler
 		int ProcessorsCounter;//just a counter for the creation
 		Processor* myProcessor;// Processor ptr for process creation
 		Process* myProcess; // process ptr for process creation
-		QueueADT NewList;
-		QueueADT BlkList;
-		QueueADT TrmLsit;
+		LinkedQueue NewList;
+		LinkedQueue BlkList;
+		LinkedQueue TrmLsit;
 		Processor** processorList = new Processor * [NF+NS+NR];
 		enum processorStates
 		{

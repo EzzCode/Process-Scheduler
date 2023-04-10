@@ -1,5 +1,6 @@
 #ifndef QUEUE_ADT_
 #define QUEUE_ADT_
+#pragma once
 #include "../Program Classes/Process.h"
 class QueueADT
 {
@@ -12,10 +13,10 @@ public:
 
 	// Removes the front item and returns it through the FrontEntry Parameter
 	// Returns whether the item it was removed successfully or not
-	virtual bool dequeue(Process*& FrontEntry) = 0;
+	virtual bool dequeue(Process*& frntEntry) = 0;
 
 	// Returns the front item through the parameter without removing it
 	// Returns whether the item was copied or not
-	virtual bool peek(Process*& FrontEntry) const = 0;
+	virtual bool peek(Process*& frntEntry) const = 0;
 };
 #endif
