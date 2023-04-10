@@ -23,9 +23,9 @@ class Scheduler
 		int ProcessorsCounter;//just a counter for the creation
 		Processor* myProcessor;// Processor ptr for process creation
 		Process* myProcess; // process ptr for process creation
-		LinkedQueue NewList;
-		LinkedQueue BlkList;
-		LinkedQueue TrmLsit;
+		LinkedQueue<Process> NewList;
+		LinkedQueue<Process> BlkList;
+		LinkedQueue<Process> TrmLsit;
 		Processor** processorList;
 		Processor* SQF;
 		Processor* LQF;
