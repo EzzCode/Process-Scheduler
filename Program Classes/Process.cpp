@@ -10,7 +10,7 @@ Process::Process(int at, int id, int ct, int STT, int ior, int iod) {
 	set_RT(-1);		//-1 indicates that process has never entered CPU
 	set_SIGKILL(false);
 }
-Process::Process():PID(0), AT(0),RT(0),CT(0),state(0),IO_D(0),IO_R(0),SIGKILL(false) {}
+Process::Process() {}//:PID(0), AT(0),RT(0),CT(0),state(0),IO_D(0),IO_R(0),SIGKILL(false) {}
 //setters
 void Process::set_PID(int id) {
 	PID = id;
