@@ -48,6 +48,9 @@
     <ClCompile Include="DS Implementations\BTree.cpp">
       <Filter>Source Files\DS Implementations</Filter>
     </ClCompile>
+    <ClCompile Include="Program Classes\Scheduler.cpp">
+      <Filter>Source Files\Program Classes</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Program Classes\Process.h">
@@ -82,6 +85,9 @@
     </ClInclude>
     <ClInclude Include="DS Implementations\BTree.h">
       <Filter>Header Files\DS Implementations</Filter>
+    </ClInclude>
+    <ClInclude Include="Program Classes\Scheduler.h">
+      <Filter>Header Files\Program Classes</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

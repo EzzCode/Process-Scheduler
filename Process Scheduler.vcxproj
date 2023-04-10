@@ -133,6 +133,7 @@
     <ClCompile Include="Program Classes\FCFS.cpp" />
     <ClCompile Include="Program Classes\Process.cpp" />
     <ClCompile Include="Program Classes\RR.cpp" />
+    <ClCompile Include="Program Classes\Scheduler.cpp" />
     <ClCompile Include="Program Classes\SJF.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -146,6 +147,7 @@
     <ClInclude Include="Program Classes\Process.h" />
     <ClInclude Include="Program Classes\Processor.h" />
     <ClInclude Include="Program Classes\RR.h" />
+    <ClInclude Include="Program Classes\Scheduler.h" />
     <ClInclude Include="Program Classes\SJF.h" />
   </ItemGroup>
   <ItemGroup>
