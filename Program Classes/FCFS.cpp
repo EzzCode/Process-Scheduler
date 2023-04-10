@@ -21,3 +21,18 @@ void FCFS::moveToBLK()
 void FCFS::ScheduleAlgo()
 {
 }
+
+float FCFS::getpLoad()
+{
+	return (float)BUSY/TRT;
+}
+
+float FCFS::getpUtil()
+{
+	return (float)BUSY/(BUSY + T_IDLE);
+}
+
+int FCFS::getstate()
+{
+	return state;
+}
