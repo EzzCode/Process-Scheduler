@@ -174,7 +174,7 @@ public:
 			{
 				if (P->GetNext()->GetItem() == data)
 				{
-					Node<T>* R = P->GetNext()->GetNext();
+					Node* R = P->GetNext()->GetNext();
 					delete P->GetNext();
 					P->SetNext(R);
 					b = true;
