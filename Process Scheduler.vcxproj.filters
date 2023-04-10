@@ -89,7 +89,7 @@
     <ClInclude Include="Program Classes\Scheduler.h">
       <Filter>Header Files\Program Classes</Filter>
     </ClInclude>
-    <ClInclude Include="PQueue.h">
+    <ClInclude Include="DS Implementations\PQueue.h">
       <Filter>Header Files\DS Implementations</Filter>
     </ClInclude>
   </ItemGroup>
