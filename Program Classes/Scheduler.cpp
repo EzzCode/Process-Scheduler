@@ -6,7 +6,7 @@ using namespace std;
 Scheduler::Scheduler() 
 {
 	timeCounter = 0;
-	noProcessors = 0;
+	ProcessorsCounter = 0;
 }
 void Scheduler::fileLoading()
 {
@@ -14,21 +14,21 @@ void Scheduler::fileLoading()
 	Infile >> NF >> NS >> NR; 
 	for (int i = 0; i < NF; i++) 
 	{
-		myProcessor = new FCFS;
-		processorList[noProcessors] = myProcessor;
-		noProcessors++;
+		myProcessor = new FCFS(this);
+		processorList[ProcessorsCounter] = myProcessor;
+		ProcessorsCounter++;
 	}
 	for (int i = 0; i < NS; i++)
 	{
-		myProcessor = new SJF;
-		processorList[noProcessors] = myProcessor;
-		noProcessors++;
+		myProcessor = new SJF(this);
+		processorList[ProcessorsCounter] = myProcessor;
+		ProcessorsCounter++;
 	}
 	for (int i = 0; i < NR; i++)
 	{
-		myProcessor = new RR;
-		processorList[noProcessors] = myProcessor;
-		noProcessors++;
+		myProcessor = new RR(this);
+		processorList[ProcessorsCounter] = myProcessor;
+		ProcessorsCounter++;
 	}
 	Infile >> timeSlice;
 	Infile >> RTF >> MaxW >> STL >> forkProb;
