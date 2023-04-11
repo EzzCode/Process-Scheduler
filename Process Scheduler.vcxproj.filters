@@ -80,9 +80,6 @@
     <ClInclude Include="DS Implementations\LinkedQueue.h">
       <Filter>Header Files\DS Implementations</Filter>
     </ClInclude>
-    <ClInclude Include="DS Implementations\Node.h">
-      <Filter>Header Files\DS Implementations</Filter>
-    </ClInclude>
     <ClInclude Include="DS Implementations\QueueADT.h">
       <Filter>Header Files\DS Implementations</Filter>
     </ClInclude>
