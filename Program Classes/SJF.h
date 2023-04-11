@@ -8,14 +8,13 @@ class SJF :
 private:
 	PQueue RDY;
 	Process* RUN;
-	int state, TRT, BUSY, T_IDLE;
+	int state, Qtime, BUSY, T_IDLE;
 public:
 	SJF(Scheduler* pSch);
 	virtual void moveToRDY(Process* Rptr);
 	virtual void moveToRUN();
 	virtual void moveToBLK();
 	virtual void ScheduleAlgo();
-	virtual float getpLoad();
 	virtual float getpUtil();
 	virtual int getstate();
 	~SJF() {};

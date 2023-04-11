@@ -20,10 +20,6 @@ void SJF::ScheduleAlgo()
 {
 }
 
-float SJF::getpLoad()
-{
-	return (float)BUSY / TRT;
-}
 
 float SJF::getpUtil()
 {

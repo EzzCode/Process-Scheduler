@@ -22,11 +22,6 @@ void RR::moveToBLK()
 {
 }
 
-float RR::getpLoad()
-{
-	return (float)BUSY / TRT;
-}
-
 float RR::getpUtil()
 {
 	return (float)BUSY / (BUSY + T_IDLE);

@@ -22,10 +22,6 @@ void FCFS::ScheduleAlgo()
 {
 }
 
-float FCFS::getpLoad()
-{
-	return (float)BUSY/TRT;
-}
 
 float FCFS::getpUtil()
 {
