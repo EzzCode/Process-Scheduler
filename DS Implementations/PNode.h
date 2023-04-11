@@ -32,10 +32,8 @@ public:
 
 	~PNode()
 	{
-		delete Item;
 		Item = NULL;
-		delete Next;
-		Next = NULL;
+		delete Item;
 	}
 
 	//Getters
