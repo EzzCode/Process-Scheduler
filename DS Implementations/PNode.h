@@ -6,14 +6,14 @@ class PNode
 {
 private:
 	T* Item;
-	Node<T>* Next;
+	PNode<T>* Next;
 	int Pri;		//Priority
 public:
 
 	//Constructors->Destructor
 	PNode()			// default constructor
 	{
-		Priority = 0;
+		Pri = 0;
 		Item = NULL;
 		Next = NULL;
 	}
@@ -24,18 +24,12 @@ public:
 		Next = NULL;
 	}
 
-	PNode(T* item, Node<T>* nextNodePtr)
-	{
-		Item = item;
-		Next = nextNodePtr;
-	}
-
 	~PNode()
 	{
-		delete Item;
 		Item = NULL;
-		delete Next;
+		delete Item;
 		Next = NULL;
+		delete Next;
 	}
 
 	//Getters
@@ -44,7 +38,7 @@ public:
 		return Item;
 	}
 
-	Node<T>* GetNext()
+	PNode<T>* GetNext()
 	{
 		return Next;
 	}
@@ -59,7 +53,7 @@ public:
 	{
 		Item = item;
 	}
-	void SetNext(T* next)
+	void SetNext(PNode<T>* next)
 	{
 		Next = next;
 	}

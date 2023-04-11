@@ -34,7 +34,7 @@ Single Node Case:
 #ifndef LINKED_QUEUE_
 #define LINKED_QUEUE_
 #pragma once
-#include "Node.h"
+#include "PNode.h"
 #include "QueueADT.h"
 using namespace std;
 
@@ -43,8 +43,8 @@ class LinkedQueue :public QueueADT<T>
 {
 private:
 
-	Node<T>* backPtr;
-	Node<T>* frontPtr;
+	PNode<T>* backPtr;
+	PNode<T>* frontPtr;
 	int count;
 public:
 	/////////////////////////////////////////////////////////////////////////////////////////
@@ -93,7 +93,7 @@ The constructor of the Queue class.
 
 	bool enqueue(T*& newEntry)
 	{
-		Node<T>* newNodePtr = new Node<T>(newEntry);
+		PNode<T>* newNodePtr = new PNode<T>(newEntry);
 		// Insert the new node
 		if (isEmpty())	//special case if this is the first node to insert
 			frontPtr = newNodePtr; // The queue is empty
@@ -119,7 +119,7 @@ Output: True if the operation is successful; otherwise false.
 		if (isEmpty())
 			return false;
 
-		Node<T>* nodeToDeletePtr = frontPtr;
+		PNode<T>* nodeToDeletePtr = frontPtr;
 		frntEntry = frontPtr->GetItem();
 		frontPtr = frontPtr->GetNext();
 		// Queue is not empty; remove front
@@ -177,7 +177,7 @@ Output: none
 
 	LinkedQueue(const LinkedQueue& LQ)
 	{
-		Node<T>* NodePtr = LQ.frontPtr;
+		PNode<T>* NodePtr = LQ.frontPtr;
 		if (!NodePtr) //LQ is empty
 		{
 			frontPtr = backPtr = nullptr;
@@ -185,14 +185,14 @@ Output: none
 		}
 
 		//insert the first node
-		Node<T>* ptr = new Node<T>(NodePtr->GetItem());
+		PNode<T>* ptr = new PNode<T>(NodePtr->GetItem());
 		frontPtr = backPtr = ptr;
 		NodePtr = NodePtr->GetNext();
 
 		//insert remaining nodes
 		while (NodePtr)
 		{
-			Node<T>* ptr = new Node<T>(NodePtr->GetItem());
+			PNode<T>* ptr = new PNode<T>(NodePtr->GetItem());
 			backPtr->SetNext(ptr);
 			backPtr = ptr;
 			NodePtr = NodePtr->GetNext();
