@@ -8,15 +8,20 @@ class RR :
 private:
 	LinkedQueue<Process> RDY;
 	Process* RUN;
-	int state, TRT, BUSY, T_IDLE;
+  //state var has values: {0,1} which represent states: {BUSY, IDLE}
+	int state;
+	int Qtime;
+	int T_BUSY;
+	int T_IDLE;
 public:
 	RR(Scheduler* pSch);
 	virtual void ScheduleAlgo();
 	virtual void moveToRDY(Process* Rptr);
 	virtual void moveToRUN();
-	virtual void moveToBLK();
-	virtual float getpLoad();
+	virtual int getQueueLength();
 	virtual float getpUtil();
 	virtual int getstate();
+	virtual void printRDY();
+	virtual void printRUN(ostream& os);
 	~RR() {};
 };

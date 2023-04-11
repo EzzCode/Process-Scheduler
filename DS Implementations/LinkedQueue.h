@@ -62,6 +62,12 @@ The constructor of the Queue class.
 		frontPtr = nullptr;
 		count = 0;
 	}
+
+	//getters
+	int GetCount()
+	{
+		return count;
+	}
 	/////////////////////////////////////////////////////////////////////////////////////////
 
 	/*
@@ -190,6 +196,14 @@ Output: none
 			backPtr->SetNext(ptr);
 			backPtr = ptr;
 			NodePtr = NodePtr->GetNext();
+		}
+	}
+
+	void printInfo() {
+		Node<T>* ptr = frontPtr;
+		while (ptr) {
+			cout << ptr->GetItem();
+			if (ptr->GetNext()) cout << ", ";
 		}
 	}
 };

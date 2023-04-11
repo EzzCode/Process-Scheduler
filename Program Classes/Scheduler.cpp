@@ -42,7 +42,6 @@ void Scheduler::fileLoading()
 	{
 		myProcessor = new FCFS(this);
 		processorList[ProcessorsCounter++] = myProcessor;
-		//ProcessorsCounter++;
 	}
 	for (int i = 0; i < NS; i++)
 	{

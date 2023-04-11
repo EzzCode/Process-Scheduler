@@ -135,9 +135,10 @@
     <ClCompile Include="Program Classes\RR.cpp" />
     <ClCompile Include="Program Classes\Scheduler.cpp" />
     <ClCompile Include="Program Classes\SJF.cpp" />
-    <ClCompile Include="UI.cpp" />
+    <ClCompile Include="Program Classes\UI.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="DEFS.h" />
     <ClInclude Include="DS Implementations\BTNode.h" />
     <ClInclude Include="DS Implementations\BTree.h" />
     <ClInclude Include="DS Implementations\LinkedList.h" />
@@ -151,7 +152,7 @@
     <ClInclude Include="Program Classes\RR.h" />
     <ClInclude Include="Program Classes\Scheduler.h" />
     <ClInclude Include="Program Classes\SJF.h" />
-    <ClInclude Include="UI.h" />
+    <ClInclude Include="Program Classes\UI.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="README.md" />

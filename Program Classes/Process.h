@@ -1,6 +1,8 @@
 #pragma once
 #include <iostream>
 #include <fstream>
+#include "../DS Implementations/LinkedQueue.h"
+#include "../DEFS.h"
 using namespace std;
 class Process
 {
@@ -17,12 +19,14 @@ private:
 	int WT;		//Waiting time
 
 	//Process State
+	//state var has values: {0->5} which represent states: {NEW, RDY, RUN, BLK, TRM, ORPH}
 	int state;
 
 	//Input/Output Request time & Duration
-	int IO_R;
-	int IO_D;
 	int N_IO;
+	IO ioData;
+	LinkedQueue<IO> ioQ;
+
 	//Kill Signal
 	bool SIGKILL;
 
@@ -40,8 +44,7 @@ public:
 	void set_CT(int ct);
 	void set_TT(int tt);
 	void set_state(int STT);
-	void set_IO_R(int ior);
-	void set_IO_D(int iod);
+	void set_IO(int ior, int iod);
 	void set_SIGKILL(bool signal);
 
 	//getters
@@ -53,8 +56,7 @@ public:
 	int get_TRT();
 	int get_WT();
 	int get_state();
-	int get_IO_R();
-	int get_IO_D();
+	IO get_IO();
 	bool get_SIGKILL();
 	void Load(ifstream& Infile); // load its data mem from input file
 	//Print ID
