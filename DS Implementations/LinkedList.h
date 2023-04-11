@@ -31,6 +31,7 @@ public:
 		DeleteAll();
 	}
 
+	//getters
 	int GetCount()
 	{
 		return count;
@@ -56,18 +57,6 @@ public:
 			Head = P;
 		}
 		count = 0;
-	}
-
-	void PrintList()			//Functional
-	{
-		Node<T>* P = Head;
-
-		while (P != NULL)
-		{
-			cout << "[" << P->GetItem() << "]" << "-->";
-			P = P->GetNext();
-		}
-		cout << "NULL" << endl;
 	}
 
 	void InsertEnd(T* data)		//Functional
@@ -265,5 +254,12 @@ public:
 		}
 		return NULL;
 	}
-};
 
+	void printInfo() {
+		Node<T>* ptr = Head;
+		while (ptr) {
+			cout << ptr->GetItem();
+			if (ptr->GetNext()) cout << ", ";
+		}
+	}
+};

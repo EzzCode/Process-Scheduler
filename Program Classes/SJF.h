@@ -8,6 +8,7 @@ class SJF :
 private:
 	PQueue RDY;
 	Process* RUN;
+	//state var has values: {0,1} which represent states: {BUSY, IDLE}
 	int state, TRT, BUSY, T_IDLE;
 public:
 	SJF(Scheduler* pSch);
@@ -18,5 +19,7 @@ public:
 	virtual float getpLoad();
 	virtual float getpUtil();
 	virtual int getstate();
+	virtual void printRDY();
+	virtual void printRUN(ostream& os);
 	~SJF() {};
 };

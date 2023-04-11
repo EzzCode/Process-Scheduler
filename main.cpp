@@ -3,9 +3,9 @@
 using namespace std;
 
 int main() {
-	//Scheduler s;
-	//s.fileLoading();
-	LinkedList<Process> LL;
+	Scheduler s;
+	s.fileLoading();
+	/*LinkedList<Process> LL;
 	LinkedQueue<Process> LQ;
 	Process* P1 = new Process(1, 1, 1, 1, 1, 1);
 	Process* P2 = new Process(1, 1, 1, 1, 1, 1);
@@ -19,6 +19,6 @@ int main() {
 	LQ.enqueue(P2);
 	LQ.enqueue(P3);
 	LQ.enqueue(P1);
-	LQ.dequeue(P1);
+	LQ.dequeue(P1);*/
 
 }

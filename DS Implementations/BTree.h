@@ -3,6 +3,10 @@
 class BTree {
 private:
 	BTNode* root;
+	int count_forked;
+
+	//Private setters
+	void set_count(int val);
 
 	//Assisting recursive functions
 	void insertHelper(BTNode*& subroot, Process* p);
@@ -12,10 +16,12 @@ private:
 public:
 	BTree();
 
-	//setters
+	//Public setters
 	void set_root(BTNode* rt);
+	
 	//getters
 	BTNode* get_root();
+	int get_count();
 
 	//Public Tree methods
 	void insert(Process* p);

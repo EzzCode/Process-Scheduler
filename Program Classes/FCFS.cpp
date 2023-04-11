@@ -36,3 +36,13 @@ int FCFS::getstate()
 {
 	return state;
 }
+
+void FCFS::printRDY() {
+	cout<< "[FCFS]" << ": " << RDY.GetCount() << " RDY: ";
+	RDY.printInfo();
+}
+
+//Print RUN process
+void FCFS::printRUN(ostream& os) {
+	os << this->RUN;
+}

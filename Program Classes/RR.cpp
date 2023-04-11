@@ -36,3 +36,13 @@ int RR::getstate()
 {
 	return state;
 }
+
+void RR::printRDY() {
+	cout << "[RR  ]" << ": " << RDY.GetCount() << " RDY: ";
+	RDY.printInfo();
+}
+
+//Print RUN process
+void RR::printRUN(ostream& os) {
+	os << this->RUN;
+}
