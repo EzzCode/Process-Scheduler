@@ -2,7 +2,7 @@
 
 SJF::SJF(Scheduler* pSch):Processor(pSch)
 {
-	state = 0;
+	state = 1;
 	Qtime = 0;
 	T_BUSY = 0;
 	T_IDLE = 0;
