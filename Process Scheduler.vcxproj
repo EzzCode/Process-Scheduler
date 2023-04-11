@@ -143,7 +143,6 @@
     <ClInclude Include="DS Implementations\BTree.h" />
     <ClInclude Include="DS Implementations\LinkedList.h" />
     <ClInclude Include="DS Implementations\LinkedQueue.h" />
-    <ClInclude Include="DS Implementations\Node.h" />
     <ClInclude Include="DS Implementations\PNode.h" />
     <ClInclude Include="DS Implementations\PQueue.h" />
     <ClInclude Include="DS Implementations\QueueADT.h" />
