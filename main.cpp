@@ -3,5 +3,14 @@
 using namespace std;
 
 int main() {
+	int mode;
+	cout << "Please Enter operation mode {0, 1, 2}: ";
+	cin >> mode;
+	while (mode > 2 || mode < 0) {
+		cout << "Error! Enter a valid operation mode: ";
+		cin >> mode;
+	}
+	Scheduler s;
+	s.fileLoading();
 	
 }

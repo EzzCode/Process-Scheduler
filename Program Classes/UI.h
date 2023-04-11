@@ -1,5 +1,12 @@
 #pragma once
-#include "Scheduler.h"
+#include "Process.h"
+#include "Processor.h"
+#include "FCFS.h"
+#include "RR.h"
+#include "SJF.h"
+#include "../DS Implementations/LinkedQueue.h"
+#include "../DS Implementations/LinkedList.h"
+#include "../DEFS.h"
 class UI
 {
 private:

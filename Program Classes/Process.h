@@ -1,9 +1,9 @@
 #pragma once
 #include <iostream>
 #include <fstream>
-#include "../DS Implementations/LinkedQueue.h"
 #include "../DEFS.h"
-#include "../DS Implementations/Node.h"
+#include "../DS Implementations/LinkedQueue.h"
+#include "../DS Implementations/PNode.h"
 using namespace std;
 class Process
 {
