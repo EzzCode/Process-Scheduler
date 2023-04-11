@@ -200,7 +200,7 @@ Output: none
 	}
 
 	void printInfo() {
-		Node<T>* ptr = frontPtr;
+		PNode<T>* ptr = frontPtr;
 		while (ptr) {
 			cout << ptr->GetItem();
 			if (ptr->GetNext()) cout << ", ";
