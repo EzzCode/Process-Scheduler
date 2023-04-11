@@ -32,6 +32,8 @@ public:
 	{
 		Item = NULL;
 		delete Item;
+		Next = NULL;
+		delete Next;
 	}
 
 	T* GetItem() const

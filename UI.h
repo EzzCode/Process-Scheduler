@@ -5,8 +5,8 @@ class UI
 private:
 	int timestep;
 	Processor** processorList;
-	LinkedQueue BlkList;
-	LinkedQueue TrmLsit;
+	LinkedQueue<Process> BlkList;
+	LinkedQueue<Process> TrmLsit;
 public:
 };
 

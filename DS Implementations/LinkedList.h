@@ -11,13 +11,13 @@ private:
 	void UpdateTail()				//Functional
 	{
 		Node<T>* P = Head;
+		if (P == NULL)
+			Tail = NULL;
 		while (P != NULL)
 		{
 			Tail = P;
 			P = P->GetNext();
 		}
-		if (P == NULL)
-			Tail = NULL;
 	}
 public:
 	LinkedList()
@@ -125,9 +125,9 @@ public:
 			}
 			P->SetNext(NULL);
 			delete Tail;
+			count--;
 			Tail = P;
 		}
-		count--;
 	}
 
 	bool DeleteNode(int data)		//Only works for Processes
@@ -139,6 +139,7 @@ public:
 			{
 				Head = P->GetNext();
 				delete P;
+				count--;
 				return true;
 			}
 			while (P->GetNext() != NULL)
@@ -147,13 +148,14 @@ public:
 				{
 					Node<Process>* R = P->GetNext()->GetNext();
 					delete P->GetNext();
+					count--;
 					P->SetNext(R);
+					UpdateTail();
 					return true;
 				}
 				P = P->GetNext();
 			}
 		}
-		count--;
 		UpdateTail();
 		return false;
 	}
@@ -167,6 +169,7 @@ public:
 			{
 				Head = P->GetNext();
 				delete P;
+				count--;
 				return true;
 			}
 			while (P->GetNext() != NULL)
@@ -176,13 +179,13 @@ public:
 					Node<T>* R = P->GetNext()->GetNext();
 					delete P->GetNext();
 					P->SetNext(R);
-					return true;
+					count--;
 					UpdateTail();
+					return true;
 				}
 				P = P->GetNext();
 			}
 		}
-		count--;
 		UpdateTail();
 		return false;
 	}
