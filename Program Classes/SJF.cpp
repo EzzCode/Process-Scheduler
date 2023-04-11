@@ -15,8 +15,6 @@ void SJF::moveToRDY(Process* Rptr)
 void SJF::moveToRUN()
 {
 }
-
-
 void SJF::ScheduleAlgo()
 {
 }
