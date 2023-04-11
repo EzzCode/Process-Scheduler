@@ -19,11 +19,13 @@ Scheduler::Scheduler()
 	processorList = nullptr;
 	SQF = nullptr;
 	LQF = nullptr;
+	tSQF = -1;
+	tLQF = -1;
 }
 void Scheduler::fileLoading()
 {
 	ifstream Infile("input.txt");
-	Infile >>NF >>NS >>NR; 
+	Infile >>NF >>NS >>NR;
 	processorList = new Processor * [NF + NS + NR];// alocate processor pointers 
 	Infile >>timeSlice;
 	Infile >>RTF >>MaxW >>STL >>forkProb;
@@ -31,7 +33,7 @@ void Scheduler::fileLoading()
 	//processes creation
 	for (int i = 0; i < noProcesses; i++) 
 	{
-		myProcess = new Process;
+		myProcess = new Process();
 		myProcess->Load(Infile);
 		NewList.enqueue(myProcess);
 	}

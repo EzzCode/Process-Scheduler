@@ -29,6 +29,8 @@ class Scheduler
 		Processor** processorList;
 		Processor* SQF;
 		Processor* LQF;
+		int tSQF;
+		int tLQF;
 		enum processorStates
 		{
 			idle,
@@ -39,7 +41,8 @@ class Scheduler
 			RDY,
 			RUN,
 			BLK,
-			TRM
+			TRM,
+			ORPH
 		};
 public:
 	Scheduler();
