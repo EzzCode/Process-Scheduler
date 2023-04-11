@@ -2,6 +2,10 @@
 
 RR::RR(Scheduler* pSch):Processor(pSch)
 {
+	state = 0;
+	Qtime = 0;
+	T_BUSY = 0;
+	T_IDLE = 0;
 }
 
 void RR::ScheduleAlgo()
@@ -10,26 +14,25 @@ void RR::ScheduleAlgo()
 
 void RR::moveToRDY(Process* Rptr)
 {
+	Qtime += Rptr->get_CT();
 	RDY.enqueue(Rptr);
 }
 
 void RR::moveToRUN()
 {
 	RDY.dequeue(RUN);
+	Qtime -= RUN->get_CT();
 }
 
-void RR::moveToBLK()
+int RR::getQueueLength()
 {
+	return Qtime;
 }
 
-float RR::getpLoad()
-{
-	return (float)BUSY / TRT;
-}
 
 float RR::getpUtil()
 {
-	return (float)BUSY / (BUSY + T_IDLE);
+	return (float)T_BUSY / (T_BUSY + T_IDLE);
 }
 
 int RR::getstate()

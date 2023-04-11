@@ -7,15 +7,17 @@ class FCFS :
 private:
 	LinkedList<Process> RDY;
 	Process* RUN;
-	//state var has values: {0,1} which represent states: {BUSY, IDLE}
-	int state, TRT, BUSY, T_IDLE;
+  //state var has values: {0,1} which represent states: {BUSY, IDLE}
+	int state;
+	int Qtime;
+	int T_BUSY;
+	int T_IDLE;
 public:
 	FCFS(Scheduler* pSch);
 	virtual void moveToRDY(Process* Rptr);
 	virtual void moveToRUN();
-	virtual void moveToBLK();
 	virtual void ScheduleAlgo();
-	virtual float getpLoad();
+	virtual int getQueueLength();
 	virtual float getpUtil();
 	virtual int getstate();
 	virtual void printRDY();
