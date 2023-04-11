@@ -6,17 +6,43 @@ using namespace std;
 Scheduler::Scheduler() 
 {
 	timeCounter = 0;
+	NF = 0;
+	NS = 0;
+	NR = 0;
+	timeSlice = 0;
+	RTF = 0;
+	MaxW = 0;
+	STL = 0;
+	forkProb = 0;
+	noProcesses = 0;
 	ProcessorsCounter = 0;
+	processorList = nullptr;
+	SQF = nullptr;
+	LQF = nullptr;
+	tSQF = -1;
+	tLQF = -1;
 }
 void Scheduler::fileLoading()
 {
 	ifstream Infile("input.txt");
-	Infile >> NF >> NS >> NR; 
-	for (int i = 0; i < NF; i++) 
+	Infile >>NF >>NS >>NR;
+	processorList = new Processor * [NF + NS + NR];// alocate processor pointers 
+	Infile >>timeSlice;
+	Infile >>RTF >>MaxW >>STL >>forkProb;
+	Infile >>noProcesses;
+	//processes creation
+	for (int i = 0; i < noProcesses; i++) 
+	{
+		myProcess = new Process();
+		myProcess->Load(Infile);
+		NewList.enqueue(myProcess);
+	}
+	// processor creation
+	for (int i = 0; i < NF; i++)
 	{
 		myProcessor = new FCFS(this);
-		processorList[ProcessorsCounter] = myProcessor;
-		ProcessorsCounter++;
+		processorList[ProcessorsCounter++] = myProcessor;
+		//ProcessorsCounter++;
 	}
 	for (int i = 0; i < NS; i++)
 	{
@@ -30,16 +56,11 @@ void Scheduler::fileLoading()
 		processorList[ProcessorsCounter] = myProcessor;
 		ProcessorsCounter++;
 	}
-	Infile >> timeSlice;
-	Infile >> RTF >> MaxW >> STL >> forkProb;
-	Infile >> noProcesses;
-	for (int i = 0; i < noProcesses; i++) 
-	{
-		myProcess = new Process;
-		myProcess->Load(Infile);
-		NewList.enqueue(myProcess);
-	}
-	// TO DO input SIGKILL times and IDS
+	//  how to implement this?? 
+	//while (Infile>>sigkillTime>> ID)
+	//{
+	//	//do sth
+	//}
 }
 //move to TRM fn
 //move to BLK fn

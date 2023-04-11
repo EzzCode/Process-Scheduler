@@ -23,20 +23,26 @@ class Scheduler
 		int ProcessorsCounter;//just a counter for the creation
 		Processor* myProcessor;// Processor ptr for process creation
 		Process* myProcess; // process ptr for process creation
-		LinkedQueue NewList;
-		LinkedQueue BlkList;
-		LinkedQueue TrmLsit;
-		Processor** processorList = new Processor * [NF+NS+NR];
+		LinkedQueue<Process> NewList;
+		LinkedQueue<Process> BlkList;
+		LinkedQueue<Process> TrmLsit;
+		Processor** processorList;
+		Processor* SQF;
+		Processor* LQF;
+		int tSQF;
+		int tLQF;
 		enum processorStates
 		{
-			idle
+			idle,
+			busy
 		};
 		enum processStates {
 			NEW,
 			RDY,
 			RUN,
 			BLK,
-			TRM
+			TRM,
+			ORPH
 		};
 public:
 	Scheduler();

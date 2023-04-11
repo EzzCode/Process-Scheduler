@@ -1,14 +1,14 @@
 #ifndef _NODE
 #define _NODE
-#include "../Program Classes/Process.h"
 #pragma once
 #include <iostream>
 using namespace std;
+template < typename T>
 class Node
 {
 private:
-	Process* Item;
-	Node* Next;
+	T* Item;
+	Node<T>* Next;
 public:
 	Node()			// default constructor
 	{
@@ -16,13 +16,13 @@ public:
 		Next = NULL;
 	}
 
-	Node(Process* newItem) //non-default constructor
+	Node(T* newItem) //non-default constructor
 	{
 		Item = newItem;
 		Next = NULL;
 	}
 
-	Node(Process* item, Node* nextNodePtr)
+	Node(T* item, Node<T>* nextNodePtr)
 	{
 		Item = item;
 		Next = nextNodePtr;
@@ -30,26 +30,24 @@ public:
 
 	~Node()
 	{
-		delete Item;
 		Item = NULL;
-		delete Next;
-		Next = NULL;
+		delete Item;
 	}
 
-	Process* GetItem() const
+	T* GetItem() const
 	{
 		return Item;
 	}
-	Node* GetNext()
+	Node<T>* GetNext()
 	{
 		return Next;
 	}
 
-	void SetItem(Process* item)
+	void SetItem(T* item)
 	{
 		Item = item;
 	}
-	void SetNext(Node* next)
+	void SetNext(Node<T>* next)
 	{
 		Next = next;
 	}
