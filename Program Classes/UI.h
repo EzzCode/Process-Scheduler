@@ -11,9 +11,11 @@ private:
 	Processor** prcsrList;
 	LinkedQueue<Process> BlkList;
 	LinkedQueue<Process> TrmList;
+	void PrintScreen();
 public:
 	UI();
-	void updateTerminal(int timestep, Processor** processorList, int processorCount, LinkedQueue<Process>& Blk, LinkedQueue<Process>& Trm, int mode);
+	void set_mode(int val);
+	void updateTerminal(int timestep, Processor** processorList, int processorCount, LinkedQueue<Process>& Blk, LinkedQueue<Process>& Trm);
 	~UI();
 };
 

@@ -3,18 +3,26 @@ UI::UI() {
 	tStep = 0;
 	runCount = 0;
 	prcsrCount = 0;
-	mode = -1;
+	set_mode(-1);
 	isRunning = false;
 	prcsrList = nullptr;
 }
 
-void UI::updateTerminal(int timestep, Processor** processorList, int processorCount, LinkedQueue<Process>& Blk, LinkedQueue<Process>& Trm, int mode) {
+void UI::set_mode(int val) {
+	mode = val;
+}
+
+
+void UI::updateTerminal(int timestep, Processor** processorList, int processorCount, LinkedQueue<Process>& Blk, LinkedQueue<Process>& Trm) {
 	tStep = timestep;
 	prcsrList = processorList;
 	prcsrCount = processorCount;
-	this->mode = mode;
 	BlkList = Blk;
 	TrmList = Trm;
+	PrintScreen();
+}
+
+void UI::PrintScreen() {
 	//Tstep
 	cout << "Current Timestep: " << tStep << endl;
 	//RDY
@@ -38,7 +46,7 @@ void UI::updateTerminal(int timestep, Processor** processorList, int processorCo
 	for (int i = 0; i < prcsrCount; i++) {
 		isRunning = prcsrList[i]->getstate() == 0;
 		if (isRunning) {
-			cout << *prcsrList[i] << "(P" << i+1 << "), ";
+			cout << *prcsrList[i] << "(P" << i + 1 << "), ";
 		}
 	}
 	cout << "\b\b";
@@ -48,7 +56,7 @@ void UI::updateTerminal(int timestep, Processor** processorList, int processorCo
 	cout << TrmList.GetCount() << " TRM: ";
 	TrmList.printInfo();
 	cout << endl;
-	
+
 	cout << "PRESS ANY KEY TO MOVE TO NEXT STEP!" << endl;
 	system("pause > nul");
 }
