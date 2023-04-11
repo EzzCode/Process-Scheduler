@@ -51,6 +51,9 @@
     <ClCompile Include="Program Classes\Scheduler.cpp">
       <Filter>Source Files\Program Classes</Filter>
     </ClCompile>
+    <ClCompile Include="Program Classes\UI.cpp">
+      <Filter>Source Files\Program Classes</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Program Classes\Process.h">
@@ -91,6 +94,15 @@
     </ClInclude>
     <ClInclude Include="DS Implementations\PQueue.h">
       <Filter>Header Files\DS Implementations</Filter>
+    </ClInclude>
+    <ClInclude Include="DS Implementations\PNode.h">
+      <Filter>Header Files\DS Implementations</Filter>
+    </ClInclude>
+    <ClInclude Include="DEFS.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Program Classes\UI.h">
+      <Filter>Header Files\Program Classes</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -9,6 +9,8 @@ class Scheduler;
 
 class Processor
 {
+private:
+	virtual void printRUN(ostream&) = 0;
 protected:
 	Scheduler* pScheduler;
 public:
@@ -16,9 +18,13 @@ public:
 	virtual void ScheduleAlgo() = 0;
 	virtual void moveToRDY(Process* Rptr) = 0;
 	virtual void moveToRUN() = 0;
-	virtual void moveToBLK() = 0;
-	virtual float getpLoad() = 0;
+	virtual int getQueueLength() = 0;
 	virtual float getpUtil() = 0;
 	virtual int getstate() = 0;
-	~Processor() {};
+	virtual void printRDY() = 0;
+	friend ostream& operator<<(ostream& os, Processor& p) {
+		p.printRUN(os);
+		return os;
+	}
+	virtual ~Processor() {};
 };

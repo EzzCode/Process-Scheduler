@@ -36,16 +36,16 @@ Single Node Case:
 #pragma once
 #include "Node.h"
 #include "QueueADT.h"
-#include <vector>
 using namespace std;
 
-
-class LinkedQueue :public QueueADT
+template <typename T>
+class LinkedQueue :public QueueADT<T>
 {
 private:
 
-	Node* backPtr;
-	Node* frontPtr;
+	Node<T>* backPtr;
+	Node<T>* frontPtr;
+	int count;
 public:
 	/////////////////////////////////////////////////////////////////////////////////////////
 
@@ -60,6 +60,13 @@ The constructor of the Queue class.
 	{
 		backPtr = nullptr;
 		frontPtr = nullptr;
+		count = 0;
+	}
+
+	//getters
+	int GetCount()
+	{
+		return count;
 	}
 	/////////////////////////////////////////////////////////////////////////////////////////
 
@@ -84,9 +91,9 @@ The constructor of the Queue class.
 	Output: True if the operation is successful; otherwise false.
 	*/
 
-	bool enqueue(Process* newEntry)
+	bool enqueue(T*& newEntry)
 	{
-		Node* newNodePtr = new Node(newEntry);
+		Node<T>* newNodePtr = new Node<T>(newEntry);
 		// Insert the new node
 		if (isEmpty())	//special case if this is the first node to insert
 			frontPtr = newNodePtr; // The queue is empty
@@ -94,6 +101,7 @@ The constructor of the Queue class.
 			backPtr->SetNext(newNodePtr); // The queue was not empty
 
 		backPtr = newNodePtr; // New node is the last node now
+		count++;
 		return true;
 	}
 
@@ -103,37 +111,24 @@ The constructor of the Queue class.
 Removes the front of this queue. That is, removes the item that was added
 earliest.
 
-Input: None.
 Output: True if the operation is successful; otherwise false.
 */
 
-	bool dequeue(Process*& frntEntry)
+	bool dequeue(T*& frntEntry)
 	{
 		if (isEmpty())
 			return false;
 
-		Node* nodeToDeletePtr = frontPtr;
-		//frntEntry->set_AT(frontPtr->GetItem()->get_AT());
-		//frntEntry->set_PID(frontPtr->GetItem()->get_PID());
-		//frntEntry->set_CT(frontPtr->GetItem()->get_CT());
-		//frntEntry->set_RT(frontPtr->GetItem()->get_RT());
-		//frntEntry->set_TT(frontPtr->GetItem()->get_TT());
-		//frntEntry->set_state(frontPtr->GetItem()->get_state());
-		//frntEntry->set_IO_R(frontPtr->GetItem()->get_IO_R());
-		//frntEntry->set_IO_D(frontPtr->GetItem()->get_IO_D());
-		//frntEntry->set_SIGKILL(frontPtr->GetItem()->get_SIGKILL());
-
-		frntEntry = new Process(*(frontPtr->GetItem()));
-
-
+		Node<T>* nodeToDeletePtr = frontPtr;
+		frntEntry = frontPtr->GetItem();
 		frontPtr = frontPtr->GetNext();
 		// Queue is not empty; remove front
 		if (nodeToDeletePtr == backPtr)	 // Special case: last node in the queue
-			backPtr = NULL;
+			backPtr = nullptr;
 
 		// Free memory reserved for the dequeued node
 		delete nodeToDeletePtr;
-
+		count--;
 		return true;
 
 	}
@@ -147,7 +142,7 @@ Input: None.
 Output: The front of the queue.
 */
 
-	bool peek(Process*& frntEntry) const
+	bool peek(T*& frntEntry) const
 	{
 		if (isEmpty())
 			return false;
@@ -164,15 +159,10 @@ removes all nodes from the queue by dequeuing them
 */
 	~LinkedQueue()
 	{
+		T* temp;
+
 		//Free (Dequeue) all nodes in the queue
-		while (!isEmpty())
-		{
-			Process* ptr;
-			dequeue(ptr);
-			frontPtr = frontPtr->GetNext();
-		}
-		frontPtr = NULL;
-		backPtr = NULL;
+		while (dequeue(temp));
 	}
 
 	/////////////////////////////////////////////////////////////////////////////////////////
@@ -187,7 +177,7 @@ Output: none
 
 	LinkedQueue(const LinkedQueue& LQ)
 	{
-		Node* NodePtr = LQ.frontPtr;
+		Node<T>* NodePtr = LQ.frontPtr;
 		if (!NodePtr) //LQ is empty
 		{
 			frontPtr = backPtr = nullptr;
@@ -195,26 +185,27 @@ Output: none
 		}
 
 		//insert the first node
-		Node* ptr = new Node(NodePtr->GetItem());
+		Node<T>* ptr = new Node<T>(NodePtr->GetItem());
 		frontPtr = backPtr = ptr;
 		NodePtr = NodePtr->GetNext();
 
 		//insert remaining nodes
 		while (NodePtr)
 		{
-			Node* ptr = new Node(NodePtr->GetItem());
+			Node<T>* ptr = new Node<T>(NodePtr->GetItem());
 			backPtr->SetNext(ptr);
 			backPtr = ptr;
 			NodePtr = NodePtr->GetNext();
 		}
 	}
+
+	void printInfo() {
+		Node<T>* ptr = frontPtr;
+		while (ptr) {
+			cout << ptr->GetItem();
+			if (ptr->GetNext()) cout << ", ";
+		}
+	}
 };
-
-
-
-
-
-
-
 
 #endif

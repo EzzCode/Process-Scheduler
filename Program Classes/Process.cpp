@@ -5,12 +5,11 @@ Process::Process(int at, int id, int ct, int STT, int ior, int iod) {
 	set_AT(at);
 	set_CT(ct);
 	set_state(STT);
-	set_IO_R(ior);
-	set_IO_D(iod);
+	set_IO(ior, iod);
 	set_RT(-1);		//-1 indicates that process has never entered CPU
 	set_SIGKILL(false);
 }
-Process::Process() {}//:PID(0), AT(0),RT(0),CT(0),state(0),IO_D(0),IO_R(0),SIGKILL(false) {}
+Process::Process() {}
 //setters
 void Process::set_PID(int id) {
 	PID = id;
@@ -38,11 +37,9 @@ void Process::set_WT() {
 void Process::set_state(int STT) {
 	state = STT;
 }
-void Process::set_IO_R(int ior) {
-	IO_R = ior;
-}
-void Process::set_IO_D(int iod) {
-	IO_D = iod;
+void Process::set_IO(int ior, int iod) {
+	ioData.IO_D = iod;
+	ioData.IO_R = ior;
 }
 void Process::set_SIGKILL(bool signal) {
 	SIGKILL = signal;
@@ -73,11 +70,8 @@ int Process::get_WT() {
 int Process::get_state() {
 	return state;
 }
-int Process::get_IO_R() {
-	return IO_R;
-}
-int Process::get_IO_D() {
-	return IO_D;
+IO Process::get_IO() {
+	return ioData;
 }
 bool Process::get_SIGKILL() {
 	return SIGKILL;
@@ -87,7 +81,7 @@ void Process::Load(ifstream& Infile)
 	Infile >> AT >> PID >> CT >> N_IO;
 	for (int i = 0; i < N_IO; i++) {
 		char c1, c2;
-		Infile >> c1 >> IO_R >> c2 >> IO_D >> c1 >> c2;
+		//Infile >> c1 >> IO_R >> c2 >> IO_D >> c1 >> c2;
 	}
 }
 //Print ID

@@ -1,9 +1,14 @@
 #include "BTree.h"
 BTree::BTree() {
     set_root(nullptr);
+    set_count(-1);
 }
 
-//setters
+//Private setters
+void BTree::set_count(int val) {
+    count_forked = val;
+}
+//Public setters
 void BTree::set_root(BTNode* rt) {
     root = rt;
 }
@@ -11,13 +16,21 @@ void BTree::set_root(BTNode* rt) {
 BTNode* BTree::get_root() {
     return root;
 }
+int BTree::get_count() {
+    return count_forked;
+}
 
 //Public Tree methods
 void BTree::insert(Process* p) {
     insertHelper(root, p);
+    set_count(get_count() + 1);
 }
 bool BTree::remove(int pid, Process*& p) {
-    return removeHelper(root, pid, p);
+    bool removed = removeHelper(root, pid, p);
+    if (removed) {
+        set_count(get_count() - 1);
+    }
+    return removed;
 }
 
 //Assisting recursive functions
@@ -51,6 +64,7 @@ void BTree::removeSubTree(BTNode*& subroot) {
     removeSubTree(subroot->getLch());
     delete subroot;
     subroot = nullptr;
+    set_count(get_count() - 1);
 }
 
 BTree::~BTree() {
