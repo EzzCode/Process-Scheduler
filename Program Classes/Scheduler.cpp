@@ -55,11 +55,22 @@ void Scheduler::fileLoading()
 		processorList[ProcessorsCounter] = myProcessor;
 		ProcessorsCounter++;
 	}
-	//  how to implement this?? 
-	//while (Infile>>sigkillTime>> ID)
-	//{
-	//	//do sth
-	//}
+	//SigKill
+	while (Infile>>sigkillTime>> killID)
+	{
+		sigPtr = new sigKill;
+		sigPtr->tstep = sigkillTime;
+		sigPtr->pID = killID;
+		killQ.enqueue(sigPtr);
+	}
 }
 //move to TRM fn
+void Scheduler::schedToTRM(Process* p) 
+{
+	TrmList.enqueue(p);
+}
 //move to BLK fn
+void Scheduler::schedToBLk(Process* p)
+{
+	BlkList.enqueue(p);
+}

@@ -3,6 +3,7 @@
 #include <fstream>
 #include "../DS Implementations/LinkedQueue.h"
 #include "../DEFS.h"
+#include "../DS Implementations/Node.h"
 using namespace std;
 class Process
 {
@@ -24,9 +25,8 @@ private:
 
 	//Input/Output Request time & Duration
 	int N_IO;
-	IO ioData;
-	LinkedQueue<IO> ioQ;
-
+	IO* ioData;//pointer placeholder for io data
+	LinkedQueue<IO> ioQ;//Q contains all IOs the process will need
 	//Kill Signal
 	bool SIGKILL;
 
