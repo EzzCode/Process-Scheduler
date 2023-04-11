@@ -34,3 +34,13 @@ int SJF::getstate()
 {
 	return state;
 }
+
+void SJF::printRDY() {
+	cout << "[SJF ]" << ": " << "RDY.GetCount()" << " RDY: ";
+	cout << "UNDER DEV";
+}
+
+//Print RUN process
+void SJF::printRUN(ostream&) {
+	cout << "UNDER DEV";
+}

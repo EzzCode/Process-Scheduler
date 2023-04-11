@@ -31,19 +31,8 @@ class Scheduler
 		Processor* LQF;
 		int tSQF;
 		int tLQF;
-		enum processorStates
-		{
-			idle,
-			busy
-		};
-		enum processStates {
-			NEW,
-			RDY,
-			RUN,
-			BLK,
-			TRM,
-			ORPH
-		};
+		//SIGKILL Queue
+		LinkedQueue<sigKill> killQ;
 public:
 	Scheduler();
 	void fileLoading();

@@ -7,6 +7,7 @@ class FCFS :
 private:
 	LinkedList<Process> RDY;
 	Process* RUN;
+  //state var has values: {0,1} which represent states: {BUSY, IDLE}
 	int state;
 	int Qtime;
 	int T_BUSY;
@@ -19,5 +20,7 @@ public:
 	virtual int getQueueLength();
 	virtual float getpUtil();
 	virtual int getstate();
+	virtual void printRDY();
+	virtual void printRUN(ostream& os);
 	~FCFS() {};
 };
