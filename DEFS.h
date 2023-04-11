@@ -1,4 +1,6 @@
 //Definitions for custom types
+#ifndef DEFS_H
+#define DEFS_H
 struct IO {
     int IO_D;
     int IO_R;
@@ -20,3 +22,4 @@ enum processorStates
     BUSY,
     IDLE
 };
+#endif

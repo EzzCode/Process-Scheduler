@@ -6,7 +6,7 @@
 #include "SJF.h"
 #include "../DS Implementations/LinkedQueue.h"
 #include "../DS Implementations/LinkedList.h"
-
+#include "../DEFS.h"
 class Scheduler
 {
 	private:
@@ -25,7 +25,7 @@ class Scheduler
 		Process* myProcess; // process ptr for process creation
 		LinkedQueue<Process> NewList;
 		LinkedQueue<Process> BlkList;
-		LinkedQueue<Process> TrmLsit;
+		LinkedQueue<Process> TrmList;
 		Processor** processorList;
 		Processor* SQF;
 		Processor* LQF;
@@ -33,8 +33,12 @@ class Scheduler
 		int tLQF;
 		//SIGKILL Queue
 		LinkedQueue<sigKill> killQ;
+		sigKill* sigPtr; // placeholder ptr 
+		int sigkillTime , killID;
 public:
 	Scheduler();
 	void fileLoading();
+	void schedToTRM(Process*);
+	void schedToBLk(Process*);
 };
 
