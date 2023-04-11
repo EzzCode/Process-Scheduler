@@ -2,6 +2,10 @@
 
 SJF::SJF(Scheduler* pSch):Processor(pSch)
 {
+	state = 0;
+	Qtime = 0;
+	T_BUSY = 0;
+	T_IDLE = 0;
 }
 
 void SJF::moveToRDY(Process* Rptr)
@@ -12,18 +16,20 @@ void SJF::moveToRUN()
 {
 }
 
-void SJF::moveToBLK()
-{
-}
 
 void SJF::ScheduleAlgo()
 {
 }
 
+int SJF::getQueueLength()
+{
+	return Qtime;
+}
+
 
 float SJF::getpUtil()
 {
-	return (float)BUSY / (BUSY + T_IDLE);
+	return (float)T_BUSY / (T_BUSY + T_IDLE);
 }
 
 int SJF::getstate()
