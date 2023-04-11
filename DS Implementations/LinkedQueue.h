@@ -36,7 +36,6 @@ Single Node Case:
 #pragma once
 #include "Node.h"
 #include "QueueADT.h"
-#include <vector>
 using namespace std;
 
 template <typename T>
@@ -46,6 +45,7 @@ private:
 
 	Node<T>* backPtr;
 	Node<T>* frontPtr;
+	int count;
 public:
 	/////////////////////////////////////////////////////////////////////////////////////////
 
@@ -60,6 +60,7 @@ The constructor of the Queue class.
 	{
 		backPtr = nullptr;
 		frontPtr = nullptr;
+		count = 0;
 	}
 	/////////////////////////////////////////////////////////////////////////////////////////
 
@@ -94,6 +95,7 @@ The constructor of the Queue class.
 			backPtr->SetNext(newNodePtr); // The queue was not empty
 
 		backPtr = newNodePtr; // New node is the last node now
+		count++;
 		return true;
 	}
 
@@ -103,7 +105,6 @@ The constructor of the Queue class.
 Removes the front of this queue. That is, removes the item that was added
 earliest.
 
-Input: None.
 Output: True if the operation is successful; otherwise false.
 */
 
@@ -113,27 +114,15 @@ Output: True if the operation is successful; otherwise false.
 			return false;
 
 		Node<T>* nodeToDeletePtr = frontPtr;
-		//frntEntry->set_AT(frontPtr->GetItem()->get_AT());
-		//frntEntry->set_PID(frontPtr->GetItem()->get_PID());
-		//frntEntry->set_CT(frontPtr->GetItem()->get_CT());
-		//frntEntry->set_RT(frontPtr->GetItem()->get_RT());
-		//frntEntry->set_TT(frontPtr->GetItem()->get_TT());
-		//frntEntry->set_state(frontPtr->GetItem()->get_state());
-		//frntEntry->set_IO_R(frontPtr->GetItem()->get_IO_R());
-		//frntEntry->set_IO_D(frontPtr->GetItem()->get_IO_D());
-		//frntEntry->set_SIGKILL(frontPtr->GetItem()->get_SIGKILL());
-
-		frntEntry = new T(*(frontPtr->GetItem()));
-
-
+		frntEntry = frontPtr->GetItem();
 		frontPtr = frontPtr->GetNext();
 		// Queue is not empty; remove front
 		if (nodeToDeletePtr == backPtr)	 // Special case: last node in the queue
-			backPtr = NULL;
+			backPtr = nullptr;
 
 		// Free memory reserved for the dequeued node
 		delete nodeToDeletePtr;
-
+		count--;
 		return true;
 
 	}
@@ -164,7 +153,7 @@ removes all nodes from the queue by dequeuing them
 */
 	~LinkedQueue()
 	{
-		T temp;
+		T* temp;
 
 		//Free (Dequeue) all nodes in the queue
 		while (dequeue(temp));

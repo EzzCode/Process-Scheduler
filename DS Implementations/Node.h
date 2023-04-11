@@ -30,10 +30,8 @@ public:
 
 	~Node()
 	{
-		delete Item;
 		Item = NULL;
-		delete Next;
-		Next = NULL;
+		delete Item;
 	}
 
 	T* GetItem() const
@@ -49,7 +47,7 @@ public:
 	{
 		Item = item;
 	}
-	void SetNext(T* next)
+	void SetNext(Node<T>* next)
 	{
 		Next = next;
 	}

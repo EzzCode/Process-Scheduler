@@ -1,11 +1,12 @@
 #pragma once
 #include "Processor.h"
+#include "Process.h"
 class Scheduler;
 class RR :
 	public Processor
 {
 private:
-	LinkedQueue RDY;
+	LinkedQueue<Process> RDY;
 	Process* RUN;
 	int state, TRT, BUSY, T_IDLE;
 public:
