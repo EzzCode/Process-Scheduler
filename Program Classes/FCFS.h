@@ -5,7 +5,7 @@ class FCFS :
 	public Processor
 {
 private:
-	LinkedList RDY;
+	LinkedList<Process> RDY;
 	Process* RUN;
 	int state, TRT, BUSY, T_IDLE;
 public:

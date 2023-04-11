@@ -7,6 +7,7 @@ class LinkedList
 private:
 	Node<T>* Head;
 	Node<T>* Tail;
+	int count;
 	void UpdateTail()				//Functional
 	{
 		Node<T>* P = Head;
@@ -23,12 +24,17 @@ public:
 	{
 		Head = NULL;
 		Tail = NULL;
+		count = 0;
 	}
 	~LinkedList()
 	{
 		DeleteAll();
 	}
 
+	int GetCount()
+	{
+		return count;
+	}
 
 	void InsertBeg(T* data)			//Functional
 	{
@@ -37,6 +43,7 @@ public:
 		R->SetNext(Head);
 		Head = R;
 		UpdateTail();
+		count++;
 	}
 
 	void DeleteAll()				//Functional
@@ -44,10 +51,11 @@ public:
 		Node<T>* P = Head;
 		while (Head)
 		{
-			P = Head->getNext();
+			P = Head->GetNext();
 			delete Head;
 			Head = P;
 		}
+		count = 0;
 	}
 
 	void PrintList()			//Functional
@@ -76,6 +84,7 @@ public:
 			Head = P;
 			Tail = P;
 		}
+		count++;
 	}
 
 	bool Find(T* data)			//Functional
@@ -100,6 +109,7 @@ public:
 		{
 			Node<T>* P = Head->GetNext();
 			delete Head;
+			count--;
 			Head = P;
 		}
 	}
@@ -117,6 +127,7 @@ public:
 			delete Tail;
 			Tail = P;
 		}
+		count--;
 	}
 
 	bool DeleteNode(int data)		//Only works for Processes
@@ -142,6 +153,7 @@ public:
 				P = P->GetNext();
 			}
 		}
+		count--;
 		UpdateTail();
 		return false;
 	}
@@ -170,6 +182,7 @@ public:
 				P = P->GetNext();
 			}
 		}
+		count--;
 		UpdateTail();
 		return false;
 	}
@@ -184,6 +197,7 @@ public:
 			{
 				Head = P->GetNext();
 				delete P;
+				count--;
 				b = true;
 			}
 			P = Head;
@@ -193,6 +207,7 @@ public:
 				{
 					Node<Process>* R = P->GetNext()->GetNext();
 					delete P->GetNext();
+					count--;
 					P->SetNext(R);
 					b = true;
 					UpdateTail();
@@ -214,6 +229,7 @@ public:
 			{
 				Head = P->GetNext();
 				delete P;
+				count--;
 				b = true;
 			}
 			P = Head;
@@ -223,6 +239,7 @@ public:
 				{
 					Node<T>* R = P->GetNext()->GetNext();
 					delete P->GetNext();
+					count--;
 					P->SetNext(R);
 					b = true;
 					UpdateTail();
