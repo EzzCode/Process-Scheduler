@@ -30,7 +30,7 @@ public:
 
 	bool isEmpty() const
 	{
-		return (frontPtr == nullptr);
+		return (frontPtr == NULL);
 	}
 
 	bool enqueue(Process*& newEntry)			//cam't enqueue without specifying priority
@@ -97,8 +97,7 @@ public:
 
 	bool dequeue(Process*& frntEntry)
 	{
-		if (isEmpty())
-			return false;
+		if (isEmpty()) return false;
 
 		PNode<Process>* nodeToDeletePtr = frontPtr;
 		frntEntry = frontPtr->GetItem();
@@ -122,6 +121,21 @@ public:
 		frntEntry = frontPtr->GetItem();
 		return true;
 
+	}
+
+	//getters
+	int GetCount()
+	{
+		return count;
+	}
+
+	void printInfo() {
+		PNode<Process>* ptr = frontPtr;
+		while (ptr) {
+			cout << *(ptr->GetItem());
+			ptr = ptr->GetNext();
+			if (ptr) cout << ", ";
+		}
 	}
 
 	~PQueue()

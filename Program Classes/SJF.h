@@ -1,5 +1,4 @@
 #pragma once
-#include "Processor.h"
 
 class Scheduler;
 class SJF :
@@ -15,8 +14,10 @@ private:
 	int T_IDLE;
 public:
 	SJF(Scheduler* pSch);
-	virtual void moveToRDY(Process* Rptr);
-	virtual void moveToRUN(); 
+	virtual void moveToRDY(Process*& Rptr);
+	virtual void moveToRUN();
+	virtual void moveToBLK();
+	virtual void moveToTRM();
 	virtual void ScheduleAlgo();
 	virtual int getQueueLength();
 	virtual float getpUtil();

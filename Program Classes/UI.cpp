@@ -19,6 +19,7 @@ void UI::updateTerminal(int timestep, Processor** processorList, int processorCo
 	prcsrCount = processorCount;
 	BlkList = Blk;
 	TrmList = Trm;
+	runCount = 0;
 	PrintScreen();
 }
 
@@ -28,7 +29,7 @@ void UI::PrintScreen() {
 	//RDY
 	cout << "---------------------     RDY processes   -----------------------" << endl;
 	for (int i = 0; i < prcsrCount; i++) {
-		cout << "processor " << i << " ";
+		cout << "processor " << i + 1 << " ";
 		prcsrList[i]->printRDY();
 		cout << endl;
 
@@ -43,13 +44,18 @@ void UI::PrintScreen() {
 	//RUN
 	cout << "---------------------     RUN processes   -----------------------" << endl;
 	cout << runCount << " RUN: ";
+	bool firstRun = true;
 	for (int i = 0; i < prcsrCount; i++) {
 		isRunning = prcsrList[i]->getstate() == 0;
 		if (isRunning) {
-			cout << *prcsrList[i] << "(P" << i + 1 << "), ";
+			if (!firstRun) {
+				cout << ", ";
+			}
+			cout << (prcsrList[i]) << "(P" << i + 1 << ")";
+			firstRun = false;
 		}
 	}
-	cout << "\b\b";
+	//cout << "\b\b";
 	cout << endl;
 	//TRM
 	cout << "---------------------     TRM processes   -----------------------" << endl;
@@ -59,6 +65,7 @@ void UI::PrintScreen() {
 
 	cout << "PRESS ANY KEY TO MOVE TO NEXT STEP!" << endl;
 	system("pause > nul");
+	system("cls");
 }
 
-UI::~UI(){}
+UI::~UI() {}

@@ -1,3 +1,4 @@
+#include "Scheduler.h"
 #include "RR.h"
 
 RR::RR(Scheduler* pSch):Processor(pSch)
@@ -10,9 +11,30 @@ RR::RR(Scheduler* pSch):Processor(pSch)
 
 void RR::ScheduleAlgo()
 {
+	if (!RUN) return;
+	int choice = decide();
+	//0 -> go BLK, 1 -> go RDY, 2 -> go TRM, 3 -> stay RUN
+	switch (choice)
+	{
+	case 0:
+		moveToBLK();
+		state = 1;
+		break;
+	case 1:
+		Qtime -= RUN->get_CT();
+		moveToRDY(RUN);
+		state = 1;
+		break;
+	case 2:
+		moveToTRM();
+		state = 1;
+		break;
+	default:
+		break;
+	}
 }
 
-void RR::moveToRDY(Process* Rptr)
+void RR::moveToRDY(Process*& Rptr)
 {
 	Qtime += Rptr->get_CT();
 	RDY.enqueue(Rptr);
@@ -20,8 +42,22 @@ void RR::moveToRDY(Process* Rptr)
 
 void RR::moveToRUN()
 {
-	RDY.dequeue(RUN);
-	Qtime -= RUN->get_CT();
+	//If idle
+	if (state == 1) {
+		bool check = RDY.dequeue(RUN);
+		if (check) {
+			//Qtime -= RUN->get_CT();
+			state = 0;
+		}
+	}
+}
+
+void RR::moveToBLK() {
+	pScheduler->schedToBLk(RUN);
+}
+
+void RR::moveToTRM() {
+	pScheduler->schedToTRM(RUN);
 }
 
 int RR::getQueueLength()
@@ -47,5 +83,5 @@ void RR::printRDY() {
 
 //Print RUN process
 void RR::printRUN(ostream& os) {
-	os << this->RUN;
+	os << *(RUN);
 }
