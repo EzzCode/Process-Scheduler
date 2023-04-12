@@ -264,6 +264,7 @@ public:
 			delete R;
 			R = NULL;
 			UpdateTail();
+			count--;
 			return P1;
 		}
 		return NULL;
@@ -272,8 +273,9 @@ public:
 	void printInfo() {
 		PNode<T>* ptr = Head;
 		while (ptr) {
-			cout << ptr->GetItem();
-			if (ptr->GetNext()) cout << ", ";
+			cout << *(ptr->GetItem());
+			ptr = ptr->GetNext();
+			if (ptr) cout << ", ";
 		}
 	}
 };

@@ -1,3 +1,4 @@
+#include "Scheduler.h"
 #include "FCFS.h"
 
 FCFS::FCFS(Scheduler* pSch):Processor(pSch)
@@ -8,7 +9,7 @@ FCFS::FCFS(Scheduler* pSch):Processor(pSch)
 	T_IDLE = 0;
 }
 
-void FCFS::moveToRDY(Process* Rptr)
+void FCFS::moveToRDY(Process*& Rptr)
 {
 	Qtime += Rptr->get_CT();
 	RDY.InsertEnd(Rptr);
@@ -16,13 +17,47 @@ void FCFS::moveToRDY(Process* Rptr)
 
 void FCFS::moveToRUN()
 {
-	RUN=RDY.GetHeadData();
-	Qtime -= RUN->get_CT();
+	//If idle
+	if (state == 1) {
+		RUN = RDY.GetHeadData();
+		if (RUN) {
+			//Qtime -= RUN->get_CT();
+			state = 0;
+		}
+	}
 }
 
+void FCFS::moveToBLK() {
+	pScheduler->schedToBLk(RUN);
+}
+
+void FCFS::moveToTRM() {
+	pScheduler->schedToTRM(RUN);
+}
 
 void FCFS::ScheduleAlgo()
 {
+	if (!RUN) return;
+	int choice = decide();
+	//0 -> go BLK, 1 -> go RDY, 2 -> go TRM, 3 -> stay RUN
+	switch (choice)
+	{
+	case 0:
+		moveToBLK();
+		state = 1;
+		break;
+	case 1:
+		Qtime -= RUN->get_CT();
+		moveToRDY(RUN);
+		state = 1;
+		break;
+	case 2:
+		moveToTRM();
+		state = 1;
+		break;
+	default:
+		break;
+	}
 }
 
 int FCFS::getQueueLength()
@@ -48,5 +83,11 @@ void FCFS::printRDY() {
 
 //Print RUN process
 void FCFS::printRUN(ostream& os) {
-	os << this->RUN;
+	os << *(RUN);
+}
+
+//Random RDY Kill
+void FCFS::RDYKill() {
+	Process* p;
+	int randNum = RNG();
 }
