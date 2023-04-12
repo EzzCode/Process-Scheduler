@@ -5,7 +5,7 @@
 using namespace std;
 Scheduler::Scheduler() 
 {
-	timeCounter = 0;
+	timeStep = 0;
 	NF = 0;
 	NS = 0;
 	NR = 0;
@@ -64,6 +64,12 @@ void Scheduler::fileLoading()
 		killQ.enqueue(sigPtr);
 	}
 }
+
+void Scheduler::initializeUI(int val) {
+	mode = val;
+	ui.set_mode(mode);
+}
+
 //move to TRM fn
 void Scheduler::schedToTRM(Process* p) 
 {
@@ -73,4 +79,9 @@ void Scheduler::schedToTRM(Process* p)
 void Scheduler::schedToBLk(Process* p)
 {
 	BlkList.enqueue(p);
+}
+
+
+void Scheduler::printTerminal() {
+	ui.updateTerminal(timeStep, processorList, ProcessorsCounter, BlkList, TrmList);
 }
