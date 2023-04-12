@@ -1,5 +1,12 @@
 #pragma once
-#include "Scheduler.h"
+#include "Process.h"
+#include "Processor.h"
+#include "FCFS.h"
+#include "RR.h"
+#include "SJF.h"
+#include "../DS Implementations/LinkedQueue.h"
+#include "../DS Implementations/LinkedList.h"
+#include "../DEFS.h"
 class UI
 {
 private:
@@ -11,9 +18,11 @@ private:
 	Processor** prcsrList;
 	LinkedQueue<Process> BlkList;
 	LinkedQueue<Process> TrmList;
+	void PrintScreen();
 public:
 	UI();
-	void updateTerminal(int timestep, Processor** processorList, int processorCount, LinkedQueue<Process>& Blk, LinkedQueue<Process>& Trm, int mode);
+	void set_mode(int val);
+	void updateTerminal(int timestep, Processor** processorList, int processorCount, LinkedQueue<Process>& Blk, LinkedQueue<Process>& Trm);
 	~UI();
 };
 

@@ -1,3 +1,3 @@
-# Process Schedular
+# Process Scheduler
 ## features :
 **- I <3 c++**

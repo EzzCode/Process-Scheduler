@@ -57,6 +57,7 @@ bool BTree::removeHelper(BTNode* subroot, int pid, Process*& p) {
 }
 void BTree::markOrphan(BTNode*& subroot) {
     if (!subroot) return;
+    markOrphan(subroot->getLch());
     subroot->getPrcs()->set_state(5);
 }
 void BTree::removeSubTree(BTNode*& subroot) {
