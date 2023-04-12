@@ -17,6 +17,7 @@ Process::Process(int at, int id, int ct, int STT, int ior, int iod) {
 Process::Process() {
 	set_RT(-1);		//-1 indicates that process has never entered CPU
 	set_SIGKILL(false);
+	ioData = new IO;
 	//Fork Tree
 	lch = nullptr;
 	rch = nullptr;
@@ -50,7 +51,6 @@ void Process::set_state(int STT) {
 	state = STT;
 }
 void Process::set_IO(int ior, int iod) {
-	ioData = new IO;
 	ioData->IO_D = iod;
 	ioData->IO_R = ior;
 }
@@ -94,7 +94,6 @@ void Process::Load(ifstream& Infile)
 	Infile >> AT >> PID >> CT >> N_IO;
 	for (int i = 0; i < N_IO; i++) {
 		char c1, c2;
-		ioData = new IO;
 		Infile >> c1 >> ioData->IO_R >> c2 >> ioData->IO_D >> c1 >> c2;
 		ioQ.enqueue(ioData);
 	}
