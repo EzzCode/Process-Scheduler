@@ -5,13 +5,22 @@ Process::Process(int at, int id, int ct, int STT, int ior, int iod) {
 	set_AT(at);
 	set_CT(ct);
 	set_state(STT);
+	
 	set_IO(ior, iod);
 	set_RT(-1);		//-1 indicates that process has never entered CPU
 	set_SIGKILL(false);
+	//Fork Tree
+	lch = nullptr;
+	rch = nullptr;
+	set_count(0);
 }
 Process::Process() {
 	set_RT(-1);		//-1 indicates that process has never entered CPU
 	set_SIGKILL(false);
+	//Fork Tree
+	lch = nullptr;
+	rch = nullptr;
+	set_count(0);
 }
 //setters
 void Process::set_PID(int id) {
@@ -41,6 +50,7 @@ void Process::set_state(int STT) {
 	state = STT;
 }
 void Process::set_IO(int ior, int iod) {
+	ioData = new IO;
 	ioData->IO_D = iod;
 	ioData->IO_R = ior;
 }
@@ -93,5 +103,64 @@ void Process::Load(ifstream& Infile)
 ostream& operator<<(ostream& os, Process& p) {
 	return os << p.get_PID();
 }
+
+//Fork Tree Methods
+	//Tree setters
+
+void Process::set_count(int val) {
+	count_forked = val;
+}
+	//Tree getters
+Process*& Process::get_lch() {
+	return lch;
+}
+
+Process*& Process::get_rch() {
+	return rch;
+}
+
+int Process::get_count() {
+	return count_forked;
+}
+
+//Public Tree methods
+void Process::insertCh(Process*& p) {
+	insertChHelper(get_lch(), p);
+	set_count(get_count() + 1);
+}
+bool Process::remove(int pid) {
+	bool removed = removeHelper(this, pid);
+	if (removed) {
+		set_count(get_count() - 1);
+	}
+	return removed;
+}
+
+//Assisting recursive functions
+void Process::insertChHelper(Process*& subroot, Process* p) {
+	if (!subroot || subroot->get_state() == 4) {
+		subroot = p;
+		return;
+	}
+	//Currently a process can only fork once
+	insertChHelper(subroot->get_lch(), p);
+}
+bool Process::removeHelper(Process* subroot, int pid) {
+	if (!subroot) return false;
+	int id = subroot->get_PID();
+	if (id == pid) {
+		subroot->set_state(4);
+		markOrphan(subroot->get_lch());
+		return true;
+	}
+	//Currently a process can only fork once
+	return removeHelper(subroot->get_lch(), pid);
+}
+void Process::markOrphan(Process*& subroot) {
+	if (!subroot) return;
+	markOrphan(subroot->get_lch());
+	subroot->set_state(5);
+}
+
 
 Process::~Process() {}

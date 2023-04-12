@@ -3,6 +3,7 @@
 using namespace std;
 
 int main() {
+	//UI mode
 	int mode;
 	cout << "Please Enter operation mode {0, 1, 2}: ";
 	cin >> mode;
@@ -10,7 +11,8 @@ int main() {
 		cout << "Error! Enter a valid operation mode: ";
 		cin >> mode;
 	}
+
+	//Simulate
 	Scheduler s;
 	s.fileLoading();
-	
 }
