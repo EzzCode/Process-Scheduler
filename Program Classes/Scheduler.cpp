@@ -161,3 +161,12 @@ void Scheduler::schedToBLk(Process*& p)
 void Scheduler::printTerminal() {
 	ui.updateTerminal(timeStep, processorList, ProcessorsCounter, BlkList, TrmList);
 }
+
+Scheduler::~Scheduler() 
+{
+	for (int i = 0; i < NF + NS + NR; i++) {
+		delete processorList[i];
+	}
+	// Free memory for processorList
+	delete[] processorList;
+}
