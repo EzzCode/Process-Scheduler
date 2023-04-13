@@ -5,7 +5,7 @@ Process::Process(int at, int id, int ct, int STT, int ior, int iod) {
 	set_AT(at);
 	set_CT(ct);
 	set_state(STT);
-	
+	ioData = new IO;
 	set_IO(ior, iod);
 	set_RT(-1);		//-1 indicates that process has never entered CPU
 	set_SIGKILL(false);
@@ -83,9 +83,9 @@ int Process::get_WT() {
 int Process::get_state() {
 	return state;
 }
-/*IO Process::get_IO() {
-	return ioData;
-}*/ 
+bool Process::get_IO(IO*& io) {
+	return ioQ.dequeue(io);
+}
 bool Process::get_SIGKILL() {
 	return SIGKILL;
 }
@@ -96,6 +96,9 @@ void Process::Load(ifstream& Infile)
 		char c1, c2;
 		Infile >> c1 >> ioData->IO_R >> c2 >> ioData->IO_D >> c1 >> c2;
 		ioQ.enqueue(ioData);
+		if (i != N_IO - 1) {
+			ioData = new IO;
+		}
 	}
 }
 //Print ID

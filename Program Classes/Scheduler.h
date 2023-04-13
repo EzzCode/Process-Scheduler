@@ -1,4 +1,7 @@
 #pragma once
+#include <iostream>
+#include <cstdlib>
+#include <ctime>
 #include "Process.h"
 #include "Processor.h"
 #include "FCFS.h"
@@ -20,9 +23,12 @@ class Scheduler
 		int MaxW;
 		int STL;
 		int forkProb;
-		int noProcesses; // number of processes
-		int ProcessorsCounter;//just a counter for the creation
-		int mode;	//set print mode
+		int noProcesses;		//number of processes
+		int ProcessorsCounter;	//just a counter for the creation
+		int mode;				//set print mode
+
+		//To keep track of the upcoming processor
+		int processorIdx;
 
 		Processor* myProcessor;// Processor ptr for process creation
 		Process* myProcess; // process ptr for process creation
@@ -43,12 +49,25 @@ class Scheduler
 		
 		//UI class
 		UI ui;
+
+		//Private Simulation methods
+		void initializeUI(int modeVal);
+		void fileLoading();
+		void NEWtoRDY();
+		void RDYtoRUN();
+		void RUNAlgo();
+		void BLKAlgo();
+		void randKill();
+		void printTerminal();
+		void properTerminate();
+
 public:
-	Scheduler();
-	void fileLoading();
-	void initializeUI(int val);
-	void schedToTRM(Process*);
-	void schedToBLk(Process*);
-	void printTerminal();
+	Scheduler(int modeVal);
+	void simulate();	//Simple Simulator Fn.
+	void schedToTRM(Process*& p);
+	void schedToBLk(Process*& p);
+
+	//RNG
+	int RNG();
 };
 

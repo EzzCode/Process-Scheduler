@@ -130,12 +130,12 @@ public:
 		}
 	}
 
-	bool DeleteNode(int data)		//Only works for Processes
+	bool DeleteNode(int pID)		//Only works for Processes
 	{
 		PNode<Process>* P = Head;
 		if (P != NULL)
 		{
-			if (P->GetItem()->get_PID() == data)
+			if (P->GetItem()->get_PID() == pID)
 			{
 				Head = P->GetNext();
 				delete P;
@@ -144,7 +144,7 @@ public:
 			}
 			while (P->GetNext() != NULL)
 			{
-				if (P->GetNext()->GetItem()->get_PID() == data)
+				if (P->GetNext()->GetItem()->get_PID() == pID)
 				{
 					PNode<Process>* R = P->GetNext()->GetNext();
 					delete P->GetNext();
@@ -190,13 +190,13 @@ public:
 		return false;
 	}
 
-	bool DeleteNodes(int data)			//Only works for Processes
+	bool DeleteNodes(int pID)			//Only works for Processes
 	{
 		bool b = false;
 		PNode<Process>* P = Head;
 		if (P != NULL)
 		{
-			if (P->GetItem()->get_PID() == data)
+			if (P->GetItem()->get_PID() == pID)
 			{
 				Head = P->GetNext();
 				delete P;
@@ -206,7 +206,7 @@ public:
 			P = Head;
 			while (P->GetNext() != NULL)
 			{
-				if (P->GetNext()->GetItem()->get_PID() == data)
+				if (P->GetNext()->GetItem()->get_PID() == pID)
 				{
 					PNode<Process>* R = P->GetNext()->GetNext();
 					delete P->GetNext();
@@ -264,6 +264,7 @@ public:
 			delete R;
 			R = NULL;
 			UpdateTail();
+			count--;
 			return P1;
 		}
 		return NULL;
@@ -272,8 +273,9 @@ public:
 	void printInfo() {
 		PNode<T>* ptr = Head;
 		while (ptr) {
-			cout << ptr->GetItem();
-			if (ptr->GetNext()) cout << ", ";
+			cout << *(ptr->GetItem());
+			ptr = ptr->GetNext();
+			if (ptr) cout << ", ";
 		}
 	}
 };
