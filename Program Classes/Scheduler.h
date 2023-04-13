@@ -66,7 +66,7 @@ public:
 	void simulate();	//Simple Simulator Fn.
 	void schedToTRM(Process*& p);
 	void schedToBLk(Process*& p);
-
+	~Scheduler();
 	//RNG
 	int RNG();
 };

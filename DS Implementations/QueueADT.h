@@ -18,5 +18,7 @@ public:
 	// Returns the front item through the parameter without removing it
 	// Returns whether the item was copied or not
 	virtual bool peek(T*& frntEntry) const = 0;
+	//virtual destructor 
+	virtual ~QueueADT() {}
 };
 #endif
