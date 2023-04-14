@@ -1,6 +1,5 @@
 #pragma once
 #include "Processor.h"
-#include "Process.h"
 class Scheduler;
 class RR :
 	public Processor
@@ -16,8 +15,10 @@ private:
 public:
 	RR(Scheduler* pSch);
 	virtual void ScheduleAlgo();
-	virtual void moveToRDY(Process* Rptr);
+	virtual void moveToRDY(Process*& Rptr);
 	virtual void moveToRUN();
+	virtual void moveToBLK();
+	virtual void moveToTRM();
 	virtual int getQueueLength();
 	virtual float getpUtil();
 	virtual int getstate();

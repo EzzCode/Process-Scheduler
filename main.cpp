@@ -3,16 +3,24 @@
 using namespace std;
 
 int main() {
-	//UI mode
+	//ui mode
 	int mode;
-	cout << "Please Enter operation mode {0, 1, 2}: ";
+	cout << "please enter operation mode {0, 1, 2}: ";
 	cin >> mode;
 	while (mode > 2 || mode < 0) {
-		cout << "Error! Enter a valid operation mode: ";
+		cout << "error! enter a valid operation mode: ";
 		cin >> mode;
 	}
+	system("cls");
 
-	//Simulate
-	Scheduler s;
-	s.fileLoading();
+	//simulate
+	Scheduler s = Scheduler(mode);
+	s.simulate();
+
+	Process* p1 = new Process(1, 2, 3, 4, 5, 6);
+	Process* p2;
+	LinkedQueue<Process> prcsQ;
+	prcsQ.enqueue(p1);
+	bool res = prcsQ.dequeue(p2);
+	cout << *p1;
 }

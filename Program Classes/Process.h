@@ -70,7 +70,7 @@ public:
 	int get_TRT();
 	int get_WT();
 	int get_state();
-	IO get_IO();
+	bool get_IO(IO*& io);
 	bool get_SIGKILL();
 	void Load(ifstream& Infile); // load its data mem from input file
 

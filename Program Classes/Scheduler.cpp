@@ -3,9 +3,9 @@
 #include <fstream>
 
 using namespace std;
-Scheduler::Scheduler() 
+Scheduler::Scheduler(int modeVal)
 {
-	timeStep = 0;
+	timeStep = 1;
 	NF = 0;
 	NS = 0;
 	NR = 0;
@@ -16,22 +16,50 @@ Scheduler::Scheduler()
 	forkProb = 0;
 	noProcesses = 0;
 	ProcessorsCounter = 0;
+	mode = modeVal;
+
+	processorIdx = 0;
+
 	processorList = nullptr;
 	SQF = nullptr;
 	LQF = nullptr;
 	tSQF = -1;
 	tLQF = -1;
+
+	//RNG SEED
+	srand(time(nullptr));
+
+	initializeUI(modeVal);
 }
+
+void Scheduler::initializeUI(int modeVal) {
+	ui.set_mode(mode);
+}
+
+//Simple Simulator Fn.
+void Scheduler::simulate() {
+	fileLoading();
+	while (TrmList.GetCount() != noProcesses) {
+		NEWtoRDY();
+		RDYtoRUN();
+		RUNAlgo();
+		BLKAlgo();
+		//randKill();
+		printTerminal();
+		timeStep++;
+	}
+}
+
 void Scheduler::fileLoading()
 {
 	ifstream Infile("input.txt");
-	Infile >>NF >>NS >>NR;
+	Infile >> NF >> NS >> NR;
 	processorList = new Processor * [NF + NS + NR];// alocate processor pointers 
-	Infile >>timeSlice;
-	Infile >>RTF >>MaxW >>STL >>forkProb;
-	Infile >>noProcesses;
+	Infile >> timeSlice;
+	Infile >> RTF >> MaxW >> STL >> forkProb;
+	Infile >> noProcesses;
 	//processes creation
-	for (int i = 0; i < noProcesses; i++) 
+	for (int i = 0; i < noProcesses; i++)
 	{
 		myProcess = new Process();
 		myProcess->Load(Infile);
@@ -56,7 +84,7 @@ void Scheduler::fileLoading()
 		ProcessorsCounter++;
 	}
 	//SigKill
-	while (Infile>>sigkillTime>> killID)
+	while (Infile >> sigkillTime >> killID)
 	{
 		sigPtr = new sigKill;
 		sigPtr->tstep = sigkillTime;
@@ -65,23 +93,80 @@ void Scheduler::fileLoading()
 	}
 }
 
-void Scheduler::initializeUI(int val) {
-	mode = val;
-	ui.set_mode(mode);
+//Step 1
+void Scheduler::NEWtoRDY() {
+	Process* p;
+	bool canPeek = NewList.peek(p);
+	while (canPeek && p->get_AT() == timeStep) {
+		NewList.dequeue(p);
+		processorList[processorIdx]->moveToRDY(p);
+		processorIdx++;
+		processorIdx = processorIdx % ProcessorsCounter;
+		p = nullptr;
+		//Recheck
+		canPeek = NewList.peek(p);
+	}
+}
+
+//Step 2
+void Scheduler::RDYtoRUN() {
+	for (int i = 0; i < ProcessorsCounter; i++) {
+		processorList[i]->moveToRUN();
+	}
+}
+
+//Step 3
+void Scheduler::RUNAlgo() {
+	for (int i = 0; i < ProcessorsCounter; i++) {
+		processorList[i]->ScheduleAlgo();
+	}
+}
+
+//Step 4
+void Scheduler::BLKAlgo() {
+	Process* p;
+	bool canPeek = BlkList.peek(p);
+	if (RNG() < 10 && canPeek) {
+		BlkList.dequeue(p);
+		processorList[processorIdx]->moveToRDY(p);
+		processorIdx++;
+		processorIdx = processorIdx % ProcessorsCounter;
+		p = nullptr;
+	}
+}
+
+//Step 5
+void Scheduler::randKill() {
+	for (int i = 0; i < ProcessorsCounter; i++) {
+		processorList[i % NF]->ScheduleAlgo();
+	}
+}
+
+int Scheduler::RNG() {
+	return (rand() % 100 + 1);
 }
 
 //move to TRM fn
-void Scheduler::schedToTRM(Process* p) 
+void Scheduler::schedToTRM(Process*& p)
 {
 	TrmList.enqueue(p);
 }
 //move to BLK fn
-void Scheduler::schedToBLk(Process* p)
+void Scheduler::schedToBLk(Process*& p)
 {
 	BlkList.enqueue(p);
 }
 
-
+//Print Terminal
 void Scheduler::printTerminal() {
 	ui.updateTerminal(timeStep, processorList, ProcessorsCounter, BlkList, TrmList);
+}
+
+Scheduler::~Scheduler() 
+{
+	for (int i = 0; i < NF + NS + NR; i++) {
+		delete processorList[i];
+	}
+	// Free memory for processorList
+	delete[] processorList;
 }
