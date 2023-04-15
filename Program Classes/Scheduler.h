@@ -25,15 +25,17 @@ class Scheduler
 		int forkProb;
 		int noProcesses;				//number of processes
 		int ProcessorsCounter;			//just a counter for the creation
+		int mode;						//set print mode
+		
+		//statistics
 		int KillCount;
 		int ForkCount;
+		int STLCount;
 		int RTF_migCount;
 		int MaxW_migCount;
-		int STLCount;
 		float AvgWT;
 		float AvgRT;
 		float AvgTRT;
-		int mode;						//set print mode
 
 		//To keep track of the upcoming processor
 		int processorIdx;
