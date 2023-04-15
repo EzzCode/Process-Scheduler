@@ -17,8 +17,8 @@ void UI::updateTerminal(int timestep, Processor** processorList, int processorCo
 	tStep = timestep;
 	prcsrList = processorList;
 	prcsrCount = processorCount;
-	BlkList = Blk;
-	TrmList = Trm;
+	BlkList = LinkedQueue<Process>(Blk);
+	TrmList = LinkedQueue<Process>(Trm);
 	runCount = 0;
 	PrintScreen();
 }
@@ -55,7 +55,6 @@ void UI::PrintScreen() {
 			firstRun = false;
 		}
 	}
-	//cout << "\b\b";
 	cout << endl;
 	//TRM
 	cout << "---------------------     TRM processes   -----------------------" << endl;

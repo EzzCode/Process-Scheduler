@@ -33,12 +33,12 @@ public:
 		return (frontPtr == NULL);
 	}
 
-	bool enqueue(Process*& newEntry)			//cam't enqueue without specifying priority
+	bool enqueue(Process* newEntry)			//cam't enqueue without specifying priority
 	{
 		return false;
 	}
 
-	bool enqueue(Process*& newEntry,int Pri)
+	bool enqueue(Process* newEntry, int Pri)
 	{
 		PNode<Process>* newNodePtr = new PNode<Process>(newEntry);
 		newNodePtr->SetPriority(Pri);

@@ -97,6 +97,7 @@ void Process::Load(ifstream& Infile)
 		Infile >> c1 >> ioData->IO_R >> c2 >> ioData->IO_D >> c1 >> c2;
 		ioQ.enqueue(ioData);
 		if (i != N_IO - 1) {
+			//delete prev ioData?
 			ioData = new IO;
 		}
 	}
@@ -113,12 +114,14 @@ void Process::set_count(int val) {
 	count_forked = val;
 }
 	//Tree getters
-Process*& Process::get_lch() {
-	return lch;
+bool Process::get_lch(Process*& p) {
+	p = lch;
+	return lch != nullptr;
 }
 
-Process*& Process::get_rch() {
-	return rch;
+bool Process::get_rch(Process*& p) {
+	p = rch;
+	return rch != nullptr;
 }
 
 int Process::get_count() {
@@ -126,8 +129,8 @@ int Process::get_count() {
 }
 
 //Public Tree methods
-void Process::insertCh(Process*& p) {
-	insertChHelper(get_lch(), p);
+void Process::insertCh(Process* p) {
+	insertChHelper(lch, p);
 	set_count(get_count() + 1);
 }
 bool Process::remove(int pid) {
@@ -145,24 +148,59 @@ void Process::insertChHelper(Process*& subroot, Process* p) {
 		return;
 	}
 	//Currently a process can only fork once
-	insertChHelper(subroot->get_lch(), p);
+	insertChHelper(subroot->lch, p);
 }
 bool Process::removeHelper(Process* subroot, int pid) {
 	if (!subroot) return false;
 	int id = subroot->get_PID();
 	if (id == pid) {
 		subroot->set_state(4);
-		markOrphan(subroot->get_lch());
+		markOrphan(subroot->lch);
 		return true;
 	}
 	//Currently a process can only fork once
-	return removeHelper(subroot->get_lch(), pid);
+	return removeHelper(subroot->lch, pid);
 }
-void Process::markOrphan(Process*& subroot) {
+void Process::markOrphan(Process* subroot) {
 	if (!subroot) return;
-	markOrphan(subroot->get_lch());
+	markOrphan(subroot->lch);
 	subroot->set_state(5);
 }
 
+void Process::cpyTree(const Process& p)
+{
+	Process* temp = p.lch;
+	while (temp) {
+		insertChHelper(lch, temp);
+		temp = temp->lch;
+	}
+}
 
-Process::~Process() {}
+//ctor
+Process::Process(const Process& other) {
+	//cpy ID
+	PID = other.PID;
+	//cpy times
+	AT = other.AT;
+	RT = other.RT;
+	CT = other.CT;
+	TT = other.TT;
+	TRT = other.TRT;
+	WT = other.WT;
+	//cpy process state
+	state = other.state;
+	//cpy IO data
+	N_IO = other.N_IO;
+	ioData = new IO(*other.ioData);
+	ioQ = LinkedQueue<IO>(other.ioQ);
+	//cpy kill signal
+	SIGKILL = other.SIGKILL;
+	//cpy Fork Tree
+	count_forked = other.count_forked;
+	cpyTree(other);
+}
+
+
+Process::~Process() {
+	//delete ioData?
+}

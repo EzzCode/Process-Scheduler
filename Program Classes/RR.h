@@ -15,7 +15,7 @@ private:
 public:
 	RR(Scheduler* pSch);
 	virtual void ScheduleAlgo();
-	virtual void moveToRDY(Process*& Rptr);
+	virtual void moveToRDY(Process* Rptr);
 	virtual void moveToRUN();
 	virtual void moveToBLK();
 	virtual void moveToTRM();

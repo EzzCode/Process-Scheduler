@@ -9,7 +9,7 @@ SJF::SJF(Scheduler* pSch):Processor(pSch)
 	T_IDLE = 0;
 }
 
-void SJF::moveToRDY(Process*& Rptr)
+void SJF::moveToRDY(Process* Rptr)
 {
 	Qtime += Rptr->get_CT();
 	int priority = Rptr->get_CT();

@@ -23,15 +23,15 @@ class Scheduler
 		int MaxW;
 		int STL;
 		int forkProb;
-		int noProcesses;		//number of processes
-		int ProcessorsCounter;	//just a counter for the creation
-		int mode;				//set print mode
+		int noProcesses;				//number of processes
+		int ProcessorsCounter;			//just a counter for the creation
+		int mode;						//set print mode
 
 		//To keep track of the upcoming processor
 		int processorIdx;
 
-		Processor* myProcessor;// Processor ptr for process creation
-		Process* myProcess; // process ptr for process creation
+		Processor* myProcessor;			// Processor ptr for processor creation
+		Process* myProcess;				// process ptr for process creation
 		LinkedQueue<Process> NewList;
 		LinkedQueue<Process> BlkList;
 		LinkedQueue<Process> TrmList;
@@ -44,7 +44,7 @@ class Scheduler
 
 		//SIGKILL Queue
 		LinkedQueue<sigKill> killQ;
-		sigKill* sigPtr; // placeholder ptr 
+		sigKill* sigPtr;				// placeholder ptr 
 		int sigkillTime , killID;
 		
 		//UI class
@@ -59,14 +59,16 @@ class Scheduler
 		void BLKAlgo();
 		void randKill();
 		void printTerminal();
+		
 		void properTerminate();
 
 public:
 	Scheduler(int modeVal);
-	void simulate();	//Simple Simulator Fn.
-	void schedToTRM(Process*& p);
-	void schedToBLk(Process*& p);
+	void simulate();					//Simple Simulator Fn.
+	void schedToTRM(Process* p);
+	void schedToBLk(Process* p);
 	~Scheduler();
+
 	//RNG
 	int RNG();
 };
