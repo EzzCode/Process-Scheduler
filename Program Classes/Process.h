@@ -25,8 +25,8 @@ private:
 
 	//Input/Output Request time & Duration
 	int N_IO;
-	IO* ioData;//pointer placeholder for io data
-	LinkedQueue<IO> ioQ;//Q contains all IOs the process will need
+	IO* ioData;				//pointer placeholder for io data
+	LinkedQueue<IO> ioQ;	//Q contains all IOs the process will need
 
 	//Kill Signal
 	bool SIGKILL;
@@ -46,7 +46,9 @@ private:
 	//Assisting recursive functions
 	void insertChHelper(Process*& subroot, Process* p);
 	bool removeHelper(Process* subroot, int pid);
-	void markOrphan(Process*& subroot);
+	void markOrphan(Process* subroot);
+	void cpyTree(const Process& p);
+
 
 public:
 	Process(int at, int id, int ct, int STT, int ior, int iod); //Other data members are either calculate or recieved after creation
@@ -79,13 +81,18 @@ public:
 
 	//Fork Tree Methods
 		//Tree getters
-	Process*& get_lch();
-	Process*& get_rch();
+	bool get_lch(Process*& p);
+	bool get_rch(Process*& p);
 	int get_count();
 
 		//Fork Tree operations
-	void insertCh(Process*& p);
+	void insertCh(Process* p);
 	bool remove(int pid);
+
+	//cpy ctor
+	Process(const Process& other);
+
+	//Assignment op. overload???????
 
 	~Process();
 };

@@ -9,7 +9,7 @@ FCFS::FCFS(Scheduler* pSch):Processor(pSch)
 	T_IDLE = 0;
 }
 
-void FCFS::moveToRDY(Process*& Rptr)
+void FCFS::moveToRDY(Process* Rptr)
 {
 	Qtime += Rptr->get_CT();
 	RDY.InsertEnd(Rptr);
@@ -90,4 +90,10 @@ void FCFS::printRUN(ostream& os) {
 void FCFS::RDYKill() {
 	Process* p;
 	int randNum = RNG();
+	bool canPeek = RDY.GetCount() > 0;
+	if (canPeek) {
+		for (int i = 0; i < RDY.GetCount() % randNum; i++) {
+			//code
+		}
+	}
 }

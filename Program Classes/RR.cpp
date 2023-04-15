@@ -34,7 +34,7 @@ void RR::ScheduleAlgo()
 	}
 }
 
-void RR::moveToRDY(Process*& Rptr)
+void RR::moveToRDY(Process* Rptr)
 {
 	Qtime += Rptr->get_CT();
 	RDY.enqueue(Rptr);

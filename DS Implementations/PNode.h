@@ -20,16 +20,31 @@ public:
 
 	PNode(T* newItem) //non-default constructor
 	{
+		Pri = 0;
 		Item = newItem;
 		Next = NULL;
 	}
 
 	~PNode()
 	{
-		Item = NULL;
 		delete Item;
-		Next = NULL;
-		delete Next;
+		Item = NULL;
+	}
+
+	//Copy constructor
+	PNode(const PNode& other) {
+		Item = new T(*(other.Item));
+		Pri = other.Pri;
+		Next = nullptr;
+	}
+	//Overload assignment op.
+	PNode& operator=(const PNode& other) {
+		if (this != &other) {
+			Item = new T(*(other.Item));
+			Pri = other.Pri;
+			Next = nullptr;
+		}
+		return *this;
 	}
 
 	//Getters

@@ -42,10 +42,9 @@ template <typename T>
 class LinkedQueue :public QueueADT<T>
 {
 private:
-
-	PNode<T>* backPtr;
-	PNode<T>* frontPtr;
 	int count;
+	PNode<T>* frontPtr;
+	PNode<T>* backPtr;
 public:
 	/////////////////////////////////////////////////////////////////////////////////////////
 
@@ -91,7 +90,7 @@ The constructor of the Queue class.
 	Output: True if the operation is successful; otherwise false.
 	*/
 
-	bool enqueue(T*& newEntry)
+	bool enqueue(T* newEntry)
 	{
 		PNode<T>* newNodePtr = new PNode<T>(newEntry);
 		// Insert the new node
@@ -120,7 +119,7 @@ Output: True if the operation is successful; otherwise false.
 			return false;
 
 		PNode<T>* nodeToDeletePtr = frontPtr;
-		frntEntry = frontPtr->GetItem();
+		frntEntry = new T(*(frontPtr->GetItem()));
 		frontPtr = frontPtr->GetNext();
 		// Queue is not empty; remove front
 		if (nodeToDeletePtr == backPtr)	 // Special case: last node in the queue
@@ -128,6 +127,7 @@ Output: True if the operation is successful; otherwise false.
 
 		// Free memory reserved for the dequeued node
 		delete nodeToDeletePtr;
+		nodeToDeletePtr = nullptr;
 		count--;
 		return true;
 
@@ -175,28 +175,62 @@ Input: LinkedQueue<T>: The Queue to be copied
 Output: none
 */
 
-	LinkedQueue(const LinkedQueue& LQ)
+	LinkedQueue(const LinkedQueue& LQ) : frontPtr(nullptr), backPtr(nullptr)
 	{
 		PNode<T>* NodePtr = LQ.frontPtr;
 		if (!NodePtr) //LQ is empty
 		{
 			frontPtr = backPtr = nullptr;
+			count = 0;
 			return;
 		}
 
 		//insert the first node
-		PNode<T>* ptr = new PNode<T>(NodePtr->GetItem());
+		T* item = new T(*(NodePtr->GetItem()));
+		PNode<T>* ptr = new PNode<T>(item);
 		frontPtr = backPtr = ptr;
 		NodePtr = NodePtr->GetNext();
 
 		//insert remaining nodes
 		while (NodePtr)
 		{
-			PNode<T>* ptr = new PNode<T>(NodePtr->GetItem());
+			T* item = new T(*(NodePtr->GetItem()));
+			PNode<T>* ptr = new PNode<T>(item);
 			backPtr->SetNext(ptr);
 			backPtr = ptr;
 			NodePtr = NodePtr->GetNext();
 		}
+		count = LQ.count;
+	}
+
+	LinkedQueue& operator=(const LinkedQueue& LQ) {
+		if (this != &LQ) {
+			PNode<T>* NodePtr = LQ.frontPtr;
+			if (!NodePtr) //LQ is empty
+			{
+				frontPtr = backPtr = nullptr;
+				count = 0;
+				return *this;
+			}
+
+			//insert the first node
+			T* item = new T(*(NodePtr->GetItem()));
+			PNode<T>* ptr = new PNode<T>(item);
+			frontPtr = backPtr = ptr;
+			NodePtr = NodePtr->GetNext();
+
+			//insert remaining nodes
+			while (NodePtr)
+			{
+				T* item = new T(*(NodePtr->GetItem()));
+				PNode<T>* ptr = new PNode<T>(item);
+				backPtr->SetNext(ptr);
+				backPtr = ptr;
+				NodePtr = NodePtr->GetNext();
+			}
+			count = LQ.count;
+		}
+		return *this;
 	}
 
 	void printInfo() {
