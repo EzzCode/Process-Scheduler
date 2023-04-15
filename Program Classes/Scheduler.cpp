@@ -126,7 +126,7 @@ void Scheduler::RUNAlgo() {
 void Scheduler::BLKAlgo() {
 	Process* p;
 	bool canPeek = BlkList.peek(p);
-	if (RNG() < 10 && canPeek) {
+	if (RNG() < 95 && canPeek) {
 		BlkList.dequeue(p);
 		processorList[processorIdx]->moveToRDY(p);
 		processorIdx++;
@@ -137,8 +137,8 @@ void Scheduler::BLKAlgo() {
 
 //Step 5
 void Scheduler::randKill() {
-	for (int i = 0; i < ProcessorsCounter; i++) {
-		processorList[i % NF]->ScheduleAlgo();
+	for (int i = 0; i < NF; i++) {
+		processorList[i]->ScheduleAlgo();
 	}
 }
 
@@ -147,12 +147,12 @@ int Scheduler::RNG() {
 }
 
 //move to TRM fn
-void Scheduler::schedToTRM(Process*& p)
+void Scheduler::schedToTRM(Process* p)
 {
 	TrmList.enqueue(p);
 }
 //move to BLK fn
-void Scheduler::schedToBLk(Process*& p)
+void Scheduler::schedToBLk(Process* p)
 {
 	BlkList.enqueue(p);
 }
@@ -161,6 +161,8 @@ void Scheduler::schedToBLk(Process*& p)
 void Scheduler::printTerminal() {
 	ui.updateTerminal(timeStep, processorList, ProcessorsCounter, BlkList, TrmList);
 }
+
+
 
 Scheduler::~Scheduler() 
 {

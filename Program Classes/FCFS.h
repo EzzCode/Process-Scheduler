@@ -14,7 +14,7 @@ private:
 	int T_IDLE;
 public:
 	FCFS(Scheduler* pSch);
-	virtual void moveToRDY(Process*& Rptr);
+	virtual void moveToRDY(Process* Rptr);
 	virtual void moveToRUN();
 	virtual void moveToBLK();
 	virtual void moveToTRM();

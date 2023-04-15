@@ -16,11 +16,4 @@ int main() {
 	//simulate
 	Scheduler s = Scheduler(mode);
 	s.simulate();
-
-	Process* p1 = new Process(1, 2, 3, 4, 5, 6);
-	Process* p2;
-	LinkedQueue<Process> prcsQ;
-	prcsQ.enqueue(p1);
-	bool res = prcsQ.dequeue(p2);
-	cout << *p1;
 }
