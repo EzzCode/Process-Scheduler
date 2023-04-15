@@ -32,6 +32,7 @@ void FCFS::moveToBLK() {
 }
 
 void FCFS::moveToTRM() {
+	Total_TRT += RUN->get_TRT();
 	pScheduler->schedToTRM(RUN);
 }
 
@@ -74,6 +75,19 @@ float FCFS::getpUtil()
 int FCFS::getstate()
 {
 	return state;
+}
+
+int FCFS::getT_BUSY()
+{
+	return T_BUSY;
+}
+float FCFS::getpLoad()
+{
+	return (float)T_BUSY / Total_TRT;
+}
+int FCFS::getT_IDLE()
+{
+	return T_IDLE;
 }
 
 void FCFS::printRDY() {

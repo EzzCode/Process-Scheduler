@@ -19,12 +19,20 @@ class Scheduler
 		int NS;
 		int NR;
 		int timeSlice;
-		int RTF;
-		int MaxW;
-		int STL;
+		int RTF;						//Remaining Time to finish
+		int MaxW;						//Maximum Wait time
+		int STL;						//Steal Time
 		int forkProb;
 		int noProcesses;				//number of processes
 		int ProcessorsCounter;			//just a counter for the creation
+		int KillCount;
+		int ForkCount;
+		int RTF_migCount;
+		int MaxW_migCount;
+		int STLCount;
+		float AvgWT;
+		float AvgRT;
+		float AvgTRT;
 		int mode;						//set print mode
 
 		//To keep track of the upcoming processor
@@ -36,11 +44,11 @@ class Scheduler
 		LinkedQueue<Process> BlkList;
 		LinkedQueue<Process> TrmList;
 		Processor** processorList;
-		Processor* SQF;
-		Processor* LQF;
+		Processor* SQF;					// Processor ptr for shortest queue
+		Processor* LQF;					// Processor ptr for longest queue
 
-		int tSQF;
-		int tLQF;
+		int tSQF;						//Shortest queue finish time
+		int tLQF;						//Longest queue finish time
 
 		//SIGKILL Queue
 		LinkedQueue<sigKill> killQ;
@@ -49,6 +57,26 @@ class Scheduler
 		
 		//UI class
 		UI ui;
+
+		//Steal 
+		float getSTL_limit();
+
+		//SQF & LQF
+		void set_SQF_LQF();
+		int getSQF_time();
+		int getLQF_time();
+		
+		//Statistics
+		void setStats();
+		float getAvgWT();
+		float getAvgRT();
+		float getAvgTRT();
+		float getRTFpercent();
+		float getMaxWpercent();
+		float getForkedpercent();
+		float getKillpercent();
+		float getSTLpercent();
+
 
 		//Private Simulation methods
 		void initializeUI(int modeVal);

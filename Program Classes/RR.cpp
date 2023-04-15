@@ -60,6 +60,7 @@ void RR::moveToBLK() {
 }
 
 void RR::moveToTRM() {
+	Total_TRT += RUN->get_TRT();
 	pScheduler->schedToTRM(RUN);
 }
 
@@ -74,9 +75,23 @@ float RR::getpUtil()
 	return (float)T_BUSY / (T_BUSY + T_IDLE);
 }
 
+float RR::getpLoad()
+{
+	return (float)T_BUSY / Total_TRT;
+}
+
 int RR::getstate()
 {
 	return state;
+}
+
+int RR::getT_BUSY()
+{
+	return T_BUSY;
+}
+int RR::getT_IDLE()
+{
+	return T_IDLE;
 }
 
 void RR::printRDY() {

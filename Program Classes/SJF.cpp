@@ -33,6 +33,7 @@ void SJF::moveToBLK() {
 }
 
 void SJF::moveToTRM() {
+	Total_TRT += RUN->get_TRT();
 	pScheduler->schedToTRM(RUN);
 }
 
@@ -75,11 +76,25 @@ float SJF::getpUtil()
 {
 	return (float)T_BUSY / (T_BUSY + T_IDLE);
 }
-
+float SJF::getpLoad()
+{
+	return (float)T_BUSY / Total_TRT;
+}
 int SJF::getstate()
 {
 	return state;
 }
+
+int SJF::getT_BUSY()
+{
+	return T_BUSY;
+}
+
+int SJF::getT_IDLE()
+{
+	return T_IDLE;
+}
+
 
 void SJF::printRDY() {
 	cout << "[SJF ]" << ": " << RDY.GetCount() << " RDY: ";

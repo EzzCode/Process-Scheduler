@@ -12,6 +12,7 @@ private:
 	int Qtime;
 	int T_BUSY;
 	int T_IDLE;
+	int Total_TRT;
 public:
 	RR(Scheduler* pSch);
 	virtual void ScheduleAlgo();
@@ -21,7 +22,10 @@ public:
 	virtual void moveToTRM();
 	virtual int getQueueLength();
 	virtual float getpUtil();
+	virtual float getpLoad();
 	virtual int getstate();
+	virtual int getT_BUSY();
+	virtual int getT_IDLE();
 	virtual void printRDY();
 	virtual void printRUN(ostream& os);
 	~RR() {};

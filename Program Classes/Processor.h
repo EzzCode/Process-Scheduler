@@ -24,7 +24,10 @@ public:
 	virtual void moveToTRM() = 0;
 	virtual int getQueueLength() = 0;
 	virtual float getpUtil() = 0;
+	virtual float getpLoad() = 0;
 	virtual int getstate() = 0;
+	virtual int getT_BUSY() = 0;
+	virtual int getT_IDLE() = 0;
 	virtual void printRDY() = 0;
 
 	//RNG
