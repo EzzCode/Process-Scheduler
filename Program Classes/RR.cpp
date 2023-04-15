@@ -18,15 +18,18 @@ void RR::ScheduleAlgo()
 	{
 	case 0:
 		moveToBLK();
+		RUN = nullptr;
 		state = 1;
 		break;
 	case 1:
 		Qtime -= RUN->get_CT();
 		moveToRDY(RUN);
+		RUN = nullptr;
 		state = 1;
 		break;
 	case 2:
 		moveToTRM();
+		RUN = nullptr;
 		state = 1;
 		break;
 	default:
