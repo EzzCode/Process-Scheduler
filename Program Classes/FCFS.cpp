@@ -7,6 +7,7 @@ FCFS::FCFS(Scheduler* pSch):Processor(pSch)
 	Qtime = 0;
 	T_BUSY = 0;
 	T_IDLE = 0;
+	Total_TRT = 0;
 }
 
 void FCFS::moveToRDY(Process* Rptr)
