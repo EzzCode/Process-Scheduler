@@ -270,13 +270,44 @@ public:
 		return NULL;
 	}
 
-	void printInfo() {
+	void printInfo()
+	{
 		PNode<T>* ptr = Head;
 		while (ptr) {
 			cout << *(ptr->GetItem());
 			ptr = ptr->GetNext();
 			if (ptr) cout << ", ";
 		}
+	}
+
+	bool Search_Kill(int pID, Process*& p)		//For SIGKILL
+	{
+		PNode<Process>* P = Head;
+		if (P != NULL)
+		{
+			if (P->GetItem()->get_PID() == pID)
+			{
+				Head = P->GetNext();
+				p = P->GetItem();
+				count--;
+				return true;
+			}
+			while (P->GetNext() != NULL)
+			{
+				if (P->GetNext()->GetItem()->get_PID() == pID)
+				{
+					PNode<Process>* R = P->GetNext()->GetNext();
+					p = P->GetNext()->GetItem();
+					count--;
+					P->SetNext(R);
+					UpdateTail();
+					return true;
+				}
+				P = P->GetNext();
+			}
+		}
+		UpdateTail();
+		return false;
 	}
 };
 
