@@ -7,9 +7,10 @@ FCFS::FCFS(Scheduler* pSch):Processor(pSch)
 	Qtime = 0;
 	T_BUSY = 0;
 	T_IDLE = 0;
+	Total_TRT = 0;
 }
 
-void FCFS::moveToRDY(Process*& Rptr)
+void FCFS::moveToRDY(Process* Rptr)
 {
 	Qtime += Rptr->get_CT();
 	RDY.InsertEnd(Rptr);
@@ -32,6 +33,7 @@ void FCFS::moveToBLK() {
 }
 
 void FCFS::moveToTRM() {
+	Total_TRT += RUN->get_TRT();
 	pScheduler->schedToTRM(RUN);
 }
 
@@ -76,6 +78,19 @@ int FCFS::getstate()
 	return state;
 }
 
+int FCFS::getT_BUSY()
+{
+	return T_BUSY;
+}
+float FCFS::getpLoad()
+{
+	return (float)T_BUSY / Total_TRT;
+}
+int FCFS::getT_IDLE()
+{
+	return T_IDLE;
+}
+
 void FCFS::printRDY() {
 	cout<< "[FCFS]" << ": " << RDY.GetCount() << " RDY: ";
 	RDY.printInfo();
@@ -90,4 +105,10 @@ void FCFS::printRUN(ostream& os) {
 void FCFS::RDYKill() {
 	Process* p;
 	int randNum = RNG();
+	bool canPeek = RDY.GetCount() > 0;
+	if (canPeek) {
+		for (int i = 0; i < RDY.GetCount() % randNum; i++) {
+			//code
+		}
+	}
 }

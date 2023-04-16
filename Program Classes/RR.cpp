@@ -7,6 +7,7 @@ RR::RR(Scheduler* pSch):Processor(pSch)
 	Qtime = 0;
 	T_BUSY = 0;
 	T_IDLE = 0;
+	Total_TRT = 0;
 }
 
 void RR::ScheduleAlgo()
@@ -18,15 +19,18 @@ void RR::ScheduleAlgo()
 	{
 	case 0:
 		moveToBLK();
+		RUN = nullptr;
 		state = 1;
 		break;
 	case 1:
 		Qtime -= RUN->get_CT();
 		moveToRDY(RUN);
+		RUN = nullptr;
 		state = 1;
 		break;
 	case 2:
 		moveToTRM();
+		RUN = nullptr;
 		state = 1;
 		break;
 	default:
@@ -34,7 +38,7 @@ void RR::ScheduleAlgo()
 	}
 }
 
-void RR::moveToRDY(Process*& Rptr)
+void RR::moveToRDY(Process* Rptr)
 {
 	Qtime += Rptr->get_CT();
 	RDY.enqueue(Rptr);
@@ -57,6 +61,7 @@ void RR::moveToBLK() {
 }
 
 void RR::moveToTRM() {
+	Total_TRT += RUN->get_TRT();
 	pScheduler->schedToTRM(RUN);
 }
 
@@ -71,9 +76,23 @@ float RR::getpUtil()
 	return (float)T_BUSY / (T_BUSY + T_IDLE);
 }
 
+float RR::getpLoad()
+{
+	return (float)T_BUSY / Total_TRT;
+}
+
 int RR::getstate()
 {
 	return state;
+}
+
+int RR::getT_BUSY()
+{
+	return T_BUSY;
+}
+int RR::getT_IDLE()
+{
+	return T_IDLE;
 }
 
 void RR::printRDY() {

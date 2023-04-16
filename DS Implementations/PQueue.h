@@ -33,12 +33,12 @@ public:
 		return (frontPtr == NULL);
 	}
 
-	bool enqueue(Process*& newEntry)			//cam't enqueue without specifying priority
+	bool enqueue(Process* newEntry)			//cam't enqueue without specifying priority
 	{
 		return false;
 	}
 
-	bool enqueue(Process*& newEntry,int Pri)
+	bool enqueue(Process* newEntry, int Pri)
 	{
 		PNode<Process>* newNodePtr = new PNode<Process>(newEntry);
 		newNodePtr->SetPriority(Pri);
@@ -100,7 +100,8 @@ public:
 		if (isEmpty()) return false;
 
 		PNode<Process>* nodeToDeletePtr = frontPtr;
-		frntEntry = frontPtr->GetItem();
+		//frntEntry = frontPtr->GetItem(); old : caused a bug where run became garbage 
+		frntEntry = new Process(*(frontPtr->GetItem()));
 		frontPtr = frontPtr->GetNext();
 		// Queue is not empty; remove front
 		if (nodeToDeletePtr == backPtr)	 // Special case: last node in the queue

@@ -100,6 +100,8 @@ void Scheduler::NEWtoRDY() {
 	while (canPeek && p->get_AT() == timeStep) {
 		NewList.dequeue(p);
 		processorList[processorIdx]->moveToRDY(p);
+		int RT = p->get_AT() - timeStep;
+		p->set_RT(RT);
 		processorIdx++;
 		processorIdx = processorIdx % ProcessorsCounter;
 		p = nullptr;
@@ -137,8 +139,8 @@ void Scheduler::BLKAlgo() {
 
 //Step 5
 void Scheduler::randKill() {
-	for (int i = 0; i < ProcessorsCounter; i++) {
-		processorList[i % NF]->ScheduleAlgo();
+	for (int i = 0; i < NF; i++) {
+		processorList[i]->ScheduleAlgo();
 	}
 }
 
@@ -147,12 +149,13 @@ int Scheduler::RNG() {
 }
 
 //move to TRM fn
-void Scheduler::schedToTRM(Process*& p)
+void Scheduler::schedToTRM(Process* p)
 {
+	p->set_TT(timeStep);
 	TrmList.enqueue(p);
 }
 //move to BLK fn
-void Scheduler::schedToBLk(Process*& p)
+void Scheduler::schedToBLk(Process* p)
 {
 	BlkList.enqueue(p);
 }
@@ -162,7 +165,103 @@ void Scheduler::printTerminal() {
 	ui.updateTerminal(timeStep, processorList, ProcessorsCounter, BlkList, TrmList);
 }
 
-Scheduler::~Scheduler() 
+//Calculate Steal Limit
+float Scheduler::getSTL_limit()
+{
+	return (tLQF - tSQF) / ((float)tLQF);
+}
+
+//Set Shortest Queue and Longest Queue (Time & Processor)
+void Scheduler::set_SQF_LQF()
+{
+	int max = INT_MIN;
+	int min = INT_MAX;
+
+	for (int i = 0; i < ProcessorsCounter; i++)
+	{
+		if (processorList[i]->getQueueLength() > max)
+		{
+			LQF = processorList[i];
+			max = processorList[i]->getQueueLength();
+		}
+		else if (processorList[i]->getQueueLength() < min)
+		{
+			SQF = processorList[i];
+			min = processorList[i]->getQueueLength();
+		}
+	}
+	tLQF = max;
+	tSQF = min;
+}
+int Scheduler::getSQF_time()
+{
+	set_SQF_LQF();
+	return tSQF;
+}
+int Scheduler::getLQF_time()
+{
+	set_SQF_LQF();
+	return tLQF;
+}
+
+//STATISTICS 
+void Scheduler::setStats()
+{
+	Process* p;
+	while (TrmList.dequeue(p))
+	{
+		AvgTRT += p->get_TRT();
+		AvgRT += p->get_RT();
+		AvgWT += p->get_WT();
+		ForkCount += p->get_count();
+	}
+	AvgTRT = (float)AvgTRT / noProcesses;
+	AvgRT = (float)AvgRT / noProcesses;
+	AvgWT = (float)AvgWT / noProcesses;
+}
+
+float Scheduler::getAvgWT()
+{
+	return AvgWT;
+}
+
+float Scheduler::getAvgRT()
+{
+	return AvgRT;
+}
+
+float Scheduler::getAvgTRT()
+{
+	return AvgTRT;
+}
+
+float Scheduler::getRTFpercent()
+{
+	return (float)RTF_migCount / noProcesses;
+}
+
+float Scheduler::getMaxWpercent()
+{
+	return (float)MaxW_migCount / noProcesses;
+}
+
+float Scheduler::getForkedpercent()
+{
+	return (float)ForkCount / noProcesses;
+}
+
+float Scheduler::getKillpercent()
+{
+	return (float)KillCount / noProcesses;
+}
+
+float Scheduler::getSTLpercent()
+{
+	return (float)STLCount / noProcesses;
+}
+
+//Destructor
+Scheduler::~Scheduler()
 {
 	for (int i = 0; i < NF + NS + NR; i++) {
 		delete processorList[i];
