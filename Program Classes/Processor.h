@@ -9,10 +9,6 @@ class Scheduler;
 
 class Processor
 {
-private:
-
-	//Assist << operator overload
-	virtual void printRUN(ostream&) = 0;
 protected:
 	Scheduler* pScheduler;
 public:
@@ -21,7 +17,8 @@ public:
 	virtual void moveToRDY(Process* Rptr) = 0;
 	virtual void moveToRUN() = 0;
 	virtual void moveToBLK() = 0;
-	virtual void moveToTRM() = 0;
+	virtual void moveToTRM(Process* p) = 0;
+	virtual void RDYKill(int pID) {}
 	virtual int getQueueLength() = 0;
 	virtual float getpUtil() = 0;
 	virtual float getpLoad() = 0;
@@ -29,6 +26,7 @@ public:
 	virtual int getT_BUSY() = 0;
 	virtual int getT_IDLE() = 0;
 	virtual void printRDY() = 0;
+	virtual void printRUN() = 0;
 
 	//RNG
 	int RNG() {
@@ -52,13 +50,5 @@ public:
 		}
 	}
 
-	//Random RDY Kill
-	virtual void RDYKill() {}
-
-	//Print RUN
-	friend ostream& operator<<(ostream& os, Processor*& p) {
-		p->printRUN(os);
-		return os;
-	}
 	virtual ~Processor() {};
 };

@@ -10,6 +10,8 @@ class Process
 private:
 	//Process ID
 	int PID;
+	//Keep track of IDs
+	static int last_id;
 
 	//Times
 	int AT;		//Arrival time
@@ -26,22 +28,20 @@ private:
 	//Input/Output Request time & Duration
 	int N_IO;
 	IO* ioData;				//pointer placeholder for io data
-	LinkedQueue<IO> ioQ;	//Q contains all IOs the process will need
+	LinkedQueue<IO> ioQ;	//Queue contains all IOs the process will need
 
 	//Kill Signal
 	bool SIGKILL;
 
 	//Fork Tree
 	int count_forked;
+	Process* parent;
 	Process* lch;
 	Process* rch;
 
-	//Private setters: any data member that is calculated in terms of existing data members
+	//Private setters for data members that are calculated in terms of existing data members
 	void set_TRT();
 	void set_WT();
-
-	//Count of forks
-	void set_count(int val);
 
 	//Assisting recursive functions
 	void insertChHelper(Process*& subroot, Process* p);
@@ -55,6 +55,8 @@ public:
 	Process();
 	//Public setters
 	void set_PID(int id);
+	static void set_last_id(int value);
+	static int get_last_id();
 	void set_AT(int at);
 	void set_RT(int rt);
 	void set_CT(int ct);
@@ -83,7 +85,7 @@ public:
 		//Tree getters
 	bool get_lch(Process*& p);
 	bool get_rch(Process*& p);
-	int get_count();
+	int get_count_fork();
 
 		//Fork Tree operations
 	void insertCh(Process* p);

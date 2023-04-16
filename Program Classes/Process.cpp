@@ -1,5 +1,7 @@
 #include "Process.h"
 
+int Process::last_id = 0;
+
 Process::Process(int at, int id, int ct, int STT, int ior, int iod) {
 	set_PID(id);
 	set_AT(at);
@@ -10,22 +12,32 @@ Process::Process(int at, int id, int ct, int STT, int ior, int iod) {
 	set_RT(-1);		//-1 indicates that process has never entered CPU
 	set_SIGKILL(false);
 	//Fork Tree
+	parent = nullptr;
 	lch = nullptr;
 	rch = nullptr;
-	set_count(0);
+	count_forked = 0;
 }
 Process::Process() {
 	set_RT(-1);		//-1 indicates that process has never entered CPU
 	set_SIGKILL(false);
 	ioData = new IO;
 	//Fork Tree
+	parent = nullptr;
 	lch = nullptr;
 	rch = nullptr;
-	set_count(0);
+	count_forked = 0;
 }
 //setters
 void Process::set_PID(int id) {
 	PID = id;
+}
+void Process::set_last_id(int value)
+{
+	last_id = value;
+}
+int Process::get_last_id()
+{
+	return last_id;
 }
 void Process::set_AT(int at) {
 	AT = at;
@@ -97,10 +109,10 @@ void Process::Load(ifstream& Infile)
 		Infile >> c1 >> ioData->IO_R >> c2 >> ioData->IO_D >> c1 >> c2;
 		ioQ.enqueue(ioData);
 		if (i != N_IO - 1) {
-			//delete prev ioData?
 			ioData = new IO;
 		}
 	}
+	set_state(0);
 }
 //Print ID
 ostream& operator<<(ostream& os, Process& p) {
@@ -108,11 +120,6 @@ ostream& operator<<(ostream& os, Process& p) {
 }
 
 //Fork Tree Methods
-	//Tree setters
-
-void Process::set_count(int val) {
-	count_forked = val;
-}
 	//Tree getters
 bool Process::get_lch(Process*& p) {
 	p = lch;
@@ -124,19 +131,19 @@ bool Process::get_rch(Process*& p) {
 	return rch != nullptr;
 }
 
-int Process::get_count() {
+int Process::get_count_fork() {
 	return count_forked;
 }
 
 //Public Tree methods
 void Process::insertCh(Process* p) {
 	insertChHelper(lch, p);
-	set_count(get_count() + 1);
+	count_forked = count_forked + 1;
 }
 bool Process::remove(int pid) {
 	bool removed = removeHelper(this, pid);
 	if (removed) {
-		set_count(get_count() - 1);
+		count_forked = count_forked - 1;
 	}
 	return removed;
 }
@@ -155,6 +162,7 @@ bool Process::removeHelper(Process* subroot, int pid) {
 	int id = subroot->get_PID();
 	if (id == pid) {
 		subroot->set_state(4);
+		count_forked = count_forked - subroot->get_count_fork() - 1;
 		markOrphan(subroot->lch);
 		return true;
 	}
@@ -169,14 +177,15 @@ void Process::markOrphan(Process* subroot) {
 
 void Process::cpyTree(const Process& p)
 {
-	Process* temp = p.lch;
+	if (!p.lch) return;
+	Process* temp = new Process(*p.lch);
 	while (temp) {
-		insertChHelper(lch, temp);
+		insertCh(temp);
 		temp = temp->lch;
 	}
 }
 
-//ctor
+//copy ctor
 Process::Process(const Process& other) {
 	//cpy ID
 	PID = other.PID;
@@ -202,5 +211,5 @@ Process::Process(const Process& other) {
 
 
 Process::~Process() {
-	//delete ioData?
+
 }

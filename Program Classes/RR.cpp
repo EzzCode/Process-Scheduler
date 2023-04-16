@@ -8,6 +8,7 @@ RR::RR(Scheduler* pSch):Processor(pSch)
 	T_BUSY = 0;
 	T_IDLE = 0;
 	Total_TRT = 0;
+	RUN = nullptr;
 }
 
 void RR::ScheduleAlgo()
@@ -23,13 +24,12 @@ void RR::ScheduleAlgo()
 		state = 1;
 		break;
 	case 1:
-		Qtime -= RUN->get_CT();
 		moveToRDY(RUN);
 		RUN = nullptr;
 		state = 1;
 		break;
 	case 2:
-		moveToTRM();
+		moveToTRM(RUN);
 		RUN = nullptr;
 		state = 1;
 		break;
@@ -40,7 +40,7 @@ void RR::ScheduleAlgo()
 
 void RR::moveToRDY(Process* Rptr)
 {
-	Qtime += Rptr->get_CT();
+	Rptr->set_state(1);
 	RDY.enqueue(Rptr);
 }
 
@@ -50,19 +50,21 @@ void RR::moveToRUN()
 	if (state == 1) {
 		bool check = RDY.dequeue(RUN);
 		if (check) {
-			//Qtime -= RUN->get_CT();
+			RUN->set_state(2);
 			state = 0;
 		}
 	}
 }
 
 void RR::moveToBLK() {
+	RUN->set_state(3);
 	pScheduler->schedToBLk(RUN);
 }
 
-void RR::moveToTRM() {
-	Total_TRT += RUN->get_TRT();
-	pScheduler->schedToTRM(RUN);
+void RR::moveToTRM(Process* p) {
+	Total_TRT += p->get_TRT();
+	p->set_state(4);
+	pScheduler->schedToTRM(p);
 }
 
 int RR::getQueueLength()
@@ -101,6 +103,6 @@ void RR::printRDY() {
 }
 
 //Print RUN process
-void RR::printRUN(ostream& os) {
-	os << *(RUN);
+void RR::printRUN() {
+	cout << *(RUN);
 }

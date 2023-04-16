@@ -19,7 +19,7 @@ public:
 	virtual void moveToRDY(Process* Rptr);
 	virtual void moveToRUN();
 	virtual void moveToBLK();
-	virtual void moveToTRM();
+	virtual void moveToTRM(Process* p);
 	virtual int getQueueLength();
 	virtual float getpUtil();
 	virtual float getpLoad();
@@ -27,6 +27,6 @@ public:
 	virtual int getT_BUSY();
 	virtual int getT_IDLE();
 	virtual void printRDY();
-	virtual void printRUN(ostream& os);
+	virtual void printRUN();
 	~RR() {};
 };

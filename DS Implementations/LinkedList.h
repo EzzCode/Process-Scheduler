@@ -270,6 +270,42 @@ public:
 		return NULL;
 	}
 
+	bool Search_Kill(int pID, Process*& p)		//For SIGKILL
+	{
+		PNode<Process>* ptr = Head;
+		if (ptr != NULL)
+		{
+			if (ptr->GetItem()->get_PID() == pID)
+			{
+				PNode<Process>* temp = Head;
+				Head = ptr->GetNext();
+				p = new Process(*(ptr->GetItem()));
+				delete temp;
+				temp = nullptr;
+				count--;
+				return true;
+			}
+			while (ptr->GetNext() != NULL)
+			{
+				if (ptr->GetNext()->GetItem()->get_PID() == pID)
+				{
+					PNode<Process>* temp = ptr->GetNext();
+					PNode<Process>* R = ptr->GetNext()->GetNext();
+					p = new Process(*(ptr->GetNext()->GetItem()));
+					ptr->SetNext(R);
+					delete temp;
+					temp = nullptr;
+					count--;
+					UpdateTail();
+					return true;
+				}
+				ptr = ptr->GetNext();
+			}
+		}
+		UpdateTail();
+		return false;
+	}
+
 	void printInfo()
 	{
 		PNode<T>* ptr = Head;
@@ -279,35 +315,6 @@ public:
 			if (ptr) cout << ", ";
 		}
 	}
-
-	bool Search_Kill(int pID, Process*& p)		//For SIGKILL
-	{
-		PNode<Process>* P = Head;
-		if (P != NULL)
-		{
-			if (P->GetItem()->get_PID() == pID)
-			{
-				Head = P->GetNext();
-				p = P->GetItem();
-				count--;
-				return true;
-			}
-			while (P->GetNext() != NULL)
-			{
-				if (P->GetNext()->GetItem()->get_PID() == pID)
-				{
-					PNode<Process>* R = P->GetNext()->GetNext();
-					p = P->GetNext()->GetItem();
-					count--;
-					P->SetNext(R);
-					UpdateTail();
-					return true;
-				}
-				P = P->GetNext();
-			}
-		}
-		UpdateTail();
-		return false;
-	}
+	
 };
 
