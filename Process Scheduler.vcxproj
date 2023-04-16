@@ -127,8 +127,6 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="DS Implementations\BTNode.cpp" />
-    <ClCompile Include="DS Implementations\BTree.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Program Classes\FCFS.cpp" />
     <ClCompile Include="Program Classes\Process.cpp" />
@@ -139,8 +137,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="DEFS.h" />
-    <ClInclude Include="DS Implementations\BTNode.h" />
-    <ClInclude Include="DS Implementations\BTree.h" />
     <ClInclude Include="DS Implementations\LinkedList.h" />
     <ClInclude Include="DS Implementations\LinkedQueue.h" />
     <ClInclude Include="DS Implementations\PNode.h" />

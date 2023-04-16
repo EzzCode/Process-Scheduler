@@ -18,7 +18,8 @@ public:
 	virtual void moveToRDY(Process* Rptr);
 	virtual void moveToRUN();
 	virtual void moveToBLK();
-	virtual void moveToTRM();
+	virtual void moveToTRM(Process* p);
+	virtual void RDYKill(int pID);
 	virtual void ScheduleAlgo();
 	virtual int getQueueLength();
 	virtual float getpUtil();
@@ -27,10 +28,7 @@ public:
 	virtual int getT_BUSY();
 	virtual int getT_IDLE();
 	virtual void printRDY();
-	virtual void printRUN(ostream& os);
-
-	//Random RDY Kill
-	virtual void RDYKill();
+	virtual void printRUN();
 
 	~FCFS() {};
 };

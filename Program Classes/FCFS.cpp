@@ -8,11 +8,12 @@ FCFS::FCFS(Scheduler* pSch):Processor(pSch)
 	T_BUSY = 0;
 	T_IDLE = 0;
 	Total_TRT = 0;
+	RUN = nullptr;
 }
 
 void FCFS::moveToRDY(Process* Rptr)
 {
-	Qtime += Rptr->get_CT();
+	Rptr->set_state(1);
 	RDY.InsertEnd(Rptr);
 }
 
@@ -22,19 +23,21 @@ void FCFS::moveToRUN()
 	if (state == 1) {
 		RUN = RDY.GetHeadData();
 		if (RUN) {
-			//Qtime -= RUN->get_CT();
+			RUN->set_state(2);
 			state = 0;
 		}
 	}
 }
 
 void FCFS::moveToBLK() {
+	RUN->set_state(3);
 	pScheduler->schedToBLk(RUN);
 }
 
-void FCFS::moveToTRM() {
-	Total_TRT += RUN->get_TRT();
-	pScheduler->schedToTRM(RUN);
+void FCFS::moveToTRM(Process* p) {
+	Total_TRT += p->get_TRT();
+	p->set_state(4);
+	pScheduler->schedToTRM(p);
 }
 
 void FCFS::ScheduleAlgo()
@@ -46,19 +49,30 @@ void FCFS::ScheduleAlgo()
 	{
 	case 0:
 		moveToBLK();
+		RUN = nullptr;
 		state = 1;
 		break;
 	case 1:
-		Qtime -= RUN->get_CT();
 		moveToRDY(RUN);
+		RUN = nullptr;
 		state = 1;
 		break;
 	case 2:
-		moveToTRM();
+		moveToTRM(RUN);
+		RUN = nullptr;
 		state = 1;
 		break;
 	default:
 		break;
+	}
+}
+
+//Random RDY Kill
+void FCFS::RDYKill(int pID) {
+	Process* p = nullptr;
+	bool canKill = RDY.Search_Kill(pID, p);
+	if (canKill) {
+		moveToTRM(p);
 	}
 }
 
@@ -97,18 +111,7 @@ void FCFS::printRDY() {
 }
 
 //Print RUN process
-void FCFS::printRUN(ostream& os) {
-	os << *(RUN);
+void FCFS::printRUN() {
+	cout << *(RUN);
 }
 
-//Random RDY Kill
-void FCFS::RDYKill() {
-	Process* p;
-	int randNum = RNG();
-	bool canPeek = RDY.GetCount() > 0;
-	if (canPeek) {
-		for (int i = 0; i < RDY.GetCount() % randNum; i++) {
-			//code
-		}
-	}
-}
