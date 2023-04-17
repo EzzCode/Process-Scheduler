@@ -270,7 +270,7 @@ public:
 		return NULL;
 	}
 
-	bool Search_Kill(int pID, Process*& p)		//For SIGKILL
+	bool sig_kill(int pID, Process*& p)		//For SIGKILL
 	{
 		PNode<Process>* ptr = Head;
 		if (ptr != NULL)
