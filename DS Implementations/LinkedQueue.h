@@ -1,36 +1,3 @@
-/*
-
-				The Node: item of type T and a "next" pointer
-					-------------
-					| item| next | --->
-					-------------
-General Queue case:
-
-				 frontPtr																backPtr
-					\											   						/
-					 \											  					   /
-					------------- 	  ------------- 	  ------------- 	  -------------
-					| item| next |--->| item| next |--->  | item| next |--->  | item| next |---> NULL
-					------------- 	  ------------- 	  ------------- 	  -------------
-
-Empty Case:
-
-				 frontptr	 backptr
-						\	 /
-						 \	/
-					---- NULL ------
-
-
-Single Node Case:
-				 frontPtr	 backPtr
-					\		/
-					 \	   /
-					-----------
-					|item| next| -->NULL
-					-----------
-
-*/
-
 #ifndef LINKED_QUEUE_
 #define LINKED_QUEUE_
 #pragma once
@@ -46,7 +13,6 @@ private:
 	PNode<T>* frontPtr;
 	PNode<T>* backPtr;
 public:
-	/////////////////////////////////////////////////////////////////////////////////////////
 
 /*
 Function: Queue()
@@ -67,7 +33,6 @@ The constructor of the Queue class.
 	{
 		return count;
 	}
-	/////////////////////////////////////////////////////////////////////////////////////////
 
 	/*
 	Function: isEmpty
@@ -80,8 +45,6 @@ The constructor of the Queue class.
 	{
 		return (frontPtr == nullptr);
 	}
-
-	/////////////////////////////////////////////////////////////////////////////////////////
 
 	/*Function:enqueue
 	Adds newEntry at the back of this queue.
@@ -104,14 +67,12 @@ The constructor of the Queue class.
 		return true;
 	}
 
-	/////////////////////////////////////////////////////////////////////////////////////////////////////////
+	/*Function: dequeue
+	Removes the front of this queue. That is, removes the item that was added
+	earliest.
 
-/*Function: dequeue
-Removes the front of this queue. That is, removes the item that was added
-earliest.
-
-Output: True if the operation is successful; otherwise false.
-*/
+	Output: True if the operation is successful; otherwise false.
+	*/
 
 	bool dequeue(T*& frntEntry)
 	{
@@ -133,14 +94,13 @@ Output: True if the operation is successful; otherwise false.
 
 	}
 
-	/////////////////////////////////////////////////////////////////////////////////////////
-/*
-Function: peek
-copies the front of this queue to the passed param. The operation does not modify the queue.
+	/*
+	Function: peek
+	copies the front of this queue to the passed param. The operation does not modify the queue.
 
-Input: None.
-Output: The front of the queue.
-*/
+	Input: None.
+	Output: The front of the queue.
+	*/
 
 	bool peek(T*& frntEntry) const
 	{
@@ -152,11 +112,10 @@ Output: The front of the queue.
 
 	}
 
-	///////////////////////////////////////////////////////////////////////////////////
-/*
-Function: destructor
-removes all nodes from the queue by dequeuing them
-*/
+	/*
+	Function: destructor
+	removes all nodes from the queue by dequeuing them
+	*/
 	~LinkedQueue()
 	{
 		T* temp;
@@ -165,15 +124,15 @@ removes all nodes from the queue by dequeuing them
 		while (dequeue(temp));
 	}
 
-	/////////////////////////////////////////////////////////////////////////////////////////
+						
 	/*
 	Function: Copy constructor
-To avoid shallow copy,
-copy constructor is provided
+	To avoid shallow copy,
+	copy constructor is provided
 
-Input: LinkedQueue<T>: The Queue to be copied
-Output: none
-*/
+	Input: LinkedQueue<T>: The Queue to be copied
+	Output: none
+	*/
 
 	LinkedQueue(const LinkedQueue& LQ) : frontPtr(nullptr), backPtr(nullptr)
 	{
@@ -203,7 +162,8 @@ Output: none
 		count = LQ.count;
 	}
 
-	LinkedQueue& operator=(const LinkedQueue& LQ) {
+	LinkedQueue& operator=(const LinkedQueue& LQ)		//Assignment Operator Overloading
+	{
 		if (this != &LQ) {
 			PNode<T>* NodePtr = LQ.frontPtr;
 			if (!NodePtr) //LQ is empty
@@ -232,8 +192,9 @@ Output: none
 		}
 		return *this;
 	}
-
-	void printInfo() {
+	
+	void printInfo()									//For Printing the LinkedQueue
+	{
 		PNode<T>* ptr = frontPtr;
 		while (ptr) {
 			cout << *(ptr->GetItem());
