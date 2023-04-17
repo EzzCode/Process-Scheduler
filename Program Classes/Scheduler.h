@@ -25,7 +25,7 @@ class Scheduler
 		int forkProb;
 		int noProcesses;				//number of processes
 		int ProcessorsCounter;			//just a counter for the creation
-		int mode;						//set print mode
+		int mode;						//print mode
 		
 		//statistics
 		int KillCount;
@@ -89,8 +89,6 @@ class Scheduler
 		void BLKAlgo();
 		void randKill();
 		void printTerminal();
-		
-		void properTerminate();
 
 public:
 	Scheduler(int modeVal);

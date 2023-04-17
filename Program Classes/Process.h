@@ -27,7 +27,6 @@ private:
 
 	//Input/Output Request time & Duration
 	int N_IO;
-	IO* ioData;				//pointer placeholder for io data
 	LinkedQueue<IO> ioQ;	//Queue contains all IOs the process will need
 
 	//Kill Signal
@@ -36,6 +35,9 @@ private:
 	//Fork Tree
 	Process* lch;
 	Process* rch;
+
+	//Motion status
+	bool has_moved;
 
 	//Private setters for data members that are calculated in terms of existing data members
 	void set_TRT();
@@ -64,6 +66,7 @@ public:
 	void set_state(int stt);
 	void set_IO(int ior, int iod);
 	void set_sig_kill(bool signal);
+	void set_has_moved(bool motion);
 
 	//getters
 	int get_PID();
@@ -74,8 +77,10 @@ public:
 	int get_TRT();
 	int get_WT();
 	int get_state();
+	bool peek_io(IO*& io);
 	bool get_IO(IO*& io);
 	bool get_sig_kill();
+	bool get_has_moved();
 	void Load(ifstream& Infile); // load its data members from input file
 
 	//Print ID
@@ -92,6 +97,7 @@ public:
 	bool remove(int pid);
 	bool search(int pid, Process*& p);
 	void mark_orphan(int pid_parent);
+	bool hasCh();
 
 	//cpy ctor
 	Process(const Process& other);
