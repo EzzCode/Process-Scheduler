@@ -10,7 +10,7 @@ private:
 	int Pri;		//Priority
 public:
 
-	//Constructors->Destructor
+	//Constructors
 	PNode()			// default constructor
 	{
 		Pri = 0;
@@ -24,7 +24,7 @@ public:
 		Item = newItem;
 		Next = NULL;
 	}
-
+	//Destructor
 	~PNode()
 	{
 		delete Item;
