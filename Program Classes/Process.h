@@ -34,7 +34,6 @@ private:
 	bool SIGKILL;
 
 	//Fork Tree
-	Process* parent;
 	Process* lch;
 	Process* rch;
 
@@ -52,7 +51,7 @@ private:
 
 
 public:
-	Process(int at, int id, int ct, int STT); //Other data members are either calculated or recieved after creation
+	Process(int at, int id, int ct, int stt); //Other data members are either calculated or recieved after creation
 	Process();
 	//Public setters
 	void set_PID(int id);
@@ -62,7 +61,7 @@ public:
 	void set_RT(int rt);
 	void set_CT(int ct);
 	void set_TT(int tt);
-	void set_state(int STT);
+	void set_state(int stt);
 	void set_IO(int ior, int iod);
 	void set_sig_kill(bool signal);
 
