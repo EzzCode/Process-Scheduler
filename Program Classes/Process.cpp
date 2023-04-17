@@ -2,30 +2,27 @@
 
 int Process::last_id = 0;
 
-Process::Process(int at, int id, int ct, int STT, int ior, int iod) {
+Process::Process(int at, int id, int ct, int STT) {
 	set_PID(id);
 	set_AT(at);
 	set_CT(ct);
 	set_state(STT);
 	ioData = new IO;
-	set_IO(ior, iod);
 	set_RT(-1);		//-1 indicates that process has never entered CPU
-	set_SIGKILL(false);
+	set_sig_kill(false);
 	//Fork Tree
 	parent = nullptr;
 	lch = nullptr;
 	rch = nullptr;
-	count_forked = 0;
 }
 Process::Process() {
 	set_RT(-1);		//-1 indicates that process has never entered CPU
-	set_SIGKILL(false);
+	set_sig_kill(false);
 	ioData = new IO;
 	//Fork Tree
 	parent = nullptr;
 	lch = nullptr;
 	rch = nullptr;
-	count_forked = 0;
 }
 //setters
 void Process::set_PID(int id) {
@@ -63,10 +60,10 @@ void Process::set_state(int STT) {
 	state = STT;
 }
 void Process::set_IO(int ior, int iod) {
-	ioData->IO_D = iod;
-	ioData->IO_R = ior;
+	ioData = new IO(iod, ior);
+	ioQ.enqueue(ioData);
 }
-void Process::set_SIGKILL(bool signal) {
+void Process::set_sig_kill(bool signal) {
 	SIGKILL = signal;
 }
 
@@ -98,7 +95,7 @@ int Process::get_state() {
 bool Process::get_IO(IO*& io) {
 	return ioQ.dequeue(io);
 }
-bool Process::get_SIGKILL() {
+bool Process::get_sig_kill() {
 	return SIGKILL;
 }
 void Process::Load(ifstream& Infile)
@@ -112,6 +109,7 @@ void Process::Load(ifstream& Infile)
 			ioData = new IO;
 		}
 	}
+	last_id++;
 	set_state(0);
 }
 //Print ID
@@ -132,46 +130,74 @@ bool Process::get_rch(Process*& p) {
 }
 
 int Process::get_count_fork() {
-	return count_forked;
+	//Currently a process can only fork once
+	return rec_get_count_fork(lch);
 }
 
-//Public Tree methods
-void Process::insertCh(Process* p) {
-	insertChHelper(lch, p);
-	count_forked = count_forked + 1;
+//Fork tree operations
+void Process::insert_ch(Process* p) {
+	rec_insert_ch(this, p);
 }
 bool Process::remove(int pid) {
-	bool removed = removeHelper(this, pid);
-	if (removed) {
-		count_forked = count_forked - 1;
-	}
+	bool removed = rec_remove(this, pid);
 	return removed;
 }
 
-//Assisting recursive functions
-void Process::insertChHelper(Process*& subroot, Process* p) {
-	if (!subroot || subroot->get_state() == 4) {
-		subroot = p;
+bool Process::search(int pid, Process*&p)
+{
+	return rec_search(this, pid, p);
+}
+
+void Process::mark_orphan(int pid_parent)
+{
+	Process* p = nullptr;
+	if (search(pid_parent, p)) {
+		rec_mark_orphan(p->lch);
+	}
+}
+
+//Fork tree assisting recursive functions
+int Process::rec_get_count_fork(Process* subroot)
+{
+	if (!subroot || subroot->get_state() == 4 || subroot->get_state() == 5) return 0; //Check if NULL / TRM / ORPH
+	//Currently a process can fork only once
+	return 1 + rec_get_count_fork(subroot->lch);
+}
+
+void Process::rec_insert_ch(Process* subroot, Process* p) {
+	if (!subroot->lch || subroot->get_state() == 4) {
+		subroot->lch = p;
 		return;
 	}
 	//Currently a process can only fork once
-	insertChHelper(subroot->lch, p);
+	rec_insert_ch(subroot->lch, p);
 }
-bool Process::removeHelper(Process* subroot, int pid) {
+bool Process::rec_remove(Process* subroot, int pid) {
 	if (!subroot) return false;
 	int id = subroot->get_PID();
 	if (id == pid) {
-		subroot->set_state(4);
-		count_forked = count_forked - subroot->get_count_fork() - 1;
-		markOrphan(subroot->lch);
+		rec_mark_orphan(subroot->lch);
 		return true;
 	}
 	//Currently a process can only fork once
-	return removeHelper(subroot->lch, pid);
+	return rec_remove(subroot->lch, pid);
 }
-void Process::markOrphan(Process* subroot) {
+bool Process::rec_search(Process* subroot, int pid, Process*& p)
+{
+	if (!subroot) {
+		p = nullptr;
+		return false;
+	}
+	if (subroot->PID == pid) {
+		p = subroot;
+		return true;
+	}
+	//Currently a process can fork only once
+	return rec_search(subroot->lch, pid, p);
+}
+void Process::rec_mark_orphan(Process* subroot) {
 	if (!subroot) return;
-	markOrphan(subroot->lch);
+	rec_mark_orphan(subroot->lch);
 	subroot->set_state(5);
 }
 
@@ -180,7 +206,7 @@ void Process::cpyTree(const Process& p)
 	if (!p.lch) return;
 	Process* temp = new Process(*p.lch);
 	while (temp) {
-		insertCh(temp);
+		insert_ch(temp);
 		temp = temp->lch;
 	}
 }
@@ -205,11 +231,8 @@ Process::Process(const Process& other) {
 	//cpy kill signal
 	SIGKILL = other.SIGKILL;
 	//cpy Fork Tree
-	count_forked = other.count_forked;
 	cpyTree(other);
 }
 
 
-Process::~Process() {
-
-}
+Process::~Process() {}

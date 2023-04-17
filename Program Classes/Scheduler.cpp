@@ -139,7 +139,7 @@ void Scheduler::BLKAlgo() {
 
 //Step 5
 void Scheduler::randKill() {
-	int pID = rand() % noProcesses;
+	int pID = rand() % noProcesses + 1;
 	for (int i = 0; i < NF; i++) {
 		processorList[i]->RDYKill(pID);
 	}

@@ -70,7 +70,7 @@ void FCFS::ScheduleAlgo()
 //Random RDY Kill
 void FCFS::RDYKill(int pID) {
 	Process* p = nullptr;
-	bool canKill = RDY.Search_Kill(pID, p);
+	bool canKill = RDY.sig_kill(pID, p);
 	if (canKill) {
 		moveToTRM(p);
 	}

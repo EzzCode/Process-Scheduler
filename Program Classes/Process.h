@@ -34,7 +34,6 @@ private:
 	bool SIGKILL;
 
 	//Fork Tree
-	int count_forked;
 	Process* parent;
 	Process* lch;
 	Process* rch;
@@ -44,14 +43,16 @@ private:
 	void set_WT();
 
 	//Assisting recursive functions
-	void insertChHelper(Process*& subroot, Process* p);
-	bool removeHelper(Process* subroot, int pid);
-	void markOrphan(Process* subroot);
+	void rec_insert_ch(Process* subroot, Process* p);
+	bool rec_remove(Process* subroot, int pid);
+	bool rec_search(Process* subroot, int pid, Process*& p);
+	void rec_mark_orphan(Process* subroot);
+	int rec_get_count_fork(Process* subroot);
 	void cpyTree(const Process& p);
 
 
 public:
-	Process(int at, int id, int ct, int STT, int ior, int iod); //Other data members are either calculate or recieved after creation
+	Process(int at, int id, int ct, int STT); //Other data members are either calculated or recieved after creation
 	Process();
 	//Public setters
 	void set_PID(int id);
@@ -63,7 +64,7 @@ public:
 	void set_TT(int tt);
 	void set_state(int STT);
 	void set_IO(int ior, int iod);
-	void set_SIGKILL(bool signal);
+	void set_sig_kill(bool signal);
 
 	//getters
 	int get_PID();
@@ -75,8 +76,8 @@ public:
 	int get_WT();
 	int get_state();
 	bool get_IO(IO*& io);
-	bool get_SIGKILL();
-	void Load(ifstream& Infile); // load its data mem from input file
+	bool get_sig_kill();
+	void Load(ifstream& Infile); // load its data members from input file
 
 	//Print ID
 	friend ostream& operator<<(ostream& os, Process& p);
@@ -87,14 +88,14 @@ public:
 	bool get_rch(Process*& p);
 	int get_count_fork();
 
-		//Fork Tree operations
-	void insertCh(Process* p);
+	//Fork Tree operations
+	void insert_ch(Process* p);
 	bool remove(int pid);
+	bool search(int pid, Process*& p);
+	void mark_orphan(int pid_parent);
 
 	//cpy ctor
 	Process(const Process& other);
-
-	//Assignment op. overload???????
 
 	~Process();
 };

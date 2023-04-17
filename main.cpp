@@ -3,7 +3,7 @@
 using namespace std;
 
 int main() {
-	//ui mode
+	//UI mode
 	int mode;
 	cout << "Please enter operation mode {0, 1, 2}: ";
 	cin >> mode;
