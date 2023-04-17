@@ -7,7 +7,6 @@ Process::Process(int at, int id, int ct, int stt) {
 	set_AT(at);
 	set_CT(ct);
 	set_state(stt);
-	ioData = nullptr;
 	set_RT(-1);		//-1 indicates that process has never entered CPU
 	set_sig_kill(false);
 	//Fork Tree
@@ -17,7 +16,6 @@ Process::Process(int at, int id, int ct, int stt) {
 Process::Process() {
 	set_RT(-1);		//-1 indicates that process has never entered CPU
 	set_sig_kill(false);
-	ioData = nullptr;
 	//Fork Tree
 	lch = nullptr;
 	rch = nullptr;
@@ -58,11 +56,16 @@ void Process::set_state(int stt) {
 	state = stt;
 }
 void Process::set_IO(int ior, int iod) {
-	ioData = new IO(iod, ior);
+	IO* ioData = new IO(iod, ior);
 	ioQ.enqueue(ioData);
 }
 void Process::set_sig_kill(bool signal) {
 	SIGKILL = signal;
+}
+
+void Process::set_has_moved(bool motion)
+{
+	has_moved = motion;
 }
 
 //getters
@@ -90,16 +93,23 @@ int Process::get_WT() {
 int Process::get_state() {
 	return state;
 }
+bool Process::peek_io(IO*& io) {
+	return ioQ.peek(io);
+}
 bool Process::get_IO(IO*& io) {
 	return ioQ.dequeue(io);
 }
 bool Process::get_sig_kill() {
 	return SIGKILL;
 }
+bool Process::get_has_moved()
+{
+	return has_moved;
+}
 void Process::Load(ifstream& Infile)
 {
 	Infile >> AT >> PID >> CT >> N_IO;
-	ioData = new IO;
+	IO* ioData = new IO;
 	for (int i = 0; i < N_IO; i++) {
 		char c1, c2;
 		Infile >> c1 >> ioData->IO_R >> c2 >> ioData->IO_D >> c1 >> c2;
@@ -123,6 +133,11 @@ ostream& operator<<(ostream& os, Process& p) {
 
 //Fork Tree Methods
 	//Tree getters
+int Process::get_count_fork() {
+	//Currently a process can only fork once
+	return rec_get_count_fork(lch);
+}
+
 bool Process::get_lch(Process*& p) {
 	p = lch;
 	return lch != nullptr;
@@ -131,11 +146,6 @@ bool Process::get_lch(Process*& p) {
 bool Process::get_rch(Process*& p) {
 	p = rch;
 	return rch != nullptr;
-}
-
-int Process::get_count_fork() {
-	//Currently a process can only fork once
-	return rec_get_count_fork(lch);
 }
 
 //Fork tree operations
@@ -158,6 +168,11 @@ void Process::mark_orphan(int pid_parent)
 	if (search(pid_parent, p)) {
 		rec_mark_orphan(p->lch);
 	}
+}
+
+bool Process::hasCh()
+{
+	return (lch != nullptr || rch != nullptr);
 }
 
 //Fork tree assisting recursive functions
@@ -230,10 +245,11 @@ Process::Process(const Process& other) {
 	state = other.state;
 	//cpy IO data
 	N_IO = other.N_IO;
-	ioData = new IO(*other.ioData);
 	ioQ = LinkedQueue<IO>(other.ioQ);
 	//cpy kill signal
 	SIGKILL = other.SIGKILL;
+	//Motion status
+	has_moved = other.has_moved;
 	//cpy Fork Tree
 	cpyTree(other);
 }
