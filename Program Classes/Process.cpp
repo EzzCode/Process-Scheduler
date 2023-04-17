@@ -2,25 +2,23 @@
 
 int Process::last_id = 0;
 
-Process::Process(int at, int id, int ct, int STT) {
+Process::Process(int at, int id, int ct, int stt) {
 	set_PID(id);
 	set_AT(at);
 	set_CT(ct);
-	set_state(STT);
-	ioData = new IO;
+	set_state(stt);
+	ioData = nullptr;
 	set_RT(-1);		//-1 indicates that process has never entered CPU
 	set_sig_kill(false);
 	//Fork Tree
-	parent = nullptr;
 	lch = nullptr;
 	rch = nullptr;
 }
 Process::Process() {
 	set_RT(-1);		//-1 indicates that process has never entered CPU
 	set_sig_kill(false);
-	ioData = new IO;
+	ioData = nullptr;
 	//Fork Tree
-	parent = nullptr;
 	lch = nullptr;
 	rch = nullptr;
 }
@@ -56,8 +54,8 @@ void Process::set_TRT() {
 void Process::set_WT() {
 	WT = get_TRT() - get_CT();
 }
-void Process::set_state(int STT) {
-	state = STT;
+void Process::set_state(int stt) {
+	state = stt;
 }
 void Process::set_IO(int ior, int iod) {
 	ioData = new IO(iod, ior);
@@ -101,6 +99,7 @@ bool Process::get_sig_kill() {
 void Process::Load(ifstream& Infile)
 {
 	Infile >> AT >> PID >> CT >> N_IO;
+	ioData = new IO;
 	for (int i = 0; i < N_IO; i++) {
 		char c1, c2;
 		Infile >> c1 >> ioData->IO_R >> c2 >> ioData->IO_D >> c1 >> c2;
@@ -110,7 +109,12 @@ void Process::Load(ifstream& Infile)
 		}
 	}
 	last_id++;
+	set_RT(-1);
 	set_state(0);
+	set_sig_kill(false);
+	//Fork Tree
+	lch = nullptr;
+	rch = nullptr;
 }
 //Print ID
 ostream& operator<<(ostream& os, Process& p) {
