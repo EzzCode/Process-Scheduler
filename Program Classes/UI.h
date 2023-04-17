@@ -10,15 +10,7 @@
 class UI
 {
 private:
-	int tStep;
-	int runCount;
-	int prcsrCount;
 	int mode;
-	bool isRunning;
-	Processor** prcsrList;
-	LinkedQueue<Process> BlkList;
-	LinkedQueue<Process> TrmList;
-	void PrintScreen();
 public:
 	UI();
 	void set_mode(int val);

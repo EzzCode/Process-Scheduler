@@ -44,7 +44,7 @@ void Scheduler::simulate() {
 		RDYtoRUN();
 		RUNAlgo();
 		BLKAlgo();
-		//randKill();
+		randKill();
 		printTerminal();
 		timeStep++;
 	}
@@ -65,7 +65,7 @@ void Scheduler::fileLoading()
 		myProcess->Load(Infile);
 		NewList.enqueue(myProcess);
 	}
-	// processor creation
+	//processor creation
 	for (int i = 0; i < NF; i++)
 	{
 		myProcessor = new FCFS(this);
@@ -126,7 +126,7 @@ void Scheduler::RUNAlgo() {
 
 //Step 4
 void Scheduler::BLKAlgo() {
-	Process* p;
+	Process* p = nullptr;
 	bool canPeek = BlkList.peek(p);
 	if (RNG() < 10 && canPeek) {
 		BlkList.dequeue(p);
@@ -139,8 +139,9 @@ void Scheduler::BLKAlgo() {
 
 //Step 5
 void Scheduler::randKill() {
+	int pID = rand() % noProcesses + 1;
 	for (int i = 0; i < NF; i++) {
-		processorList[i]->ScheduleAlgo();
+		processorList[i]->RDYKill(pID);
 	}
 }
 
@@ -213,7 +214,7 @@ void Scheduler::setStats()
 		AvgTRT += p->get_TRT();
 		AvgRT += p->get_RT();
 		AvgWT += p->get_WT();
-		ForkCount += p->get_count();
+		ForkCount += p->get_count_fork();
 	}
 	AvgTRT = (float)AvgTRT / noProcesses;
 	AvgRT = (float)AvgRT / noProcesses;

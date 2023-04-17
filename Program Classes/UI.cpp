@@ -1,11 +1,7 @@
 #include "UI.h"
+
 UI::UI() {
-	tStep = 0;
-	runCount = 0;
-	prcsrCount = 0;
 	set_mode(-1);
-	isRunning = false;
-	prcsrList = nullptr;
 }
 
 void UI::set_mode(int val) {
@@ -13,17 +9,10 @@ void UI::set_mode(int val) {
 }
 
 
-void UI::updateTerminal(int timestep, Processor** processorList, int processorCount, LinkedQueue<Process>& Blk, LinkedQueue<Process>& Trm) {
-	tStep = timestep;
-	prcsrList = processorList;
-	prcsrCount = processorCount;
-	BlkList = LinkedQueue<Process>(Blk);
-	TrmList = LinkedQueue<Process>(Trm);
-	runCount = 0;
-	PrintScreen();
-}
-
-void UI::PrintScreen() {
+void UI::updateTerminal(int tStep, Processor** prcsrList, int prcsrCount, LinkedQueue<Process>& BlkList, LinkedQueue<Process>& TrmList) {
+	int runCount = 0;
+	bool firstRun = true;
+	bool isRunning = false;
 	//Tstep
 	cout << "Current Timestep: " << tStep << endl;
 	//RDY
@@ -44,14 +33,14 @@ void UI::PrintScreen() {
 	//RUN
 	cout << "---------------------     RUN processes   -----------------------" << endl;
 	cout << runCount << " RUN: ";
-	bool firstRun = true;
 	for (int i = 0; i < prcsrCount; i++) {
 		isRunning = prcsrList[i]->getstate() == 0;
 		if (isRunning) {
 			if (!firstRun) {
 				cout << ", ";
 			}
-			cout << (prcsrList[i]) << "(P" << i + 1 << ")";
+			prcsrList[i]->printRUN();
+			cout << "(P" << i + 1 << ")";
 			firstRun = false;
 		}
 	}
