@@ -46,7 +46,7 @@ private:
 
 	//Assisting recursive functions
 	void rec_insert_ch(Process* subroot, Process* p);
-	bool rec_remove(Process* subroot, int pid);
+	bool rec_remove_subtree(Process* subroot, int pid);
 	bool rec_search(Process* subroot, int pid, Process*& p);
 	void rec_mark_orphan(Process* subroot);
 	int rec_get_count_fork(Process* subroot);
@@ -87,6 +87,7 @@ public:
 	friend ostream& operator<<(ostream& os, Process& p);
 
 	//Fork Tree Methods
+	//Fork Tree is used to keep track of ancestors & descendant and update them if needed
 		//Tree getters
 	Process* get_parent();
 	Process* get_lch();
@@ -95,7 +96,7 @@ public:
 
 	//Fork Tree operations
 	void insert_ch(Process* p);
-	bool remove(int pid);
+	bool remove_subtree(int pid);
 	bool search(int pid, Process*& p);
 	void mark_orphan(int pid_parent);
 	bool hasCh();
