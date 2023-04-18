@@ -10,6 +10,7 @@ Process::Process(int at, int id, int ct, int stt) {
 	set_RT(-1);		//-1 indicates that process has never entered CPU
 	set_sig_kill(false);
 	//Fork Tree
+	parent = nullptr;
 	lch = nullptr;
 	rch = nullptr;
 }
@@ -17,6 +18,7 @@ Process::Process() {
 	set_RT(-1);		//-1 indicates that process has never entered CPU
 	set_sig_kill(false);
 	//Fork Tree
+	parent = nullptr;
 	lch = nullptr;
 	rch = nullptr;
 }
@@ -138,26 +140,29 @@ int Process::get_count_fork() {
 	return rec_get_count_fork(lch);
 }
 
-bool Process::get_lch(Process*& p) {
-	p = lch;
-	return lch != nullptr;
+Process* Process::get_parent()
+{
+	return parent;
 }
 
-bool Process::get_rch(Process*& p) {
-	p = rch;
-	return rch != nullptr;
+Process* Process::get_lch() {
+	return lch;
+}
+
+Process* Process::get_rch() {
+	return rch;
 }
 
 //Fork tree operations
 void Process::insert_ch(Process* p) {
-	rec_insert_ch(this, p);
+	if (p) rec_insert_ch(this, p);
 }
 bool Process::remove(int pid) {
 	bool removed = rec_remove(this, pid);
 	return removed;
 }
 
-bool Process::search(int pid, Process*&p)
+bool Process::search(int pid, Process*& p)
 {
 	return rec_search(this, pid, p);
 }
@@ -184,8 +189,9 @@ int Process::rec_get_count_fork(Process* subroot)
 }
 
 void Process::rec_insert_ch(Process* subroot, Process* p) {
-	if (!subroot->lch || subroot->get_state() == 4) {
+	if (!subroot->lch || subroot->lch->get_state() == 4) {
 		subroot->lch = p;
+		p->parent = subroot;
 		return;
 	}
 	//Currently a process can only fork once
@@ -220,16 +226,6 @@ void Process::rec_mark_orphan(Process* subroot) {
 	subroot->set_state(5);
 }
 
-void Process::cpyTree(const Process& p)
-{
-	if (!p.lch) return;
-	Process* temp = new Process(*p.lch);
-	while (temp) {
-		insert_ch(temp);
-		temp = temp->lch;
-	}
-}
-
 //copy ctor
 Process::Process(const Process& other) {
 	//cpy ID
@@ -251,7 +247,13 @@ Process::Process(const Process& other) {
 	//Motion status
 	has_moved = other.has_moved;
 	//cpy Fork Tree
-	cpyTree(other);
+	//Assumes only one fork is done per lifetime
+	parent = other.parent;
+	if (parent) parent->lch = this;
+	if (other.lch) {
+		other.lch->parent = this;
+		lch = other.lch;
+	}
 }
 
 
