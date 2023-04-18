@@ -33,6 +33,7 @@ private:
 	bool SIGKILL;
 
 	//Fork Tree
+	Process* parent;
 	Process* lch;
 	Process* rch;
 
@@ -49,7 +50,6 @@ private:
 	bool rec_search(Process* subroot, int pid, Process*& p);
 	void rec_mark_orphan(Process* subroot);
 	int rec_get_count_fork(Process* subroot);
-	void cpyTree(const Process& p);
 
 
 public:
@@ -88,8 +88,9 @@ public:
 
 	//Fork Tree Methods
 		//Tree getters
-	bool get_lch(Process*& p);
-	bool get_rch(Process*& p);
+	Process* get_parent();
+	Process* get_lch();
+	Process* get_rch();
 	int get_count_fork();
 
 	//Fork Tree operations
