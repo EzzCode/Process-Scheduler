@@ -157,8 +157,8 @@ Process* Process::get_rch() {
 void Process::insert_ch(Process* p) {
 	if (p) rec_insert_ch(this, p);
 }
-bool Process::remove(int pid) {
-	bool removed = rec_remove(this, pid);
+bool Process::remove_subtree(int pid) {
+	bool removed = rec_remove_subtree(this, pid);
 	return removed;
 }
 
@@ -197,7 +197,7 @@ void Process::rec_insert_ch(Process* subroot, Process* p) {
 	//Currently a process can only fork once
 	rec_insert_ch(subroot->lch, p);
 }
-bool Process::rec_remove(Process* subroot, int pid) {
+bool Process::rec_remove_subtree(Process* subroot, int pid) {
 	if (!subroot) return false;
 	int id = subroot->get_PID();
 	if (id == pid) {
@@ -205,7 +205,7 @@ bool Process::rec_remove(Process* subroot, int pid) {
 		return true;
 	}
 	//Currently a process can only fork once
-	return rec_remove(subroot->lch, pid);
+	return rec_remove_subtree(subroot->lch, pid);
 }
 bool Process::rec_search(Process* subroot, int pid, Process*& p)
 {
