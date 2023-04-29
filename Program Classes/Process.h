@@ -33,6 +33,7 @@ private:
 	bool SIGKILL;
 
 	//Fork Tree
+	Process* parent;
 	Process* lch;
 	Process* rch;
 
@@ -45,11 +46,10 @@ private:
 
 	//Assisting recursive functions
 	void rec_insert_ch(Process* subroot, Process* p);
-	bool rec_remove(Process* subroot, int pid);
+	bool rec_remove_subtree(Process* subroot, int pid);
 	bool rec_search(Process* subroot, int pid, Process*& p);
 	void rec_mark_orphan(Process* subroot);
 	int rec_get_count_fork(Process* subroot);
-	void cpyTree(const Process& p);
 
 
 public:
@@ -87,14 +87,16 @@ public:
 	friend ostream& operator<<(ostream& os, Process& p);
 
 	//Fork Tree Methods
+	//Fork Tree is used to keep track of ancestors & descendant and update them if needed
 		//Tree getters
-	bool get_lch(Process*& p);
-	bool get_rch(Process*& p);
+	Process* get_parent();
+	Process* get_lch();
+	Process* get_rch();
 	int get_count_fork();
 
 	//Fork Tree operations
 	void insert_ch(Process* p);
-	bool remove(int pid);
+	bool remove_subtree(int pid);
 	bool search(int pid, Process*& p);
 	void mark_orphan(int pid_parent);
 	bool hasCh();
