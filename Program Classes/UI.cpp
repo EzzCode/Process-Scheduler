@@ -6,13 +6,17 @@ UI::UI() {
 
 void UI::set_mode(int val) {
 	mode = val;
+	//If Silent mode
+	if (mode == 2) {
+		cout << "Silent Mode...................     Simulation starts..." << endl;
+	}
 }
 
 
 void UI::updateTerminal(int tStep, Processor** prcsrList, int prcsrCount, LinkedQueue<Process>& BlkList, LinkedQueue<Process>& TrmList) {
+	if (mode == 2) return;
 	int runCount = 0;
 	bool firstRun = true;
-	bool isRunning = false;
 	//Tstep
 	cout << "Current Timestep: " << tStep << endl;
 	//RDY
@@ -23,7 +27,7 @@ void UI::updateTerminal(int tStep, Processor** prcsrList, int prcsrCount, Linked
 		cout << endl;
 
 		//To get RUN count
-		if (prcsrList[i]->getstate() == 0) runCount++;
+		if (prcsrList[i]->isRunning()) runCount++;
 	}
 	//BLK
 	cout << "---------------------     BLK processes   -----------------------" << endl;
@@ -34,8 +38,7 @@ void UI::updateTerminal(int tStep, Processor** prcsrList, int prcsrCount, Linked
 	cout << "---------------------     RUN processes   -----------------------" << endl;
 	cout << runCount << " RUN: ";
 	for (int i = 0; i < prcsrCount; i++) {
-		isRunning = prcsrList[i]->getstate() == 0;
-		if (isRunning) {
+		if (prcsrList[i]->isRunning()) {
 			if (!firstRun) {
 				cout << ", ";
 			}
@@ -50,10 +53,21 @@ void UI::updateTerminal(int tStep, Processor** prcsrList, int prcsrCount, Linked
 	cout << TrmList.GetCount() << " TRM: ";
 	TrmList.printInfo();
 	cout << endl;
-
-	cout << "PRESS ANY KEY TO MOVE TO NEXT STEP!" << endl;
-	system("pause > nul");
+	
+	//Time step end print
+	if (mode == 0) {
+		cout << "PRESS ANY KEY TO MOVE TO NEXT STEP!" << endl;
+		system("pause > nul");
+	}
+	else {
+		this_thread::sleep_for(chrono::seconds(1));
+	}
 	system("cls");
+}
+
+void UI::print_end()
+{
+	cout << "Simulation ends, Output file created" << endl;
 }
 
 UI::~UI() {}

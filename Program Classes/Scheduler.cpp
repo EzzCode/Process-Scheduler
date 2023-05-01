@@ -18,8 +18,6 @@ Scheduler::Scheduler(int modeVal)
 	ProcessorsCounter = 0;
 	mode = modeVal;
 
-	processorIdx = 0;
-
 	processorList = nullptr;
 	SQF = nullptr;
 	LQF = nullptr;
@@ -29,6 +27,7 @@ Scheduler::Scheduler(int modeVal)
 	//RNG SEED
 	srand(time(nullptr));
 
+	//UI initialization
 	initializeUI(modeVal);
 }
 
@@ -36,7 +35,7 @@ void Scheduler::initializeUI(int modeVal) {
 	ui.set_mode(mode);
 }
 
-//Simple Simulator Fn.
+//Simulator Fn.
 void Scheduler::simulate() {
 	fileLoading();
 	while (TrmList.GetCount() != noProcesses) {
@@ -48,6 +47,7 @@ void Scheduler::simulate() {
 		printTerminal();
 		timeStep++;
 	}
+	ui.print_end();
 }
 
 void Scheduler::fileLoading()
@@ -95,15 +95,15 @@ void Scheduler::fileLoading()
 
 //Step 1
 void Scheduler::NEWtoRDY() {
-	Process* p;
+	Process* p = nullptr;
 	bool canPeek = NewList.peek(p);
 	while (canPeek && p->get_AT() == timeStep) {
 		NewList.dequeue(p);
-		processorList[processorIdx]->moveToRDY(p);
 		int RT = p->get_AT() - timeStep;
 		p->set_RT(RT);
-		processorIdx++;
-		processorIdx = processorIdx % ProcessorsCounter;
+		//Find shortest prcsr
+		set_SQF_LQF();
+		SQF->moveToRDY(p);
 		p = nullptr;
 		//Recheck
 		canPeek = NewList.peek(p);
@@ -130,9 +130,9 @@ void Scheduler::BLKAlgo() {
 	bool canPeek = BlkList.peek(p);
 	if (RNG() < 10 && canPeek) {
 		BlkList.dequeue(p);
-		processorList[processorIdx]->moveToRDY(p);
-		processorIdx++;
-		processorIdx = processorIdx % ProcessorsCounter;
+		//Find shortest prcsr
+		set_SQF_LQF();
+		SQF->moveToRDY(p);
 		p = nullptr;
 	}
 }
@@ -177,6 +177,7 @@ void Scheduler::set_SQF_LQF()
 {
 	int max = INT_MIN;
 	int min = INT_MAX;
+	int id = 0;
 
 	for (int i = 0; i < ProcessorsCounter; i++)
 	{
@@ -185,8 +186,9 @@ void Scheduler::set_SQF_LQF()
 			LQF = processorList[i];
 			max = processorList[i]->getQueueLength();
 		}
-		else if (processorList[i]->getQueueLength() < min)
+		if (processorList[i]->getQueueLength() < min)
 		{
+			id = i;
 			SQF = processorList[i];
 			min = processorList[i]->getQueueLength();
 		}

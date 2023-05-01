@@ -13,30 +13,29 @@ FCFS::FCFS(Scheduler* pSch):Processor(pSch)
 
 void FCFS::moveToRDY(Process* Rptr)
 {
-	Rptr->set_state(1);
+	Qtime += Rptr->get_CT();
+	Rptr->set_state(1);			//Process state: RDY
 	RDY.InsertEnd(Rptr);
+	state = 0;					//Processor is busy
 }
 
 void FCFS::moveToRUN()
 {
-	//If idle
-	if (state == 1) {
+	if (!RUN && state == 0) {
 		RUN = RDY.GetHeadData();
-		if (RUN) {
-			RUN->set_state(2);
-			state = 0;
-		}
+		RUN->set_state(2);		//Process state: RUN
+		if (RDY.GetCount() == 0) state = 1;
 	}
 }
 
 void FCFS::moveToBLK() {
-	RUN->set_state(3);
+	RUN->set_state(3);			//Process state: BLK
 	pScheduler->schedToBLk(RUN);
 }
 
 void FCFS::moveToTRM(Process* p) {
 	Total_TRT += p->get_TRT();
-	p->set_state(4);
+	p->set_state(4);			//Process state: TRM
 	pScheduler->schedToTRM(p);
 }
 
@@ -48,19 +47,19 @@ void FCFS::ScheduleAlgo()
 	switch (choice)
 	{
 	case 0:
+		Qtime -= RUN->get_CT();
 		moveToBLK();
 		RUN = nullptr;
-		state = 1;
 		break;
 	case 1:
+		Qtime -= RUN->get_CT();
 		moveToRDY(RUN);
 		RUN = nullptr;
-		state = 1;
 		break;
 	case 2:
+		Qtime -= RUN->get_CT();
 		moveToTRM(RUN);
 		RUN = nullptr;
-		state = 1;
 		break;
 	default:
 		break;
@@ -72,7 +71,9 @@ void FCFS::RDYKill(int pID) {
 	Process* p = nullptr;
 	bool canKill = RDY.sig_kill(pID, p);
 	if (canKill) {
+		Qtime -= p->get_CT();
 		moveToTRM(p);
+		if (RDY.GetCount() == 0) state = 1;
 	}
 }
 
@@ -113,5 +114,10 @@ void FCFS::printRDY() {
 //Print RUN process
 void FCFS::printRUN() {
 	cout << *(RUN);
+}
+
+bool FCFS::isRunning()
+{
+	return (RUN != nullptr);
 }
 
