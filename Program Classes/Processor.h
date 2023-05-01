@@ -27,6 +27,7 @@ public:
 	virtual int getT_IDLE() = 0;
 	virtual void printRDY() = 0;
 	virtual void printRUN() = 0;
+	virtual bool isRunning() = 0;
 
 	//RNG
 	int RNG() {

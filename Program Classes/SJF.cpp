@@ -14,19 +14,18 @@ SJF::SJF(Scheduler* pSch):Processor(pSch)
 void SJF::moveToRDY(Process* Rptr)
 {
 	int priority = Rptr->get_CT();
-	Rptr->set_state(1);
+	Qtime += priority;
+	Rptr->set_state(1);			//Process state: RDY
 	RDY.enqueue(Rptr, priority);
+	state = 0;					//Processor is busy
 }
 
 void SJF::moveToRUN()
 {
-	//If idle
-	if (state == 1) {
-		bool check = RDY.dequeue(RUN);
-		if (check) {
-			RUN->set_state(2);
-			state = 0;
-		}
+	if (!RUN && state == 0) {
+		RDY.dequeue(RUN);
+		RUN->set_state(2);		//Process state: RUN
+		if (RDY.GetCount() == 0) state = 1;
 	}
 }
 
@@ -49,19 +48,19 @@ void SJF::ScheduleAlgo()
 	switch (choice)
 	{
 	case 0:
+		Qtime -= RUN->get_CT();
 		moveToBLK();
 		RUN = nullptr;
-		state = 1;
 		break;
 	case 1:
+		Qtime -= RUN->get_CT();
 		moveToRDY(RUN);
 		RUN = nullptr;
-		state = 1;
 		break;
 	case 2:
+		Qtime -= RUN->get_CT();
 		moveToTRM(RUN);
 		RUN = nullptr;
-		state = 1;
 		break;
 	default:
 		break;
@@ -106,4 +105,9 @@ void SJF::printRDY() {
 //Print RUN process
 void SJF::printRUN() {
 	cout << *(RUN);
+}
+
+bool SJF::isRunning()
+{
+	return (RUN != nullptr);
 }

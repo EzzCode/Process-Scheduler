@@ -11,48 +11,20 @@ RR::RR(Scheduler* pSch):Processor(pSch)
 	RUN = nullptr;
 }
 
-void RR::ScheduleAlgo()
-{
-	if (!RUN) return;
-	int choice = decide();
-	//0 -> go BLK, 1 -> go RDY, 2 -> go TRM, 3 -> stay RUN
-	switch (choice)
-	{
-	case 0:
-		moveToBLK();
-		RUN = nullptr;
-		state = 1;
-		break;
-	case 1:
-		moveToRDY(RUN);
-		RUN = nullptr;
-		state = 1;
-		break;
-	case 2:
-		moveToTRM(RUN);
-		RUN = nullptr;
-		state = 1;
-		break;
-	default:
-		break;
-	}
-}
-
 void RR::moveToRDY(Process* Rptr)
 {
-	Rptr->set_state(1);
+	Qtime += Rptr->get_CT();
+	Rptr->set_state(1);			//Process state: RDY
 	RDY.enqueue(Rptr);
+	state = 0;					//Processor is busy
 }
 
 void RR::moveToRUN()
 {
-	//If idle
-	if (state == 1) {
-		bool check = RDY.dequeue(RUN);
-		if (check) {
-			RUN->set_state(2);
-			state = 0;
-		}
+	if (!RUN && state == 0) {
+		RDY.dequeue(RUN);
+		RUN->set_state(2);		//Process state: RUN
+		if (RDY.GetCount() == 0) state = 1;
 	}
 }
 
@@ -65,6 +37,33 @@ void RR::moveToTRM(Process* p) {
 	Total_TRT += p->get_TRT();
 	p->set_state(4);
 	pScheduler->schedToTRM(p);
+}
+
+void RR::ScheduleAlgo()
+{
+	if (!RUN) return;
+	int choice = decide();
+	//0 -> go BLK, 1 -> go RDY, 2 -> go TRM, 3 -> stay RUN
+	switch (choice)
+	{
+	case 0:
+		Qtime -= RUN->get_CT();
+		moveToBLK();
+		RUN = nullptr;
+		break;
+	case 1:
+		Qtime -= RUN->get_CT();
+		moveToRDY(RUN);
+		RUN = nullptr;
+		break;
+	case 2:
+		Qtime -= RUN->get_CT();
+		moveToTRM(RUN);
+		RUN = nullptr;
+		break;
+	default:
+		break;
+	}
 }
 
 int RR::getQueueLength()
@@ -105,4 +104,9 @@ void RR::printRDY() {
 //Print RUN process
 void RR::printRUN() {
 	cout << *(RUN);
+}
+
+bool RR::isRunning()
+{
+	return (RUN != nullptr);
 }
