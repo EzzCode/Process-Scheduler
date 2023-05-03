@@ -28,5 +28,6 @@ public:
 	virtual int getT_IDLE();
 	virtual void printRDY();
 	virtual void printRUN();
+	virtual bool isRunning();
 	~RR() {};
 };

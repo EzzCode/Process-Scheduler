@@ -37,9 +37,6 @@ class Scheduler
 		float AvgRT;
 		float AvgTRT;
 
-		//To keep track of the upcoming processor
-		int processorIdx;
-
 		Processor* myProcessor;			// Processor ptr for processor creation
 		Process* myProcess;				// process ptr for process creation
 		LinkedQueue<Process> NewList;
