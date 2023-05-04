@@ -130,6 +130,7 @@ void Process::Load(ifstream& Infile)
 		}
 	}
 	last_id++;
+	set_timer(CT);
 	set_RT(-1);
 	set_state(0);
 	set_sig_kill(false);
@@ -244,6 +245,7 @@ Process::Process(const Process& other) {
 	AT = other.AT;
 	RT = other.RT;
 	CT = other.CT;
+	timer = other.timer;
 	TT = other.TT;
 	TRT = other.TRT;
 	WT = other.WT;
