@@ -6,6 +6,7 @@ Process::Process(int at, int id, int ct, int stt) {
 	set_PID(id);
 	set_AT(at);
 	set_CT(ct);
+	set_timer(ct);
 	set_state(stt);
 	set_RT(-1);		//-1 indicates that process has never entered CPU
 	set_sig_kill(false);
@@ -42,6 +43,10 @@ void Process::set_RT(int rt) {
 }
 void Process::set_CT(int ct) {
 	CT = ct;
+}
+void Process::set_timer(int t)
+{
+	timer = t;
 }
 void Process::set_TT(int tt) {
 	TT = tt;
@@ -82,6 +87,10 @@ int Process::get_RT() {
 }
 int Process::get_CT() {
 	return CT;
+}
+int Process::get_timer()
+{
+	return timer;
 }
 int Process::get_TT() {
 	return TT;
@@ -128,6 +137,7 @@ void Process::Load(ifstream& Infile)
 	lch = nullptr;
 	rch = nullptr;
 }
+
 //Print ID
 ostream& operator<<(ostream& os, Process& p) {
 	return os << p.get_PID();

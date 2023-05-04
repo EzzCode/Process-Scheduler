@@ -17,6 +17,7 @@ private:
 	int AT;		//Arrival time
 	int RT;		//Response time
 	int CT;		//CPU time
+	int timer;	//Timer to calculate remaining CPU time
 	int TT;		//Termination time
 	int TRT;	//Turnaround duration
 	int WT;		//Waiting time
@@ -62,6 +63,7 @@ public:
 	void set_AT(int at);
 	void set_RT(int rt);
 	void set_CT(int ct);
+	void set_timer(int t);
 	void set_TT(int tt);
 	void set_state(int stt);
 	void set_IO(int ior, int iod);
@@ -73,6 +75,7 @@ public:
 	int get_AT();
 	int get_RT();
 	int get_CT();
+	int get_timer();
 	int get_TT();
 	int get_TRT();
 	int get_WT();
