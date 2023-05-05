@@ -28,6 +28,8 @@ public:
 	virtual void printRDY() = 0;
 	virtual void printRUN() = 0;
 	virtual bool isRunning() = 0;
+	virtual void UpdateState() = 0;			//Updates State
+	virtual void TManager() = 0;			//Manages T_Busy and T_Idle for output statistics
 
 	//RNG
 	int RNG() {

@@ -110,3 +110,19 @@ bool RR::isRunning()
 {
 	return (RUN != nullptr);
 }
+
+void RR::UpdateState()
+{
+	if (!RUN && RDY.isEmpty())
+		state = 0;
+	else
+		state = 1;
+}
+
+void RR::TManager()
+{
+	if (state == 0)
+		T_BUSY++;
+	else
+		T_IDLE++;
+}

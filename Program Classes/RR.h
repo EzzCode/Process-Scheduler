@@ -29,5 +29,8 @@ public:
 	virtual void printRDY();
 	virtual void printRUN();
 	virtual bool isRunning();
+	virtual void UpdateState();
+	virtual void TManager();
+
 	~RR() {};
 };

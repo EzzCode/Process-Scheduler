@@ -121,3 +121,18 @@ bool FCFS::isRunning()
 	return (RUN != nullptr);
 }
 
+void FCFS::UpdateState()
+{
+	if (!RUN && RDY.GetCount()==0)
+		state = 0;
+	else
+		state = 1;
+}
+
+void FCFS::TManager()
+{
+	if (state == 0)
+		T_BUSY++;
+	else
+		T_IDLE++;
+}
