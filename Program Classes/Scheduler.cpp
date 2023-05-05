@@ -46,8 +46,16 @@ void Scheduler::simulate() {
 		randKill();
 		printTerminal();
 		timeStep++;
+		TManager();
 	}
 	ui.print_end();
+}
+
+void Scheduler::TManager()
+{
+	for (int i = 0; i < ProcessorsCounter; i++) {
+		processorList[i]->TManager();
+	}
 }
 
 void Scheduler::fileLoading()

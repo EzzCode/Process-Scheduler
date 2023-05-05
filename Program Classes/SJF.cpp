@@ -22,11 +22,11 @@ void SJF::moveToRDY(Process* Rptr)
 
 void SJF::moveToRUN()
 {
-	if (!RUN && state == 0) {
+	if (!RUN && RDY.isEmpty()==false) {
 		RDY.dequeue(RUN);
 		RUN->set_state(2);		//Process state: RUN
-		if (RDY.GetCount() == 0) state = 1;
 	}
+	UpdateState();
 }
 
 void SJF::moveToBLK()
@@ -55,6 +55,7 @@ void SJF::ScheduleAlgo()
 			Qtime=Qtime-RUN->get_timer();
 			moveToBLK();
 			RUN = nullptr;
+			UpdateState();
 			break;
 		}
 		else
@@ -63,6 +64,7 @@ void SJF::ScheduleAlgo()
 			{
 				moveToTRM(RUN);
 				RUN = nullptr;
+				UpdateState();
 			}
 		}
 		if (RUN)
@@ -71,6 +73,7 @@ void SJF::ScheduleAlgo()
 				io->IO_R--;
 			RUN->set_timer(RUN->get_timer() - 1);
 			Qtime--;
+			UpdateState();
 		}
 		break;
 	case false:
@@ -78,11 +81,13 @@ void SJF::ScheduleAlgo()
 			{
 				moveToTRM(RUN);
 				RUN = nullptr;
+				UpdateState();
 			}
 			if (RUN)
 			{
 				RUN->set_timer(RUN->get_timer() - 1);
 				Qtime--;
+				UpdateState();
 			}
 			break;
 	default:
@@ -133,4 +138,20 @@ void SJF::printRUN() {
 bool SJF::isRunning()
 {
 	return (RUN != nullptr);
+}
+
+void SJF::UpdateState()
+{
+	if (!RUN && RDY.isEmpty())
+		state = 0;
+	else
+		state = 1;
+}
+
+void SJF::TManager()
+{
+	if (state == 0)
+		T_BUSY++;
+	else
+		T_IDLE++;
 }

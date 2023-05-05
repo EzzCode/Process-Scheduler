@@ -86,6 +86,7 @@ class Scheduler
 		void BLKAlgo();
 		void randKill();
 		void printTerminal();
+		void TManager();
 
 public:
 	Scheduler(int modeVal);
