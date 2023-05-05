@@ -45,7 +45,6 @@ void SJF::moveToTRM(Process* p)
 void SJF::ScheduleAlgo()
 {
 	if (!RUN) return;
-	//0 -> go BLK, 1 -> go RDY, 2 -> go TRM, 3 -> stay RUN
 	IO* io;
 	bool b = RUN->peek_io(io);
 	switch (b)
