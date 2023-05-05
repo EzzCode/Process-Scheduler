@@ -13,7 +13,7 @@ SJF::SJF(Scheduler* pSch):Processor(pSch)
 
 void SJF::moveToRDY(Process* Rptr)
 {
-	int priority = Rptr->get_CT();
+	int priority = Rptr->get_timer();
 	Qtime += priority;
 	Rptr->set_state(1);			//Process state: RDY
 	RDY.enqueue(Rptr, priority);
@@ -29,12 +29,14 @@ void SJF::moveToRUN()
 	}
 }
 
-void SJF::moveToBLK() {
+void SJF::moveToBLK()
+{
 	RUN->set_state(3);
 	pScheduler->schedToBLk(RUN);
 }
 
-void SJF::moveToTRM(Process* p) {
+void SJF::moveToTRM(Process* p)
+{
 	Total_TRT += p->get_TRT();
 	p->set_state(4);
 	pScheduler->schedToTRM(p);
@@ -43,25 +45,47 @@ void SJF::moveToTRM(Process* p) {
 void SJF::ScheduleAlgo()
 {
 	if (!RUN) return;
-	int choice = decide();
 	//0 -> go BLK, 1 -> go RDY, 2 -> go TRM, 3 -> stay RUN
-	switch (choice)
+	IO* io;
+	bool b = RUN->peek_io(io);
+	switch (b)
 	{
-	case 0:
-		Qtime -= RUN->get_CT();
-		moveToBLK();
-		RUN = nullptr;
+	case true:
+		if (RUN->peek_io(io) && io->IO_R == 0)
+		{
+			Qtime=Qtime-RUN->get_timer();
+			moveToBLK();
+			RUN = nullptr;
+			break;
+		}
+		else
+		{
+			if (RUN->get_timer() == 0)
+			{
+				moveToTRM(RUN);
+				RUN = nullptr;
+			}
+		}
+		if (RUN)
+		{
+			if (RUN->peek_io(io))
+				io->IO_R--;
+			RUN->set_timer(RUN->get_timer() - 1);
+			Qtime--;
+		}
 		break;
-	case 1:
-		Qtime -= RUN->get_CT();
-		moveToRDY(RUN);
-		RUN = nullptr;
-		break;
-	case 2:
-		Qtime -= RUN->get_CT();
-		moveToTRM(RUN);
-		RUN = nullptr;
-		break;
+	case false:
+			if (RUN->get_timer() == 0)
+			{
+				moveToTRM(RUN);
+				RUN = nullptr;
+			}
+			if (RUN)
+			{
+				RUN->set_timer(RUN->get_timer() - 1);
+				Qtime--;
+			}
+			break;
 	default:
 		break;
 	}

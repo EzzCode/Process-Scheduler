@@ -127,13 +127,23 @@ void Scheduler::RUNAlgo() {
 //Step 4
 void Scheduler::BLKAlgo() {
 	Process* p = nullptr;
+	IO* io;
 	bool canPeek = BlkList.peek(p);
-	if (RNG() < 10 && canPeek) {
-		BlkList.dequeue(p);
-		//Find shortest prcsr
-		set_SQF_LQF();
-		SQF->moveToRDY(p);
-		p = nullptr;
+	if (canPeek)
+	{
+		bool b = p->peek_io(io);
+		if (b && io->IO_D == 0)
+		{
+			BlkList.dequeue(p);
+			p->get_IO(io);
+			//Find shortest prcsr
+			set_SQF_LQF();
+			SQF->moveToRDY(p);
+			p = nullptr;
+			delete io;
+			io = NULL;
+		}
+		else   io->IO_D--;
 	}
 }
 
