@@ -55,8 +55,6 @@ void SJF::ScheduleAlgo()
 			Qtime=Qtime-RUN->get_timer();
 			moveToBLK();
 			RUN = nullptr;
-			UpdateState();
-			TManager();
 			break;
 		}
 		else
@@ -65,8 +63,6 @@ void SJF::ScheduleAlgo()
 			{
 				moveToTRM(RUN);
 				RUN = nullptr;
-				UpdateState();
-				TManager();
 			}
 		}
 		if (RUN)
@@ -75,8 +71,6 @@ void SJF::ScheduleAlgo()
 				io->IO_R--;
 			RUN->set_timer(RUN->get_timer() - 1);
 			Qtime--;
-			UpdateState();
-			TManager();
 		}
 		break;
 	case false:
@@ -84,20 +78,18 @@ void SJF::ScheduleAlgo()
 			{
 				moveToTRM(RUN);
 				RUN = nullptr;
-				UpdateState();
-				TManager();
 			}
 			if (RUN)
 			{
 				RUN->set_timer(RUN->get_timer() - 1);
 				Qtime--;
-				UpdateState();
-				TManager();
 			}
 			break;
 	default:
 		break;
 	}
+	UpdateState();
+	TManager();
 }
 
 int SJF::getQueueLength()
