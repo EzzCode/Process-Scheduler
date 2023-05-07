@@ -63,27 +63,23 @@ void SJF::ScheduleAlgo()
 			{
 				moveToTRM(RUN);
 				RUN = nullptr;
+				break;
 			}
 		}
-		if (RUN)
-		{
 			if (RUN->peek_io(io))
 				io->IO_R--;
 			RUN->set_timer(RUN->get_timer() - 1);
 			Qtime--;
-		}
 		break;
 	case false:
 			if (RUN->get_timer() == 0)
 			{
 				moveToTRM(RUN);
 				RUN = nullptr;
+				break;
 			}
-			if (RUN)
-			{
 				RUN->set_timer(RUN->get_timer() - 1);
 				Qtime--;
-			}
 			break;
 	default:
 		break;
