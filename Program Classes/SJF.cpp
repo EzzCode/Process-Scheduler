@@ -1,7 +1,7 @@
 #include "Scheduler.h"
 #include "SJF.h"
 
-SJF::SJF(Scheduler* pSch):Processor(pSch)
+SJF::SJF(Scheduler* pSch) :Processor(pSch)
 {
 	state = 1;
 	Qtime = 0;
@@ -22,7 +22,7 @@ void SJF::moveToRDY(Process* Rptr)
 
 void SJF::moveToRUN()
 {
-	if (!RUN && RDY.isEmpty()==false) {
+	if (!RUN && RDY.isEmpty() == false) {
 		RDY.dequeue(RUN);
 		RUN->set_state(2);		//Process state: RUN
 	}
@@ -44,7 +44,10 @@ void SJF::moveToTRM(Process* p)
 
 void SJF::ScheduleAlgo()
 {
-	if (!RUN) return;
+	if (!RUN) {
+		TManager();
+		return;
+	}
 	IO* io;
 	bool b = RUN->peek_io(io);
 	switch (b)
@@ -52,7 +55,7 @@ void SJF::ScheduleAlgo()
 	case true:
 		if (RUN->peek_io(io) && io->IO_R == 0)
 		{
-			Qtime=Qtime-RUN->get_timer();
+			Qtime = Qtime - RUN->get_timer();
 			moveToBLK();
 			RUN = nullptr;
 			break;
@@ -72,20 +75,20 @@ void SJF::ScheduleAlgo()
 			Qtime--;
 		break;
 	case false:
-			if (RUN->get_timer() == 0)
-			{
-				moveToTRM(RUN);
-				RUN = nullptr;
-				break;
-			}
-				RUN->set_timer(RUN->get_timer() - 1);
-				Qtime--;
+		if (RUN->get_timer() == 0)
+		{
+			moveToTRM(RUN);
+			RUN = nullptr;
 			break;
+		}
+			RUN->set_timer(RUN->get_timer() - 1);
+			Qtime--;
+		break;
 	default:
 		break;
 	}
-	UpdateState();
 	TManager();
+	UpdateState();
 }
 
 int SJF::getQueueLength()

@@ -1,7 +1,7 @@
 #include "Scheduler.h"
 #include "FCFS.h"
 
-FCFS::FCFS(Scheduler* pSch):Processor(pSch)
+FCFS::FCFS(Scheduler* pSch) :Processor(pSch)
 {
 	state = 1;
 	Qtime = 0;
@@ -47,9 +47,10 @@ void FCFS::ScheduleAlgo()
 	switch (choice)
 	{
 	case 0:
-		Qtime -= RUN->get_CT();
+		//Commented because the BLKAlgo has been updated but here FCFS is still depending on probability
+		/*Qtime -= RUN->get_CT();
 		moveToBLK();
-		RUN = nullptr;
+		RUN = nullptr;*/
 		break;
 	case 1:
 		Qtime -= RUN->get_CT();
@@ -64,6 +65,9 @@ void FCFS::ScheduleAlgo()
 	default:
 		break;
 	}
+
+	//Forking
+	if(RUN) pScheduler->fork(RUN);
 }
 
 //Random RDY Kill
@@ -85,7 +89,7 @@ int FCFS::getQueueLength()
 
 float FCFS::getpUtil()
 {
-	return (float)T_BUSY/(T_BUSY + T_IDLE);
+	return (float)T_BUSY / (T_BUSY + T_IDLE);
 }
 
 int FCFS::getstate()
@@ -107,7 +111,7 @@ int FCFS::getT_IDLE()
 }
 
 void FCFS::printRDY() {
-	cout<< "[FCFS]" << ": " << RDY.GetCount() << " RDY: ";
+	cout << "[FCFS]" << ": " << RDY.GetCount() << " RDY: ";
 	RDY.printInfo();
 }
 

@@ -61,9 +61,11 @@ class Scheduler
 		float getSTL_limit();
 
 		//SQF & LQF
-		void set_SQF_LQF();
-		int getSQF_time();
-		int getLQF_time();
+		//The variable section decides which section of processors to search in
+		//Section 0 is full loop, 1 is FCFS, 2 is SJF, 3 is RR
+		void set_SQF_LQF(int section);
+		int getSQF_time(int section);
+		int getLQF_time(int section);
 		
 		//Statistics
 		void setStats();
@@ -89,7 +91,8 @@ class Scheduler
 
 public:
 	Scheduler(int modeVal);
-	void simulate();					//Simple Simulator Fn.
+	void simulate();					//Simulator Fn.
+	void fork(Process* parent);			//Fork
 	void schedToTRM(Process* p);
 	void schedToBLk(Process* p);
 	~Scheduler();
