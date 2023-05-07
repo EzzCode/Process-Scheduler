@@ -47,9 +47,10 @@ void RR::ScheduleAlgo()
 	switch (choice)
 	{
 	case 0:
-		Qtime -= RUN->get_CT();
+		//Commented because the BLKAlgo has been updated but here FCFS is still depending on probability
+		/*Qtime -= RUN->get_CT();
 		moveToBLK();
-		RUN = nullptr;
+		RUN = nullptr;*/
 		break;
 	case 1:
 		Qtime -= RUN->get_CT();

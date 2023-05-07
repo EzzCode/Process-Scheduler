@@ -14,7 +14,8 @@ void UI::set_mode(int val) {
 
 
 void UI::updateTerminal(int tStep, Processor** prcsrList, int prcsrCount, LinkedQueue<Process>& BlkList, LinkedQueue<Process>& TrmList) {
-	if (mode == 2) return;
+	if (mode == 2) return;	//Silent mode doesn't print
+	system("cls");
 	int runCount = 0;
 	bool firstRun = true;
 	//Tstep
@@ -62,11 +63,11 @@ void UI::updateTerminal(int tStep, Processor** prcsrList, int prcsrCount, Linked
 	else {
 		this_thread::sleep_for(chrono::seconds(1));
 	}
-	system("cls");
 }
 
 void UI::print_end()
 {
+	system("cls");
 	cout << "Simulation ends, Output file created" << endl;
 }
 
