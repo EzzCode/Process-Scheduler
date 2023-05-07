@@ -69,10 +69,10 @@ void SJF::ScheduleAlgo()
 				break;
 			}
 		}
-			if (RUN->peek_io(io))
-				io->IO_R--;
-			RUN->set_timer(RUN->get_timer() - 1);
-			Qtime--;
+		if (RUN->peek_io(io))
+			io->IO_R--;
+		RUN->set_timer(RUN->get_timer() - 1);
+		Qtime--;
 		break;
 	case false:
 		if (RUN->get_timer() == 0)
@@ -81,8 +81,8 @@ void SJF::ScheduleAlgo()
 			RUN = nullptr;
 			break;
 		}
-			RUN->set_timer(RUN->get_timer() - 1);
-			Qtime--;
+		RUN->set_timer(RUN->get_timer() - 1);
+		Qtime--;
 		break;
 	default:
 		break;
