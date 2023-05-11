@@ -7,6 +7,36 @@ RR::RR(Scheduler* pSch):Processor(pSch)
 	Qtime = 0;
 	T_BUSY = 0;
 	T_IDLE = 0;
+	Total_TRT = 0;
+	RUN = nullptr;
+}
+
+void RR::moveToRDY(Process* Rptr)
+{
+	Qtime += Rptr->get_CT();
+	Rptr->set_state(1);			//Process state: RDY
+	RDY.enqueue(Rptr);
+	state = 0;					//Processor is busy
+}
+
+void RR::moveToRUN()
+{
+	if (!RUN && state == 0) {
+		RDY.dequeue(RUN);
+		RUN->set_state(2);		//Process state: RUN
+		if (RDY.GetCount() == 0) state = 1;
+	}
+}
+
+void RR::moveToBLK() {
+	RUN->set_state(3);
+	pScheduler->schedToBLk(RUN);
+}
+
+void RR::moveToTRM(Process* p) {
+	Total_TRT += p->get_TRT();
+	p->set_state(4);
+	pScheduler->schedToTRM(p);
 }
 
 void RR::ScheduleAlgo()
@@ -17,50 +47,24 @@ void RR::ScheduleAlgo()
 	switch (choice)
 	{
 	case 0:
+		//Commented because the BLKAlgo has been updated but here FCFS is still depending on probability
+		/*Qtime -= RUN->get_CT();
 		moveToBLK();
-		RUN = nullptr;
-		state = 1;
+		RUN = nullptr;*/
 		break;
 	case 1:
 		Qtime -= RUN->get_CT();
 		moveToRDY(RUN);
 		RUN = nullptr;
-		state = 1;
 		break;
 	case 2:
-		moveToTRM();
+		Qtime -= RUN->get_CT();
+		moveToTRM(RUN);
 		RUN = nullptr;
-		state = 1;
 		break;
 	default:
 		break;
 	}
-}
-
-void RR::moveToRDY(Process* Rptr)
-{
-	Qtime += Rptr->get_CT();
-	RDY.enqueue(Rptr);
-}
-
-void RR::moveToRUN()
-{
-	//If idle
-	if (state == 1) {
-		bool check = RDY.dequeue(RUN);
-		if (check) {
-			//Qtime -= RUN->get_CT();
-			state = 0;
-		}
-	}
-}
-
-void RR::moveToBLK() {
-	pScheduler->schedToBLk(RUN);
-}
-
-void RR::moveToTRM() {
-	pScheduler->schedToTRM(RUN);
 }
 
 int RR::getQueueLength()
@@ -74,9 +78,23 @@ float RR::getpUtil()
 	return (float)T_BUSY / (T_BUSY + T_IDLE);
 }
 
+float RR::getpLoad()
+{
+	return (float)T_BUSY / Total_TRT;
+}
+
 int RR::getstate()
 {
 	return state;
+}
+
+int RR::getT_BUSY()
+{
+	return T_BUSY;
+}
+int RR::getT_IDLE()
+{
+	return T_IDLE;
 }
 
 void RR::printRDY() {
@@ -85,6 +103,27 @@ void RR::printRDY() {
 }
 
 //Print RUN process
-void RR::printRUN(ostream& os) {
-	os << *(RUN);
+void RR::printRUN() {
+	cout << *(RUN);
+}
+
+bool RR::isRunning()
+{
+	return (RUN != nullptr);
+}
+
+void RR::UpdateState()
+{
+	if (!RUN && RDY.isEmpty())
+		state = 0;
+	else
+		state = 1;
+}
+
+void RR::TManager()
+{
+	if (state == 0)
+		T_BUSY++;
+	else
+		T_IDLE++;
 }

@@ -3,17 +3,17 @@
 using namespace std;
 
 int main() {
-	//ui mode
+	//UI mode
 	int mode;
-	cout << "please enter operation mode {0, 1, 2}: ";
+	cout << "Please enter operation mode {0, 1, 2}: ";
 	cin >> mode;
 	while (mode > 2 || mode < 0) {
-		cout << "error! enter a valid operation mode: ";
+		cout << "Error! enter a valid operation mode: ";
 		cin >> mode;
 	}
 	system("cls");
 
-	//simulate
+	//Simulate
 	Scheduler s = Scheduler(mode);
 	s.simulate();
 }

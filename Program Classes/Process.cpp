@@ -1,27 +1,27 @@
 #include "Process.h"
 
-Process::Process(int at, int id, int ct, int STT, int ior, int iod) {
+int Process::free_id = 0;
+
+Process::Process(int at, int id, int ct, int stt) {
 	set_PID(id);
 	set_AT(at);
 	set_CT(ct);
-	set_state(STT);
-	ioData = new IO;
-	set_IO(ior, iod);
+	set_timer(ct);
+	set_state(stt);
 	set_RT(-1);		//-1 indicates that process has never entered CPU
-	set_SIGKILL(false);
+	set_sig_kill(false);
 	//Fork Tree
+	parent = nullptr;
 	lch = nullptr;
 	rch = nullptr;
-	set_count(0);
 }
 Process::Process() {
 	set_RT(-1);		//-1 indicates that process has never entered CPU
-	set_SIGKILL(false);
-	ioData = new IO;
+	set_sig_kill(false);
 	//Fork Tree
+	parent = nullptr;
 	lch = nullptr;
 	rch = nullptr;
-	set_count(0);
 }
 //setters
 void Process::set_PID(int id) {
@@ -36,6 +36,10 @@ void Process::set_RT(int rt) {
 void Process::set_CT(int ct) {
 	CT = ct;
 }
+void Process::set_timer(int t)
+{
+	timer = t;
+}
 void Process::set_TT(int tt) {
 	TT = tt;
 	set_TRT();
@@ -47,15 +51,20 @@ void Process::set_TRT() {
 void Process::set_WT() {
 	WT = get_TRT() - get_CT();
 }
-void Process::set_state(int STT) {
-	state = STT;
+void Process::set_state(int stt) {
+	state = stt;
 }
 void Process::set_IO(int ior, int iod) {
-	ioData->IO_D = iod;
-	ioData->IO_R = ior;
+	IO* ioData = new IO(iod, ior);
+	ioQ.enqueue(ioData);
 }
-void Process::set_SIGKILL(bool signal) {
+void Process::set_sig_kill(bool signal) {
 	SIGKILL = signal;
+}
+
+void Process::set_has_moved(bool motion)
+{
+	has_moved = motion;
 }
 
 //getters
@@ -71,6 +80,10 @@ int Process::get_RT() {
 int Process::get_CT() {
 	return CT;
 }
+int Process::get_timer()
+{
+	return timer;
+}
 int Process::get_TT() {
 	return TT;
 }
@@ -83,100 +96,157 @@ int Process::get_WT() {
 int Process::get_state() {
 	return state;
 }
+bool Process::peek_io(IO*& io) {
+	return ioQ.peek(io);
+}
 bool Process::get_IO(IO*& io) {
 	return ioQ.dequeue(io);
 }
-bool Process::get_SIGKILL() {
+bool Process::get_sig_kill() {
 	return SIGKILL;
+}
+bool Process::get_has_moved()
+{
+	return has_moved;
 }
 void Process::Load(ifstream& Infile)
 {
 	Infile >> AT >> PID >> CT >> N_IO;
+	IO* ioData = new IO;
 	for (int i = 0; i < N_IO; i++) {
 		char c1, c2;
 		Infile >> c1 >> ioData->IO_R >> c2 >> ioData->IO_D >> c1 >> c2;
 		ioQ.enqueue(ioData);
 		if (i != N_IO - 1) {
-			//delete prev ioData?
 			ioData = new IO;
 		}
 	}
+	free_id++;
+	set_timer(CT);
+	set_RT(-1);
+	set_state(0);
+	set_sig_kill(false);
+	//Fork Tree
+	parent = nullptr;
+	lch = nullptr;
+	rch = nullptr;
 }
+
 //Print ID
 ostream& operator<<(ostream& os, Process& p) {
 	return os << p.get_PID();
 }
 
 //Fork Tree Methods
-	//Tree setters
-
-void Process::set_count(int val) {
-	count_forked = val;
-}
-	//Tree getters
-bool Process::get_lch(Process*& p) {
-	p = lch;
-	return lch != nullptr;
+//Private Tree getters
+Process* Process::get_parent()
+{
+	return parent;
 }
 
-bool Process::get_rch(Process*& p) {
-	p = rch;
-	return rch != nullptr;
+Process* Process::get_lch() {
+	return lch;
 }
 
-int Process::get_count() {
-	return count_forked;
+Process* Process::get_rch() {
+	return rch;
 }
 
-//Public Tree methods
-void Process::insertCh(Process* p) {
-	insertChHelper(lch, p);
-	set_count(get_count() + 1);
+//Fork tree operations
+int Process::get_count_fork() {
+	//Currently a process can only fork once
+	return rec_get_count_fork(lch) + rec_get_count_fork(rch);
 }
-bool Process::remove(int pid) {
-	bool removed = removeHelper(this, pid);
-	if (removed) {
-		set_count(get_count() - 1);
+
+bool Process::insert_ch(Process* p) {
+	if (!this->lch) {
+		this->lch = p;
+		p->parent = this;
+		p->set_PID(free_id);
+		free_id++;
+		return true;
 	}
+	else if (!this->rch) {
+		this->rch = p;
+		p->parent = this;
+		p->set_PID(free_id);
+		free_id++;
+		return true;
+	}
+	return false;
+}
+
+bool Process::remove_subtree(int pid) {
+	bool removed = rec_remove_subtree(this, pid);
 	return removed;
 }
 
-//Assisting recursive functions
-void Process::insertChHelper(Process*& subroot, Process* p) {
-	if (!subroot || subroot->get_state() == 4) {
-		subroot = p;
-		return;
-	}
-	//Currently a process can only fork once
-	insertChHelper(subroot->lch, p);
+bool Process::find(int pid, Process*& p)
+{
+	return rec_find(this, pid, p);
 }
-bool Process::removeHelper(Process* subroot, int pid) {
+
+void Process::mark_orphan(int pid_parent)
+{
+	Process* p = nullptr;
+	if (find(pid_parent, p)) {
+		rec_mark_orphan(p->lch);
+		rec_mark_orphan(p->rch);
+	}
+}
+
+bool Process::has_parent()
+{
+	return (parent != nullptr);
+}
+
+bool Process::has_single_ch()
+{
+	return (lch != nullptr || rch != nullptr);
+}
+
+bool Process::has_both_ch()
+{
+	return (lch != nullptr && rch != nullptr);
+}
+
+//Fork tree assisting recursive functions
+int Process::rec_get_count_fork(Process* subroot)
+{
+	if (!subroot || subroot->get_state() == 4 || subroot->get_state() == 5) return 0; //Check if NULL / TRM / ORPH
+	return 1 + rec_get_count_fork(subroot->lch) + rec_get_count_fork(subroot->rch);
+}
+
+bool Process::rec_remove_subtree(Process* subroot, int pid) {
 	if (!subroot) return false;
 	int id = subroot->get_PID();
 	if (id == pid) {
-		subroot->set_state(4);
-		markOrphan(subroot->lch);
+		rec_mark_orphan(subroot->lch);
+		rec_mark_orphan(subroot->rch);
 		return true;
 	}
-	//Currently a process can only fork once
-	return removeHelper(subroot->lch, pid);
+	return rec_remove_subtree(subroot->lch, pid) || rec_remove_subtree(subroot->rch, pid);
 }
-void Process::markOrphan(Process* subroot) {
-	if (!subroot) return;
-	markOrphan(subroot->lch);
-	subroot->set_state(5);
-}
-
-void Process::cpyTree(const Process& p)
+bool Process::rec_find(Process* subroot, int pid, Process*& p)
 {
-	Process* temp = p.lch;
-	while (temp) {
-		insertChHelper(lch, temp);
-		temp = temp->lch;
+	if (!subroot) {
+		return false;
 	}
+	if (subroot->PID == pid) {
+		p = subroot;
+		return true;
+	}
+	if (rec_find(subroot->lch, pid, p)) return true;
+	return rec_find(subroot->rch, pid, p);
+}
+void Process::rec_mark_orphan(Process* subroot) {
+	if (!subroot) return;
+	subroot->set_state(5);
+	rec_mark_orphan(subroot->lch);
+	rec_mark_orphan(subroot->rch);
 }
 
-//ctor
+//copy ctor
 Process::Process(const Process& other) {
 	//cpy ID
 	PID = other.PID;
@@ -184,6 +254,7 @@ Process::Process(const Process& other) {
 	AT = other.AT;
 	RT = other.RT;
 	CT = other.CT;
+	timer = other.timer;
 	TT = other.TT;
 	TRT = other.TRT;
 	WT = other.WT;
@@ -191,16 +262,20 @@ Process::Process(const Process& other) {
 	state = other.state;
 	//cpy IO data
 	N_IO = other.N_IO;
-	ioData = new IO(*other.ioData);
 	ioQ = LinkedQueue<IO>(other.ioQ);
 	//cpy kill signal
 	SIGKILL = other.SIGKILL;
+	//Motion status
+	has_moved = other.has_moved;
 	//cpy Fork Tree
-	count_forked = other.count_forked;
-	cpyTree(other);
+	//Assumes only one fork is done per lifetime
+	parent = other.parent;
+	if (parent) parent->lch = this;
+	if (other.lch) {
+		other.lch->parent = this;
+		lch = other.lch;
+	}
 }
 
 
-Process::~Process() {
-	//delete ioData?
-}
+Process::~Process() {}

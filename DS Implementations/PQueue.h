@@ -9,7 +9,7 @@ private:
 	PNode<Process>* frontPtr;
 	PNode<Process>* backPtr;
 	int count;
-	void UpdateBack()
+	void UpdateBack()			//Update the backPtr of the list
 	{
 		PNode<Process>* P = frontPtr;
 		if (P == NULL)
@@ -28,17 +28,17 @@ public:
 		count = 0;
 	}
 
-	bool isEmpty() const
+	bool isEmpty() const			//Checks whether Queue is empty or not
 	{
 		return (frontPtr == NULL);
 	}
 
-	bool enqueue(Process* newEntry)			//cam't enqueue without specifying priority
+	bool enqueue(Process* newEntry)			//can't enqueue without specifying priority
 	{
 		return false;
 	}
 
-	bool enqueue(Process* newEntry, int Pri)
+	bool enqueue(Process* newEntry, int Pri)		//adding a node to the Queue according to its priority
 	{
 		PNode<Process>* newNodePtr = new PNode<Process>(newEntry);
 		newNodePtr->SetPriority(Pri);
@@ -95,12 +95,11 @@ public:
 		}
 	}
 
-	bool dequeue(Process*& frntEntry)
+	bool dequeue(Process*& frntEntry)			//Dequeueing like the normal queue because queue is already sorted according to priorities
 	{
 		if (isEmpty()) return false;
 
 		PNode<Process>* nodeToDeletePtr = frontPtr;
-		//frntEntry = frontPtr->GetItem(); old : caused a bug where run became garbage 
 		frntEntry = new Process(*(frontPtr->GetItem()));
 		frontPtr = frontPtr->GetNext();
 		// Queue is not empty; remove front
@@ -114,7 +113,7 @@ public:
 
 	}
 
-	bool peek(Process*& frntEntry) const
+	bool peek(Process*& frntEntry) const			//copies the first node without dequeueing it
 	{
 		if (isEmpty())
 			return false;
@@ -130,7 +129,8 @@ public:
 		return count;
 	}
 
-	void printInfo() {
+	void printInfo()						//For Printing the Queue
+	{
 		PNode<Process>* ptr = frontPtr;
 		while (ptr) {
 			cout << *(ptr->GetItem());
@@ -139,7 +139,7 @@ public:
 		}
 	}
 
-	~PQueue()
+	~PQueue()						//Destructor
 	{
 		Process* temp;
 

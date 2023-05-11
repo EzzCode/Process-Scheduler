@@ -19,16 +19,23 @@ class Scheduler
 		int NS;
 		int NR;
 		int timeSlice;
-		int RTF;
-		int MaxW;
-		int STL;
+		int RTF;						//Remaining Time to finish
+		int MaxW;						//Maximum Wait time
+		int STL;						//Steal Time
 		int forkProb;
 		int noProcesses;				//number of processes
 		int ProcessorsCounter;			//just a counter for the creation
-		int mode;						//set print mode
-
-		//To keep track of the upcoming processor
-		int processorIdx;
+		int mode;						//print mode
+		
+		//statistics
+		int KillCount;
+		int ForkCount;
+		int STLCount;
+		int RTF_migCount;
+		int MaxW_migCount;
+		float AvgWT;
+		float AvgRT;
+		float AvgTRT;
 
 		Processor* myProcessor;			// Processor ptr for processor creation
 		Process* myProcess;				// process ptr for process creation
@@ -36,11 +43,11 @@ class Scheduler
 		LinkedQueue<Process> BlkList;
 		LinkedQueue<Process> TrmList;
 		Processor** processorList;
-		Processor* SQF;
-		Processor* LQF;
+		Processor* SQF;					// Processor ptr for shortest queue
+		Processor* LQF;					// Processor ptr for longest queue
 
-		int tSQF;
-		int tLQF;
+		int tSQF;						//Shortest queue finish time
+		int tLQF;						//Longest queue finish time
 
 		//SIGKILL Queue
 		LinkedQueue<sigKill> killQ;
@@ -49,6 +56,28 @@ class Scheduler
 		
 		//UI class
 		UI ui;
+
+		//Steal 
+		float getSTL_limit();
+
+		//SQF & LQF
+		//The variable section decides which section of processors to search in
+		//Section 0 is full loop, 1 is FCFS, 2 is SJF, 3 is RR
+		void set_SQF_LQF(int section);
+		int getSQF_time(int section);
+		int getLQF_time(int section);
+		
+		//Statistics
+		void setStats();
+		float getAvgWT();
+		float getAvgRT();
+		float getAvgTRT();
+		float getRTFpercent();
+		float getMaxWpercent();
+		float getForkedpercent();
+		float getKillpercent();
+		float getSTLpercent();
+
 
 		//Private Simulation methods
 		void initializeUI(int modeVal);
@@ -59,12 +88,11 @@ class Scheduler
 		void BLKAlgo();
 		void randKill();
 		void printTerminal();
-		
-		void properTerminate();
 
 public:
 	Scheduler(int modeVal);
-	void simulate();					//Simple Simulator Fn.
+	void simulate();					//Simulator Fn.
+	void fork(Process* parent);			//Fork
 	void schedToTRM(Process* p);
 	void schedToBLk(Process* p);
 	~Scheduler();

@@ -1,29 +1,23 @@
 #include "UI.h"
+
 UI::UI() {
-	tStep = 0;
-	runCount = 0;
-	prcsrCount = 0;
 	set_mode(-1);
-	isRunning = false;
-	prcsrList = nullptr;
 }
 
 void UI::set_mode(int val) {
 	mode = val;
+	//If Silent mode
+	if (mode == 2) {
+		cout << "Silent Mode...................     Simulation starts..." << endl;
+	}
 }
 
 
-void UI::updateTerminal(int timestep, Processor** processorList, int processorCount, LinkedQueue<Process>& Blk, LinkedQueue<Process>& Trm) {
-	tStep = timestep;
-	prcsrList = processorList;
-	prcsrCount = processorCount;
-	BlkList = LinkedQueue<Process>(Blk);
-	TrmList = LinkedQueue<Process>(Trm);
-	runCount = 0;
-	PrintScreen();
-}
-
-void UI::PrintScreen() {
+void UI::updateTerminal(int tStep, Processor** prcsrList, int prcsrCount, LinkedQueue<Process>& BlkList, LinkedQueue<Process>& TrmList) {
+	if (mode == 2) return;	//Silent mode doesn't print
+	system("cls");
+	int runCount = 0;
+	bool firstRun = true;
 	//Tstep
 	cout << "Current Timestep: " << tStep << endl;
 	//RDY
@@ -34,7 +28,7 @@ void UI::PrintScreen() {
 		cout << endl;
 
 		//To get RUN count
-		if (prcsrList[i]->getstate() == 0) runCount++;
+		if (prcsrList[i]->isRunning()) runCount++;
 	}
 	//BLK
 	cout << "---------------------     BLK processes   -----------------------" << endl;
@@ -44,14 +38,13 @@ void UI::PrintScreen() {
 	//RUN
 	cout << "---------------------     RUN processes   -----------------------" << endl;
 	cout << runCount << " RUN: ";
-	bool firstRun = true;
 	for (int i = 0; i < prcsrCount; i++) {
-		isRunning = prcsrList[i]->getstate() == 0;
-		if (isRunning) {
+		if (prcsrList[i]->isRunning()) {
 			if (!firstRun) {
 				cout << ", ";
 			}
-			cout << (prcsrList[i]) << "(P" << i + 1 << ")";
+			prcsrList[i]->printRUN();
+			cout << "(P" << i + 1 << ")";
 			firstRun = false;
 		}
 	}
@@ -61,10 +54,21 @@ void UI::PrintScreen() {
 	cout << TrmList.GetCount() << " TRM: ";
 	TrmList.printInfo();
 	cout << endl;
+	
+	//Time step end print
+	if (mode == 0) {
+		cout << "PRESS ANY KEY TO MOVE TO NEXT STEP!" << endl;
+		system("pause > nul");
+	}
+	else {
+		this_thread::sleep_for(chrono::seconds(1));
+	}
+}
 
-	cout << "PRESS ANY KEY TO MOVE TO NEXT STEP!" << endl;
-	system("pause > nul");
+void UI::print_end()
+{
 	system("cls");
+	cout << "Simulation ends, Output file created" << endl;
 }
 
 UI::~UI() {}

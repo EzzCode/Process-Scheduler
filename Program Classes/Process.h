@@ -10,11 +10,14 @@ class Process
 private:
 	//Process ID
 	int PID;
+	//Keep track of IDs
+	static int free_id;
 
 	//Times
 	int AT;		//Arrival time
 	int RT;		//Response time
 	int CT;		//CPU time
+	int timer;	//Timer to calculate remaining CPU time
 	int TT;		//Termination time
 	int TRT;	//Turnaround duration
 	int WT;		//Waiting time
@@ -25,74 +28,83 @@ private:
 
 	//Input/Output Request time & Duration
 	int N_IO;
-	IO* ioData;				//pointer placeholder for io data
-	LinkedQueue<IO> ioQ;	//Q contains all IOs the process will need
+	LinkedQueue<IO> ioQ;	//Queue contains all IOs the process will need
 
 	//Kill Signal
 	bool SIGKILL;
 
-	//Fork Tree
-	int count_forked;
-	Process* lch;
-	Process* rch;
+	//Motion status
+	bool has_moved;
 
-	//Private setters: any data member that is calculated in terms of existing data members
+	//Private setters for data members that are calculated in terms of existing data members
 	void set_TRT();
 	void set_WT();
 
-	//Count of forks
-	void set_count(int val);
+	//Fork Tree variables
+	Process* parent;
+	Process* lch;
+	Process* rch;
+
+	//Private Tree Getters
+	//DO I REALLY NEED THEM???
+	Process* get_parent();
+	Process* get_lch();
+	Process* get_rch();
 
 	//Assisting recursive functions
-	void insertChHelper(Process*& subroot, Process* p);
-	bool removeHelper(Process* subroot, int pid);
-	void markOrphan(Process* subroot);
-	void cpyTree(const Process& p);
-
+	int rec_get_count_fork(Process* subroot);
+	bool rec_remove_subtree(Process* subroot, int pid);
+	bool rec_find(Process* subroot, int pid, Process*& p);
+	void rec_mark_orphan(Process* subroot);
 
 public:
-	Process(int at, int id, int ct, int STT, int ior, int iod); //Other data members are either calculate or recieved after creation
+	Process(int at, int id, int ct, int stt); //Other data members are either calculated or recieved after creation
 	Process();
 	//Public setters
 	void set_PID(int id);
 	void set_AT(int at);
 	void set_RT(int rt);
 	void set_CT(int ct);
+	void set_timer(int t);
 	void set_TT(int tt);
-	void set_state(int STT);
+	void set_state(int stt);
 	void set_IO(int ior, int iod);
-	void set_SIGKILL(bool signal);
+	void set_sig_kill(bool signal);
+	void set_has_moved(bool motion);
 
 	//getters
 	int get_PID();
 	int get_AT();
 	int get_RT();
 	int get_CT();
+	int get_timer();
 	int get_TT();
 	int get_TRT();
 	int get_WT();
 	int get_state();
+	bool peek_io(IO*& io);
 	bool get_IO(IO*& io);
-	bool get_SIGKILL();
-	void Load(ifstream& Infile); // load its data mem from input file
+	bool get_sig_kill();
+	bool get_has_moved();
+	void Load(ifstream& Infile); // load its data members from input file
 
 	//Print ID
 	friend ostream& operator<<(ostream& os, Process& p);
 
-	//Fork Tree Methods
-		//Tree getters
-	bool get_lch(Process*& p);
-	bool get_rch(Process*& p);
-	int get_count();
-
-		//Fork Tree operations
-	void insertCh(Process* p);
-	bool remove(int pid);
+	/*Fork Tree Methods
+	Fork Tree is used to keep track of ancestors & descendants and update them if needed*/
+	//Fork Tree operations
+	int get_count_fork();
+	bool insert_ch(Process* p);
+	bool remove_subtree(int pid);
+	bool find(int pid, Process*& p);
+	void mark_orphan(int pid_parent);
+	bool has_parent();
+	bool has_single_ch();
+	bool has_both_ch();
 
 	//cpy ctor
 	Process(const Process& other);
-
-	//Assignment op. overload???????
 
 	~Process();
 };
