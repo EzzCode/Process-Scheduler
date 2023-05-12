@@ -59,13 +59,22 @@ void FCFS::ScheduleAlgo()
         TManager();
         return;
     }
+	// a check if process has ended because of a bizarre special case
+	hasEnded(RUN);
 	
-	ioAlgo(RUN, Qtime);// how processor deals with IO
+	if (RUN) 
+	{
+		ioAlgo(RUN, Qtime);// how processor deals with IO
+	}
 	
 	if (RUN) // i made this cond in case run was blk and no process to replace it 
 	{
 		hasEnded(RUN);
 	}
+	
+	//Forking
+	if (RUN) pScheduler->fork(RUN); //i commented it out for now 
+	
 	if (RUN)// i made this cond in case run was trm and no process to replace it 
 	{
 		
@@ -73,12 +82,9 @@ void FCFS::ScheduleAlgo()
 		Qtime--;
 	}
 	
-    
+	UpdateState();
     TManager();
-    UpdateState();
 
-	//Forking
-	if(RUN) pScheduler->fork(RUN); //i commented it out for now 
 }
 
 //Random RDY Kill
@@ -90,12 +96,16 @@ void FCFS::RDYKill(int pID) {
 		moveToTRM(p);
 		UpdateState();
 	}
-	else if (RUN->get_PID() == pID) 
+	if (RUN) 
 	{
-		Qtime -= RUN->get_CT();
-		moveToTRM(RUN);
-		UpdateState();
+		if (RUN->get_PID() == pID)
+		{
+			Qtime -= RUN->get_CT();
+			moveToTRM(RUN);
+			UpdateState();
+		}
 	}
+	
 }
 
 int FCFS::getQueueLength()
