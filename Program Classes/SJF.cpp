@@ -45,17 +45,33 @@ void SJF::moveToTRM(Process* p)
 void SJF::ScheduleAlgo()
 {
 	if (!RUN) return;
+	if (BLKManager() == false)
+	{
+		if (RUN->get_timer() == 0)
+		{
+			moveToTRM(RUN);
+			RUN = nullptr;
+			Qtime--;
+		}
+		else
+		RUN->set_timer(RUN->get_timer() - 1);
+	}
+	UpdateState();
+	TManager();
+}
+
+bool SJF::BLKManager()
+{
 	IO* io;
 	bool b = RUN->peek_io(io);
-	switch (b)
+	if (b)
 	{
-	case true:
 		if (RUN->peek_io(io) && io->IO_R == 0)
 		{
-			Qtime=Qtime-RUN->get_timer();
+			Qtime = Qtime - RUN->get_timer();
 			moveToBLK();
 			RUN = nullptr;
-			break;
+			return true;
 		}
 		else
 		{
@@ -63,29 +79,16 @@ void SJF::ScheduleAlgo()
 			{
 				moveToTRM(RUN);
 				RUN = nullptr;
-				break;
+				return true;
 			}
 		}
 			if (RUN->peek_io(io))
 				io->IO_R--;
 			RUN->set_timer(RUN->get_timer() - 1);
 			Qtime--;
-		break;
-	case false:
-			if (RUN->get_timer() == 0)
-			{
-				moveToTRM(RUN);
-				RUN = nullptr;
-				break;
-			}
-				RUN->set_timer(RUN->get_timer() - 1);
-				Qtime--;
-			break;
-	default:
-		break;
+			return true;
 	}
-	UpdateState();
-	TManager();
+	return false;
 }
 
 int SJF::getQueueLength()
