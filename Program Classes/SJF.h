@@ -31,6 +31,5 @@ public:
 	virtual bool isRunning();
 	virtual void UpdateState();
 	virtual void TManager();
-	bool BLKManager();
 	~SJF() {};
 };
