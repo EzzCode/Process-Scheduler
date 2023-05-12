@@ -155,9 +155,9 @@ bool FCFS::isRunning()
 void FCFS::UpdateState()
 {
 	if (!RUN && RDY.GetCount()==0)
-		state = 0;
-	else
 		state = 1;
+	else
+		state = 0;
 }
 
 void FCFS::TManager()
