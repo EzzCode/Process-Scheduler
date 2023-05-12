@@ -115,9 +115,9 @@ bool RR::isRunning()
 void RR::UpdateState()
 {
 	if (!RUN && RDY.isEmpty())
-		state = 0;
-	else
 		state = 1;
+	else
+		state = 0;
 }
 
 void RR::TManager()
