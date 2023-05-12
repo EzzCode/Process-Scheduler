@@ -1,6 +1,6 @@
 #include "Process.h"
 
-int Process::last_id = 0;
+int Process::free_id = 0;
 
 Process::Process(int at, int id, int ct, int stt) {
 	set_PID(id);
@@ -26,14 +26,6 @@ Process::Process() {
 //setters
 void Process::set_PID(int id) {
 	PID = id;
-}
-void Process::set_last_id(int value)
-{
-	last_id = value;
-}
-int Process::get_last_id()
-{
-	return last_id;
 }
 void Process::set_AT(int at) {
 	AT = at;
@@ -129,12 +121,13 @@ void Process::Load(ifstream& Infile)
 			ioData = new IO;
 		}
 	}
-	last_id++;
+	free_id++;
 	set_timer(CT);
 	set_RT(-1);
 	set_state(0);
 	set_sig_kill(false);
 	//Fork Tree
+	parent = nullptr;
 	lch = nullptr;
 	rch = nullptr;
 }
@@ -145,12 +138,7 @@ ostream& operator<<(ostream& os, Process& p) {
 }
 
 //Fork Tree Methods
-	//Tree getters
-int Process::get_count_fork() {
-	//Currently a process can only fork once
-	return rec_get_count_fork(lch);
-}
-
+//Private Tree getters
 Process* Process::get_parent()
 {
 	return parent;
@@ -165,76 +153,97 @@ Process* Process::get_rch() {
 }
 
 //Fork tree operations
-void Process::insert_ch(Process* p) {
-	if (p) rec_insert_ch(this, p);
+int Process::get_count_fork() {
+	//Currently a process can only fork once
+	return rec_get_count_fork(lch) + rec_get_count_fork(rch);
 }
+
+bool Process::insert_ch(Process* p) {
+	if (!this->lch) {
+		this->lch = p;
+		p->parent = this;
+		p->set_PID(free_id);
+		free_id++;
+		return true;
+	}
+	else if (!this->rch) {
+		this->rch = p;
+		p->parent = this;
+		p->set_PID(free_id);
+		free_id++;
+		return true;
+	}
+	return false;
+}
+
 bool Process::remove_subtree(int pid) {
 	bool removed = rec_remove_subtree(this, pid);
 	return removed;
 }
 
-bool Process::search(int pid, Process*& p)
+bool Process::find(int pid, Process*& p)
 {
-	return rec_search(this, pid, p);
+	return rec_find(this, pid, p);
 }
 
 void Process::mark_orphan(int pid_parent)
 {
 	Process* p = nullptr;
-	if (search(pid_parent, p)) {
+	if (find(pid_parent, p)) {
 		rec_mark_orphan(p->lch);
+		rec_mark_orphan(p->rch);
 	}
 }
 
-bool Process::hasCh()
+bool Process::has_parent()
+{
+	return (parent != nullptr);
+}
+
+bool Process::has_single_ch()
 {
 	return (lch != nullptr || rch != nullptr);
+}
+
+bool Process::has_both_ch()
+{
+	return (lch != nullptr && rch != nullptr);
 }
 
 //Fork tree assisting recursive functions
 int Process::rec_get_count_fork(Process* subroot)
 {
 	if (!subroot || subroot->get_state() == 4 || subroot->get_state() == 5) return 0; //Check if NULL / TRM / ORPH
-	//Currently a process can fork only once
-	return 1 + rec_get_count_fork(subroot->lch);
+	return 1 + rec_get_count_fork(subroot->lch) + rec_get_count_fork(subroot->rch);
 }
 
-void Process::rec_insert_ch(Process* subroot, Process* p) {
-	if (!subroot->lch || subroot->lch->get_state() == 4) {
-		subroot->lch = p;
-		p->parent = subroot;
-		return;
-	}
-	//Currently a process can only fork once
-	rec_insert_ch(subroot->lch, p);
-}
 bool Process::rec_remove_subtree(Process* subroot, int pid) {
 	if (!subroot) return false;
 	int id = subroot->get_PID();
 	if (id == pid) {
 		rec_mark_orphan(subroot->lch);
+		rec_mark_orphan(subroot->rch);
 		return true;
 	}
-	//Currently a process can only fork once
-	return rec_remove_subtree(subroot->lch, pid);
+	return rec_remove_subtree(subroot->lch, pid) || rec_remove_subtree(subroot->rch, pid);
 }
-bool Process::rec_search(Process* subroot, int pid, Process*& p)
+bool Process::rec_find(Process* subroot, int pid, Process*& p)
 {
 	if (!subroot) {
-		p = nullptr;
 		return false;
 	}
 	if (subroot->PID == pid) {
 		p = subroot;
 		return true;
 	}
-	//Currently a process can fork only once
-	return rec_search(subroot->lch, pid, p);
+	if (rec_find(subroot->lch, pid, p)) return true;
+	return rec_find(subroot->rch, pid, p);
 }
 void Process::rec_mark_orphan(Process* subroot) {
 	if (!subroot) return;
-	rec_mark_orphan(subroot->lch);
 	subroot->set_state(5);
+	rec_mark_orphan(subroot->lch);
+	rec_mark_orphan(subroot->rch);
 }
 
 //copy ctor

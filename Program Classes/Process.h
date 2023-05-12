@@ -11,7 +11,7 @@ private:
 	//Process ID
 	int PID;
 	//Keep track of IDs
-	static int last_id;
+	static int free_id;
 
 	//Times
 	int AT;		//Arrival time
@@ -33,11 +33,6 @@ private:
 	//Kill Signal
 	bool SIGKILL;
 
-	//Fork Tree
-	Process* parent;
-	Process* lch;
-	Process* rch;
-
 	//Motion status
 	bool has_moved;
 
@@ -45,21 +40,28 @@ private:
 	void set_TRT();
 	void set_WT();
 
-	//Assisting recursive functions
-	void rec_insert_ch(Process* subroot, Process* p);
-	bool rec_remove_subtree(Process* subroot, int pid);
-	bool rec_search(Process* subroot, int pid, Process*& p);
-	void rec_mark_orphan(Process* subroot);
-	int rec_get_count_fork(Process* subroot);
+	//Fork Tree variables
+	Process* parent;
+	Process* lch;
+	Process* rch;
 
+	//Private Tree Getters
+	//DO I REALLY NEED THEM???
+	Process* get_parent();
+	Process* get_lch();
+	Process* get_rch();
+
+	//Assisting recursive functions
+	int rec_get_count_fork(Process* subroot);
+	bool rec_remove_subtree(Process* subroot, int pid);
+	bool rec_find(Process* subroot, int pid, Process*& p);
+	void rec_mark_orphan(Process* subroot);
 
 public:
 	Process(int at, int id, int ct, int stt); //Other data members are either calculated or recieved after creation
 	Process();
 	//Public setters
 	void set_PID(int id);
-	static void set_last_id(int value);
-	static int get_last_id();
 	void set_AT(int at);
 	void set_RT(int rt);
 	void set_CT(int ct);
@@ -89,20 +91,17 @@ public:
 	//Print ID
 	friend ostream& operator<<(ostream& os, Process& p);
 
-	//Fork Tree Methods
-	//Fork Tree is used to keep track of ancestors & descendant and update them if needed
-		//Tree getters
-	Process* get_parent();
-	Process* get_lch();
-	Process* get_rch();
-	int get_count_fork();
-
+	/*Fork Tree Methods
+	Fork Tree is used to keep track of ancestors & descendants and update them if needed*/
 	//Fork Tree operations
-	void insert_ch(Process* p);
+	int get_count_fork();
+	bool insert_ch(Process* p);
 	bool remove_subtree(int pid);
-	bool search(int pid, Process*& p);
+	bool find(int pid, Process*& p);
 	void mark_orphan(int pid_parent);
-	bool hasCh();
+	bool has_parent();
+	bool has_single_ch();
+	bool has_both_ch();
 
 	//cpy ctor
 	Process(const Process& other);

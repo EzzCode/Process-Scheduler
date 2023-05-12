@@ -1,7 +1,7 @@
 #include "Scheduler.h"
 #include "FCFS.h"
 
-FCFS::FCFS(Scheduler* pSch):Processor(pSch)
+FCFS::FCFS(Scheduler* pSch) :Processor(pSch)
 {
 	state = 1;
 	Qtime = 0;
@@ -21,49 +21,64 @@ void FCFS::moveToRDY(Process* Rptr)
 
 void FCFS::moveToRUN()
 {
-	if (!RUN && state == 0) {
+	if (!RUN && RDY.GetCount() != 0) {
 		RUN = RDY.GetHeadData();
 		RUN->set_state(2);		//Process state: RUN
-		if (RDY.GetCount() == 0) state = 1;
+		//if (RDY.GetCount() == 0) state = 1; commented bec outdated ~S
+		UpdateState();
 	}
 }
 
 void FCFS::moveToBLK() {
 	RUN->set_state(3);			//Process state: BLK
 	pScheduler->schedToBLk(RUN);
+	RUN = nullptr;
+	moveToRUN(); // to add another process in run
 }
 
 void FCFS::moveToTRM(Process* p) {
 	Total_TRT += p->get_TRT();
 	p->set_state(4);			//Process state: TRM
-	pScheduler->schedToTRM(p);
+	//if removed prcss is the running move a prcss from RDY to Run
+	if (p==RUN)
+	{
+		RUN = nullptr;
+		pScheduler->schedToTRM(p);
+		moveToRUN(); // to add another process in run
+	}
+	// if its not a running process
+	else
+	{
+		pScheduler->schedToTRM(p);
+	}
 }
 
 void FCFS::ScheduleAlgo()
 {
-	if (!RUN) return;
-	int choice = decide();
-	//0 -> go BLK, 1 -> go RDY, 2 -> go TRM, 3 -> stay RUN
-	switch (choice)
+    if (!RUN) {
+        TManager();
+        return;
+    }
+	
+	ioAlgo(RUN, Qtime);// how processor deals with IO
+	
+	if (RUN) // i made this cond in case run was blk and no process to replace it 
 	{
-	case 0:
-		Qtime -= RUN->get_CT();
-		moveToBLK();
-		RUN = nullptr;
-		break;
-	case 1:
-		Qtime -= RUN->get_CT();
-		moveToRDY(RUN);
-		RUN = nullptr;
-		break;
-	case 2:
-		Qtime -= RUN->get_CT();
-		moveToTRM(RUN);
-		RUN = nullptr;
-		break;
-	default:
-		break;
+		hasEnded(RUN);
 	}
+	if (RUN)// i made this cond in case run was trm and no process to replace it 
+	{
+		
+		RUN->set_timer(RUN->get_timer() - 1);
+		Qtime--;
+	}
+	
+    
+    TManager();
+    UpdateState();
+
+	//Forking
+	if(RUN) pScheduler->fork(RUN); //i commented it out for now 
 }
 
 //Random RDY Kill
@@ -73,7 +88,13 @@ void FCFS::RDYKill(int pID) {
 	if (canKill) {
 		Qtime -= p->get_CT();
 		moveToTRM(p);
-		if (RDY.GetCount() == 0) state = 1;
+		UpdateState();
+	}
+	else if (RUN->get_PID() == pID) 
+	{
+		Qtime -= RUN->get_CT();
+		moveToTRM(RUN);
+		UpdateState();
 	}
 }
 
@@ -85,7 +106,7 @@ int FCFS::getQueueLength()
 
 float FCFS::getpUtil()
 {
-	return (float)T_BUSY/(T_BUSY + T_IDLE);
+	return (float)T_BUSY / (T_BUSY + T_IDLE);
 }
 
 int FCFS::getstate()
@@ -107,7 +128,7 @@ int FCFS::getT_IDLE()
 }
 
 void FCFS::printRDY() {
-	cout<< "[FCFS]" << ": " << RDY.GetCount() << " RDY: ";
+	cout << "[FCFS]" << ": " << RDY.GetCount() << " RDY: ";
 	RDY.printInfo();
 }
 

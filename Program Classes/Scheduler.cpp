@@ -43,7 +43,7 @@ void Scheduler::simulate() {
 		RDYtoRUN();
 		RUNAlgo();
 		BLKAlgo();
-		randKill();
+		Kill();
 		printTerminal();
 		timeStep++;
 	}
@@ -93,7 +93,7 @@ void Scheduler::fileLoading()
 	}
 }
 
-//Step 1
+//NEW to RDY
 void Scheduler::NEWtoRDY() {
 	Process* p = nullptr;
 	bool canPeek = NewList.peek(p);
@@ -102,7 +102,7 @@ void Scheduler::NEWtoRDY() {
 		int RT = p->get_AT() - timeStep;
 		p->set_RT(RT);
 		//Find shortest prcsr
-		set_SQF_LQF();
+		set_SQF_LQF(0);
 		SQF->moveToRDY(p);
 		p = nullptr;
 		//Recheck
@@ -110,65 +110,86 @@ void Scheduler::NEWtoRDY() {
 	}
 }
 
-//Step 2
+//RDY to RUN
 void Scheduler::RDYtoRUN() {
 	for (int i = 0; i < ProcessorsCounter; i++) {
 		processorList[i]->moveToRUN();
 	}
 }
 
-//Step 3
+//RUN Algorithm
 void Scheduler::RUNAlgo() {
 	for (int i = 0; i < ProcessorsCounter; i++) {
 		processorList[i]->ScheduleAlgo();
 	}
 }
 
-//Step 4
+//BLK Algorithm
 void Scheduler::BLKAlgo() {
 	Process* p = nullptr;
-	IO* io;
+	IO* io = nullptr;
 	bool canPeek = BlkList.peek(p);
 	if (canPeek)
 	{
-		bool b = p->peek_io(io);
+		bool b = p->peek_io(io);	//Get IO ptr
 		if (b && io->IO_D == 0)
 		{
 			BlkList.dequeue(p);
 			p->get_IO(io);
 			//Find shortest prcsr
-			set_SQF_LQF();
+			set_SQF_LQF(0);
 			SQF->moveToRDY(p);
 			p = nullptr;
 			delete io;
 			io = NULL;
 		}
-		else   io->IO_D--;
+		else {
+			io->IO_D--;
+		}
 	}
 }
 
-//Step 5
-void Scheduler::randKill() {
-	int pID = rand() % noProcesses + 1;
-	for (int i = 0; i < NF; i++) {
-		processorList[i]->RDYKill(pID);
+//Random Kill
+void Scheduler::Kill() {
+	killQ.peek(sigPtr);
+	if (sigPtr->tstep == timeStep) 
+	{
+		killQ.dequeue(sigPtr);
+		for (int i = 0; i < NF; i++) {
+			processorList[i]->RDYKill(sigPtr->pID);
+		}
 	}
+	
 }
 
 int Scheduler::RNG() {
 	return (rand() % 100 + 1);
 }
 
-//move to TRM fn
+//Move to TRM list
 void Scheduler::schedToTRM(Process* p)
 {
 	p->set_TT(timeStep);
 	TrmList.enqueue(p);
 }
-//move to BLK fn
+//Move to BLK list
 void Scheduler::schedToBLk(Process* p)
 {
 	BlkList.enqueue(p);
+}
+
+//Forking
+void Scheduler::fork(Process* parent) {
+	//check probability
+	int rng = RNG();
+	if (rng > forkProb || parent->has_both_ch()) return;	//No fork
+	//Fork
+	Process* ch = new Process(timeStep, -1, parent->get_timer(), 0);
+	parent->insert_ch(ch);
+	noProcesses++;	//Update variable for scheduler
+	ch->set_RT(0);
+	set_SQF_LQF(1);	//Get shortest FCFS queue
+	SQF->moveToRDY(ch);
 }
 
 //Print Terminal
@@ -179,17 +200,43 @@ void Scheduler::printTerminal() {
 //Calculate Steal Limit
 float Scheduler::getSTL_limit()
 {
+	set_SQF_LQF(0);
 	return (tLQF - tSQF) / ((float)tLQF);
 }
 
 //Set Shortest Queue and Longest Queue (Time & Processor)
-void Scheduler::set_SQF_LQF()
+void Scheduler::set_SQF_LQF(int section)
 {
 	int max = INT_MIN;
 	int min = INT_MAX;
-	int id = 0;
+	//Variables to set loop paremeters
+	int start, end;
+	//Set Paremeters
+	switch (section)
+	{
+	case 0: //full loop
+		start = 0;
+		end = ProcessorsCounter;
+		break;
+	case 1: //FCFS
+		start = 0;
+		end = NF;
+		break;
+	case 2: //SJF
+		start = NF;
+		end = NF + NS;
+		break;
+	case 3: //RR
+		start = NF + NS;
+		end = ProcessorsCounter;
+		break;
+	default: //full loop
+		start = 0;
+		end = ProcessorsCounter;
+		break;
+	}
 
-	for (int i = 0; i < ProcessorsCounter; i++)
+	for (int i = start; i < end; i++)
 	{
 		if (processorList[i]->getQueueLength() > max)
 		{
@@ -198,7 +245,6 @@ void Scheduler::set_SQF_LQF()
 		}
 		if (processorList[i]->getQueueLength() < min)
 		{
-			id = i;
 			SQF = processorList[i];
 			min = processorList[i]->getQueueLength();
 		}
@@ -206,14 +252,14 @@ void Scheduler::set_SQF_LQF()
 	tLQF = max;
 	tSQF = min;
 }
-int Scheduler::getSQF_time()
+int Scheduler::getSQF_time(int section)
 {
-	set_SQF_LQF();
+	set_SQF_LQF(section);
 	return tSQF;
 }
-int Scheduler::getLQF_time()
+int Scheduler::getLQF_time(int section)
 {
-	set_SQF_LQF();
+	set_SQF_LQF(section);
 	return tLQF;
 }
 
