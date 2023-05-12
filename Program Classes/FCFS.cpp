@@ -46,7 +46,7 @@ void FCFS::moveToTRM(Process* p) {
 		pScheduler->schedToTRM(p);
 		moveToRUN(); // to add another process in run
 	}
-	// if its not a running process
+	// if its not a running process 
 	else
 	{
 		pScheduler->schedToTRM(p);
