@@ -43,7 +43,7 @@ void Scheduler::simulate() {
 		RDYtoRUN();
 		RUNAlgo();
 		BLKAlgo();
-		randKill();
+		Kill();
 		printTerminal();
 		timeStep++;
 	}
@@ -150,11 +150,16 @@ void Scheduler::BLKAlgo() {
 }
 
 //Random Kill
-void Scheduler::randKill() {
-	int pID = rand() % noProcesses + 1;
-	for (int i = 0; i < NF; i++) {
-		processorList[i]->RDYKill(pID);
+void Scheduler::Kill() {
+	killQ.peek(sigPtr);
+	if (sigPtr->tstep == timeStep) 
+	{
+		killQ.dequeue(sigPtr);
+		for (int i = 0; i < NF; i++) {
+			processorList[i]->RDYKill(sigPtr->pID);
+		}
 	}
+	
 }
 
 int Scheduler::RNG() {

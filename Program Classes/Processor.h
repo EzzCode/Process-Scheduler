@@ -30,7 +30,30 @@ public:
 	virtual bool isRunning() = 0;
 	virtual void UpdateState() = 0;			//Updates State
 	virtual void TManager() = 0;			//Manages T_Busy and T_Idle for output statistics
+	
+	//IO Algo
+	virtual void ioAlgo(Process* RUN,int & Qtime) 
+	{
+		IO* io;
+		bool b = RUN->peek_io(io);
+		if (b) {
+			if (io->IO_R == 0) {
+				Qtime = Qtime - RUN->get_timer();
+				moveToBLK();
 
+			}
+			else {
+				io->IO_R--;
+			}
+		}
+	}
+	//Checks if Running process is finished
+	virtual void hasEnded(Process* RUN) 
+	{
+		if (RUN->get_timer() == 0) {
+			moveToTRM(RUN);
+		}
+	}
 	//RNG
 	int RNG() {
 		return (rand() % 100 + 1);

@@ -86,7 +86,7 @@ class Scheduler
 		void RDYtoRUN();
 		void RUNAlgo();
 		void BLKAlgo();
-		void randKill();
+		void Kill();
 		void printTerminal();
 
 public:
