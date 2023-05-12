@@ -25,8 +25,8 @@ void FCFS::moveToRUN()
 		RUN = RDY.GetHeadData();
 		RUN->set_state(2);		//Process state: RUN
 		//if (RDY.GetCount() == 0) state = 1; commented bec outdated ~S
-		UpdateState();
-	}
+	}		
+	UpdateState();
 }
 
 void FCFS::moveToBLK() {
@@ -46,7 +46,7 @@ void FCFS::moveToTRM(Process* p) {
 		pScheduler->schedToTRM(p);
 		moveToRUN(); // to add another process in run
 	}
-	// if its not a running process
+	// if its not a running process 
 	else
 	{
 		pScheduler->schedToTRM(p);

@@ -117,6 +117,12 @@ void Scheduler::RDYtoRUN() {
 	}
 }
 
+void Scheduler::Migrate(Process* pPtr, int processor)
+{
+	set_SQF_LQF(processor);
+	SQF->moveToRDY(pPtr);
+}
+
 //RUN Algorithm
 void Scheduler::RUNAlgo() {
 	for (int i = 0; i < ProcessorsCounter; i++) {
@@ -277,6 +283,16 @@ void Scheduler::setStats()
 	AvgTRT = (float)AvgTRT / noProcesses;
 	AvgRT = (float)AvgRT / noProcesses;
 	AvgWT = (float)AvgWT / noProcesses;
+}
+
+int Scheduler::getTimeSlice()
+{
+	return timeSlice;
+}
+
+int Scheduler::getRTF()
+{
+	return RTF;
 }
 
 float Scheduler::getAvgWT()

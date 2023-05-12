@@ -13,6 +13,9 @@ private:
 	int T_BUSY;
 	int T_IDLE;
 	int Total_TRT;
+	int TimeSlice;
+	int RunTS;
+	int RTF;
 public:
 	RR(Scheduler* pSch);
 	virtual void ScheduleAlgo();
@@ -31,6 +34,7 @@ public:
 	virtual bool isRunning();
 	virtual void UpdateState();
 	virtual void TManager();
+	void migrateToSJF(Process* Rptr);
 
 	~RR() {};
 };
