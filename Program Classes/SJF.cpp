@@ -1,7 +1,7 @@
 #include "Scheduler.h"
 #include "SJF.h"
 
-SJF::SJF(Scheduler* pSch):Processor(pSch)
+SJF::SJF(Scheduler* pSch) :Processor(pSch)
 {
 	state = 1;
 	Qtime = 0;
@@ -22,7 +22,7 @@ void SJF::moveToRDY(Process* Rptr)
 
 void SJF::moveToRUN()
 {
-	if (!RUN && RDY.isEmpty()==false) {
+	if (!RUN && RDY.isEmpty() == false) {
 		RDY.dequeue(RUN);
 		RUN->set_state(2);		//Process state: RUN
 	}
