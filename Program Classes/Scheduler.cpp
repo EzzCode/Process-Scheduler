@@ -30,7 +30,7 @@ Scheduler::Scheduler(int modeVal)
 	RTF_migCount = 0;
 	MaxW_migCount = 0;
 	BeforeDD = 0;
-
+	avgUtil = 0;
 	//RNG SEED
 	srand(time(nullptr));
 
@@ -207,6 +207,7 @@ void Scheduler::Kill() {
 	if (sigPtr->tstep == timeStep)
 	{
 		killQ.dequeue(sigPtr);
+		KillCount++;
 		for (int i = 0; i < NF; i++) {
 			processorList[i]->RDYKill(sigPtr->pID);
 		}
@@ -404,6 +405,11 @@ float Scheduler::getBeforeDDpercent()
 	return (float)BeforeDD / noProcesses;
 }
 
+int Scheduler::getTotalTRTALL()
+{
+	return total_TRT_ALL;
+}
+
 float Scheduler::getRTFpercent()
 {
 	return (float)RTF_migCount / noProcesses;
@@ -446,13 +452,30 @@ void Scheduler::outputFile()
 	OutFile << "Migration %: " << "RTF:" << getRTFpercent() * 100 << "% " << "MaxW: " << getMaxWpercent() * 100 << "%" << endl;
 	OutFile << "Work Steal % : " << getSTLpercent() * 100 << endl;
 	OutFile << "Forked Process " << getForkedpercent() * 100 << "%" << endl;
+	OutFile << "Killed process " << getKillpercent() * 100 << "%" << endl;
 	OutFile << endl;
-	OutFile << "Processors: " << ProcessorsCounter << " " << "[" << NF << " " << "FCFS, " << NS << " " << "SJF, " << NR << " " << "RR" << "]" << endl;
+	OutFile << "Processors: " << ProcessorsCounter << " " << "[" << NF << " " << "FCFS, " << NS << " " << "SJF, " << NR << " " << "RR, " <<NE<<"EDF" <<"]" << endl;
 	OutFile << "Processors Load" << endl;
+	for (int i = 0; i < ProcessorsCounter; i++) 
+	{
+		total_TRT_ALL += processorList[i]->getTotalTRT();
+	}
 	for (int i = 0; i < ProcessorsCounter; i++)
 	{
+		processorList[i]->setTotalTRT(total_TRT_ALL);
 		OutFile << "P" << i+1 << "=" << processorList[i]->getpLoad()*100 << "%" << ", ";
 	}
+	OutFile << endl;
+	OutFile<< "Processors Util" << endl;
+	for (int i = 0; i < ProcessorsCounter; i++)
+	{
+		OutFile << "P" << i + 1 << "=" << processorList[i]->getpUtil() * 100 << "%" << ", ";
+		avgUtil += processorList[i]->getpUtil() * 100;
+	}
+	OutFile << endl;
+	OutFile << "Avg Util: " << avgUtil / ProcessorsCounter <<"%" << endl;
+	OutFile << "EDF Percentage of processes before deadline: " << getBeforeDDpercent() * 100 <<"%" << endl;
+
 }
 //Destructor
 Scheduler::~Scheduler()

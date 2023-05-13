@@ -52,7 +52,7 @@ public:
 	}
 	float getpLoad()
 	{
-		return (float)T_BUSY / Total_TRT;
+		return (float)T_BUSY /Total_TRT;
 	}
 	
 	bool isRunning()
@@ -78,6 +78,14 @@ public:
 				io->IO_R--;
 			}
 		}
+	}
+	void setTotalTRT(int total)
+	{
+		Total_TRT = total;
+	}
+	int getTotalTRT()
+	{
+		return Total_TRT;
 	}
 	//Checks if Running process is finished
 	void hasEnded(Process* RUN) 
