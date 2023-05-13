@@ -357,9 +357,7 @@ void Scheduler::setStats(Process* p)
 	AvgRT += p->get_RT();
 	AvgWT += p->get_WT();
 	ForkCount += p->get_count_fork();
-	AvgTRT = (float)AvgTRT / noProcesses;
-	AvgRT = (float)AvgRT / noProcesses;
-	AvgWT = (float)AvgWT / noProcesses;
+	
 }
 
 int Scheduler::getTimeSlice()
@@ -387,17 +385,17 @@ void Scheduler::BeforeDDManager(Process* pPtr)
 
 float Scheduler::getAvgWT()
 {
-	return AvgWT;
+	return (float)AvgWT / noProcesses;;
 }
 
 float Scheduler::getAvgRT()
 {
-	return AvgRT;
+	return (float)AvgRT / noProcesses;
 }
 
 float Scheduler::getAvgTRT()
 {
-	return AvgTRT;
+	return (float)AvgTRT / noProcesses;
 }
 
 float Scheduler::getBeforeDDpercent()
@@ -447,6 +445,7 @@ void Scheduler::outputFile()
 		setStats(p);
 		TrmList.dequeue(p);
 	}
+
 	OutFile << "Processes: " << noProcesses << endl;
 	OutFile << "Avg WT: " << getAvgWT() << ",  " << "Avg RT: " << getAvgRT() << ", " << "Avg TRT: " << getAvgTRT() << endl;
 	OutFile << "Migration %: " << "RTF:" << getRTFpercent() * 100 << "% " << "MaxW: " << getMaxWpercent() * 100 << "%" << endl;
