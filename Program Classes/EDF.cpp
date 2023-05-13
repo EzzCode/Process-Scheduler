@@ -130,7 +130,7 @@ void EDF::printRDY()
 void EDF::UpdateState()
 {
 	if (!RUN && RDY.isEmpty())
-		state = 1;
+		state = 1;	// busy
 	else
-		state = 0;
+		state = 0;	// idle
 }
