@@ -75,7 +75,14 @@ void EDF::ScheduleAlgo()
 		TManager();
 		return;
 	}
-	hasEnded(RUN);
+	if (RUN)
+	{
+		if (RUN->get_timer() == 0)
+		{
+			pScheduler->BeforeDDManager(RUN);
+			hasEnded(RUN);
+		}
+	}
 
 	if (RUN)
 	{
@@ -97,7 +104,11 @@ void EDF::ScheduleAlgo()
 	}
 	if (RUN)
 	{
-		hasEnded(RUN);
+		if (RUN->get_timer() == 0)
+		{
+			pScheduler->BeforeDDManager(RUN);
+			hasEnded(RUN);
+		}
 	}
 	if (RUN)
 	{

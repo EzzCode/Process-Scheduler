@@ -29,6 +29,7 @@ Scheduler::Scheduler(int modeVal)
 	STLCount = 0;
 	RTF_migCount = 0;
 	MaxW_migCount = 0;
+	BeforeDD = 0;
 
 	//RNG SEED
 	srand(time(nullptr));
@@ -376,6 +377,14 @@ int Scheduler::getMaxW()
 	return MaxW;
 }
 
+void Scheduler::BeforeDDManager(Process* pPtr)
+{
+	if (pPtr->get_DD() > timeStep)
+	{
+		BeforeDD++;
+	}
+}
+
 float Scheduler::getAvgWT()
 {
 	return AvgWT;
@@ -389,6 +398,11 @@ float Scheduler::getAvgRT()
 float Scheduler::getAvgTRT()
 {
 	return AvgTRT;
+}
+
+float Scheduler::getBeforeDDpercent()
+{
+	return (float)BeforeDD / noProcesses;
 }
 
 float Scheduler::getRTFpercent()
