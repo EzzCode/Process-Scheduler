@@ -154,8 +154,9 @@ Process* Process::get_rch() {
 
 //Fork tree operations
 int Process::get_count_fork() {
-	//Currently a process can only fork once
-	return rec_get_count_fork(lch) + rec_get_count_fork(rch);
+	if (lch && rch) return 2;
+	else if (lch || rch) return 1;
+	else return 0;
 }
 
 bool Process::insert_ch(Process* p) {
@@ -268,12 +269,25 @@ Process::Process(const Process& other) {
 	//Motion status
 	has_moved = other.has_moved;
 	//cpy Fork Tree
-	//Assumes only one fork is done per lifetime
 	parent = other.parent;
-	if (parent) parent->lch = this;
+	if (parent)
+	{
+		if (parent->lch)
+		{
+			if (parent->lch->get_PID() == PID) parent->lch = this;
+		}
+		else if(parent->rch)
+		{
+			if (parent->rch->get_PID() == PID) parent->rch = this;
+		}
+	}
 	if (other.lch) {
 		other.lch->parent = this;
 		lch = other.lch;
+	}
+	if (other.rch) {
+		other.rch->parent = this;
+		rch = other.rch;
 	}
 }
 
