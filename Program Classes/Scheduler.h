@@ -68,7 +68,7 @@ class Scheduler
 		int getLQF_time(int section);
 		
 		//Statistics
-		void setStats();
+		void setStats(Process* p);
 		float getAvgWT();
 		float getAvgRT();
 		float getAvgTRT();

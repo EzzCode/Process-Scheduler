@@ -262,7 +262,7 @@ void Process::rec_mark_orphan(Process* subroot) {
 //Write in output file 
 void Process::writeData(ofstream& OutFile)
 {
-	OutFile << TT << " " << PID << " " << AT << " " << CT << " " << total_IOD << " " << WT << " " << RT <<" " << TRT << endl;
+	OutFile << TT << "   " << PID << "    " << AT << "   " << CT << "    " << total_IOD << "   " << WT << "   " << RT <<"   " << TRT << endl;
 }
 
 //copy ctor

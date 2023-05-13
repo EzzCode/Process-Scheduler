@@ -64,9 +64,10 @@ void RR::moveToBLK()
 }
 
 void RR::moveToTRM(Process* p) {
-	Total_TRT += p->get_TRT();
+	//Total_TRT += p->get_TRT();
 	p->set_state(4);			//Process state: TRM
 	pScheduler->schedToTRM(p);
+	Total_TRT += p->get_TRT();
 	RUN = nullptr;
 	moveToRUN(); // to add another process in run
 }
