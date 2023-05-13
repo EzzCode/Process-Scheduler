@@ -48,6 +48,10 @@ void Process::set_TT(int tt) {
 	set_TRT();
 	set_WT();
 }
+void Process::set_DD(int dd)
+{
+	DD = dd;
+}
 void Process::set_TRT() {
 	TRT = get_TT() - get_AT();
 }
@@ -101,6 +105,10 @@ int Process::get_TRT() {
 int Process::get_WT() {
 	return WT;
 }
+int Process::get_DD()
+{
+	return DD;
+}
 int Process::get_state() {
 	return state;
 }
@@ -124,7 +132,7 @@ int Process::get_total_IO()
 }
 void Process::Load(ifstream& Infile)
 {
-	Infile >> AT >> PID >> CT >> N_IO;
+	Infile >> AT >> PID >> CT >> DD >> N_IO;
 	IO* ioData = new IO;
 	for (int i = 0; i < N_IO; i++) {
 		char c1, c2;
@@ -277,6 +285,7 @@ Process::Process(const Process& other) {
 	TT = other.TT;
 	TRT = other.TRT;
 	WT = other.WT;
+	DD = other.DD;
 	//cpy process state
 	state = other.state;
 	//cpy IO data

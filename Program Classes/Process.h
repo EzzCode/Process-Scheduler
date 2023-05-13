@@ -21,6 +21,7 @@ private:
 	int TT;		//Termination time
 	int TRT;	//Turnaround duration
 	int WT;		//Waiting time
+	int DD;		//Expected Deadline
 
 	//Process State
 	//state var has values: {0->5} which represent states: {NEW, RDY, RUN, BLK, TRM, ORPH}
@@ -67,6 +68,7 @@ public:
 	void set_CT(int ct);
 	void set_timer(int t);
 	void set_TT(int tt);
+	void set_DD(int dd);
 	void set_state(int stt);
 	void set_IO(int ior, int iod);
 	void set_sig_kill(bool signal);
@@ -81,6 +83,7 @@ public:
 	int get_TT();
 	int get_TRT();
 	int get_WT();
+	int get_DD();
 	int get_state();
 	bool peek_io(IO*& io);
 	bool get_IO(IO*& io);

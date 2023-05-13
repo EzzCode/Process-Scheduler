@@ -7,6 +7,7 @@
 #include "FCFS.h"
 #include "RR.h"
 #include "SJF.h"
+#include "EDF.h"
 #include "../DS Implementations/LinkedQueue.h"
 #include "../DS Implementations/LinkedList.h"
 #include "../DEFS.h"
@@ -18,6 +19,7 @@ class Scheduler
 		int NF;
 		int NS;
 		int NR;
+		int NE;							//Number of EDF processors
 		int timeSlice;
 		int RTF;						//Remaining Time to finish
 		int MaxW;						//Maximum Wait time
@@ -36,6 +38,7 @@ class Scheduler
 		float AvgWT;
 		float AvgRT;
 		float AvgTRT;
+		int BeforeDD;
 
 		Processor* myProcessor;			// Processor ptr for processor creation
 		Process* myProcess;				// process ptr for process creation
@@ -77,6 +80,7 @@ class Scheduler
 		float getForkedpercent();
 		float getKillpercent();
 		float getSTLpercent();
+		float getBeforeDDpercent();
 
 
 		//Private Simulation methods
@@ -102,6 +106,7 @@ public:
 	int getMaxW();
 	void Migrate(Process* pPtr, int processor);
 	bool canMigrate(Process* pPtr, int processor);
+	void BeforeDDManager(Process* pPtr);
 
 	void outputFile();
 	~Scheduler();

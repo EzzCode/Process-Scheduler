@@ -86,7 +86,14 @@ void FCFS::ScheduleAlgo()
 		return;
 	}
 	// a check if process has ended because of a bizarre special case
-	hasEnded(RUN);
+	if (RUN)
+	{
+		if (RUN->get_timer() == 0)
+		{
+			pScheduler->BeforeDDManager(RUN);
+			hasEnded(RUN);
+		}
+	}
 
 	if (RUN)
 	{
@@ -99,9 +106,13 @@ void FCFS::ScheduleAlgo()
 			migrateToRR();
 		}
 	}
-	if (RUN) // i made this cond in case run was blk and no process to replace it 
+	if (RUN)	// i made this cond in case run was blk and no process to replace it 
 	{
-		hasEnded(RUN);
+		if (RUN->get_timer() == 0)
+		{
+			pScheduler->BeforeDDManager(RUN);
+			hasEnded(RUN);
+		}
 	}
 
 	//Forking

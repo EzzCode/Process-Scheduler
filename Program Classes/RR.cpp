@@ -81,7 +81,14 @@ void RR::ScheduleAlgo()
 		return;
 	}
 
-	hasEnded(RUN);
+	if (RUN)
+	{
+		if (RUN->get_timer() == 0)
+		{
+			pScheduler->BeforeDDManager(RUN);
+			hasEnded(RUN);
+		}
+	}
 
 	//Following conditions in case RDY is empty
 	if (RUN)
@@ -97,7 +104,11 @@ void RR::ScheduleAlgo()
 	}
 	if (RUN)
 	{
-		hasEnded(RUN);
+		if (RUN->get_timer() == 0)
+		{
+			pScheduler->BeforeDDManager(RUN);
+			hasEnded(RUN);
+		}
 	}
 	if (RUN && RunTS > 0)
 	{
@@ -116,7 +127,7 @@ void RR::ScheduleAlgo()
 }
 
 void RR::printRDY() {
-	cout << "[RR  ]" << ": " << RDY.GetCount() << " RDY: ";
+	cout << "[RR ]" << ": " << RDY.GetCount() << " RDY: ";
 	RDY.printInfo();
 }
 
