@@ -29,6 +29,7 @@ Scheduler::Scheduler(int modeVal)
 	STLCount = 0;
 	RTF_migCount = 0;
 	MaxW_migCount = 0;
+	BeforeDD = 0;
 
 	//RNG SEED
 	srand(time(nullptr));
@@ -61,8 +62,8 @@ void Scheduler::simulate() {
 void Scheduler::fileLoading()
 {
 	ifstream Infile("input.txt");
-	Infile >> NF >> NS >> NR;
-	processorList = new Processor * [NF + NS + NR];// alocate processor pointers 
+	Infile >> NF >> NS >> NR >> NE;
+	processorList = new Processor * [NF + NS + NR + NE];// alocate processor pointers 
 	Infile >> timeSlice;
 	Infile >> RTF >> MaxW >> STL >> forkProb;
 	Infile >> noProcesses;
@@ -88,6 +89,12 @@ void Scheduler::fileLoading()
 	for (int i = 0; i < NR; i++)
 	{
 		myProcessor = new RR(this);
+		processorList[ProcessorsCounter] = myProcessor;
+		ProcessorsCounter++;
+	}
+	for (int i = 0; i < NE; i++)
+	{
+		myProcessor = new EDF(this);
 		processorList[ProcessorsCounter] = myProcessor;
 		ProcessorsCounter++;
 	}
@@ -303,8 +310,11 @@ void Scheduler::set_SQF_LQF(int section)
 		break;
 	case 3: //RR
 		start = NF + NS;
-		end = ProcessorsCounter;
+		end = NF + NS + NR;
 		break;
+	case 4: //EDF
+		start = NF + NS + NR;
+		end = ProcessorsCounter;
 	default: //full loop
 		start = 0;
 		end = ProcessorsCounter;
@@ -369,6 +379,14 @@ int Scheduler::getMaxW()
 	return MaxW;
 }
 
+void Scheduler::BeforeDDManager(Process* pPtr)
+{
+	if (pPtr->get_DD() > timeStep)
+	{
+		BeforeDD++;
+	}
+}
+
 float Scheduler::getAvgWT()
 {
 	return AvgWT;
@@ -382,6 +400,11 @@ float Scheduler::getAvgRT()
 float Scheduler::getAvgTRT()
 {
 	return AvgTRT;
+}
+
+float Scheduler::getBeforeDDpercent()
+{
+	return (float)BeforeDD / noProcesses;
 }
 
 float Scheduler::getRTFpercent()

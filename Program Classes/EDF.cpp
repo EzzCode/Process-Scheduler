@@ -1,36 +1,27 @@
+#include "EDF.h"
 #include "Scheduler.h"
-#include "SJF.h"
-
-SJF::SJF(Scheduler* pSch) :Processor(pSch)
+EDF::EDF(Scheduler* pSch) :Processor(pSch)
 {
-	state = 1;
-	Qtime = 0;
-	T_BUSY = 0;
-	T_IDLE = 0;
-	Total_TRT = 0;
-	RUN = nullptr;
-}
-
-Process* SJF::steal()
-{
-	Process* s;
-	if (RDY.isEmpty() == false) {
-		RDY.dequeue(s);
-		return s;
+	{
+		state = 1;
+		Qtime = 0;
+		T_BUSY = 0;
+		T_IDLE = 0;
+		Total_TRT = 0;
+		RUN = nullptr;
 	}
-	return nullptr;
 }
 
-void SJF::moveToRDY(Process* Rptr)
+void EDF::moveToRDY(Process* Rptr)
 {
-	int priority = Rptr->get_timer();
+	int priority = Rptr->get_DD();
 	Qtime += priority;
 	Rptr->set_state(1);			//Process state: RDY
 	RDY.enqueue(Rptr, priority);
 	state = 0;					//Processor is busy
 }
 
-void SJF::moveToRUN()
+void EDF::moveToRUN()
 {
 	if (!RUN && RDY.isEmpty() == false) {
 		RDY.dequeue(RUN);
@@ -39,7 +30,7 @@ void SJF::moveToRUN()
 	UpdateState();
 }
 
-void SJF::moveToBLK()
+void EDF::moveToBLK()
 {
 	RUN->set_state(3);
 	pScheduler->schedToBLk(RUN);
@@ -47,7 +38,7 @@ void SJF::moveToBLK()
 	moveToRUN(); // to add another process in run
 }
 
-void SJF::moveToTRM(Process* p)
+void EDF::moveToTRM(Process* p)
 {
 	Total_TRT += p->get_TRT();
 	p->set_state(4);			//Process state: TRM
@@ -65,7 +56,18 @@ void SJF::moveToTRM(Process* p)
 	}
 }
 
-void SJF::ScheduleAlgo()
+Process* EDF::steal()
+{
+	Process* s;
+	if (RDY.isEmpty() == false)
+	{
+		RDY.dequeue(s);
+		return s;
+	}
+	return nullptr;
+}
+
+void EDF::ScheduleAlgo()
 {
 	if (!RUN)
 	{
@@ -82,6 +84,19 @@ void SJF::ScheduleAlgo()
 		}
 	}
 
+	if (RUN)
+	{
+		Process* p = NULL;
+		if (RDY.peek(p))
+		{
+			if (p->get_DD() < RUN->get_DD())
+			{
+				moveToRDY(RUN);
+				RUN = NULL;
+				moveToRUN();
+			}
+		}
+	}
 	//Following conditions in case RDY is empty
 	if (RUN)
 	{
@@ -105,12 +120,13 @@ void SJF::ScheduleAlgo()
 	TManager();
 }
 
-void SJF::printRDY() {
-	cout << "[SJF ]" << ": " << RDY.GetCount() << " RDY: ";
+void EDF::printRDY()
+{
+	cout << "[EDF]" << ": " << RDY.GetCount() << " RDY: ";
 	RDY.printInfo();
 }
 
-void SJF::UpdateState()
+void EDF::UpdateState()
 {
 	if (!RUN && RDY.isEmpty())
 		state = 1;
