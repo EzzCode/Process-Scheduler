@@ -132,6 +132,33 @@ void Scheduler::Migrate(Process* pPtr, int processor)
 	else if (processor == 2) RTF_migCount++; //Count for RR migration
 }
 
+bool Scheduler::canMigrate(Process* pPtr, int processor)
+{
+	if (pPtr->has_parent())
+		return false;
+	switch (processor)
+	{
+		case 3:
+		{
+			if ((timeStep - pPtr->get_AT() - pPtr->get_CT() + pPtr->get_timer()) > MaxW)
+			{
+				return true;
+			}
+			return false;
+		}
+		case 2:
+		{
+			if (pPtr->get_timer() < RTF)
+			{
+				return true;
+			}
+			return false;
+		}
+		default:
+			return false;
+	}
+}
+
 //RUN Algorithm
 void Scheduler::RUNAlgo() {
 	for (int i = 0; i < ProcessorsCounter; i++) {
@@ -333,6 +360,11 @@ int Scheduler::getTimeSlice()
 int Scheduler::getRTF()
 {
 	return RTF;
+}
+
+int Scheduler::getMaxW()
+{
+	return MaxW;
 }
 
 float Scheduler::getAvgWT()

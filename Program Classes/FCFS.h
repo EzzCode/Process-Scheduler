@@ -6,6 +6,7 @@ class FCFS :
 {
 private:
 	LinkedList<Process> RDY;
+	int MaxW;
 public:
 	FCFS(Scheduler* pSch);
 	virtual void moveToRDY(Process* Rptr);
@@ -18,6 +19,7 @@ public:
 	virtual void ScheduleAlgo();
 	virtual void printRDY();
 	virtual void UpdateState();
+	void migrateToRR();
 
 	~FCFS() {};
 };

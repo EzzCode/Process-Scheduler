@@ -8,6 +8,7 @@ FCFS::FCFS(Scheduler* pSch) :Processor(pSch)
 	T_BUSY = 0;
 	T_IDLE = 0;
 	Total_TRT = 0;
+	MaxW = pSch->getMaxW();
 	RUN = nullptr;
 }
 
@@ -20,6 +21,13 @@ Process* FCFS::steal()
 		else RDY.InsertBeg(s);
 	}
 	return NULL;
+}
+
+void FCFS::migrateToRR()
+{
+	pScheduler->Migrate(RUN, 3);
+	RUN = NULL;
+	moveToRUN();
 }
 
 void FCFS::moveToRDY(Process* Rptr)
@@ -82,7 +90,13 @@ void FCFS::ScheduleAlgo()
 	{
 		ioAlgo(RUN, Qtime);// how processor deals with IO
 	}
-
+	if (RUN)
+	{
+		if (pScheduler->canMigrate(RUN,3))
+		{
+			migrateToRR();
+		}
+	}
 	if (RUN) // i made this cond in case run was blk and no process to replace it 
 	{
 		hasEnded(RUN);
