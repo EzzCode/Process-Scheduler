@@ -115,8 +115,6 @@ void Scheduler::NEWtoRDY() {
 	bool canPeek = NewList.peek(p);
 	while (canPeek && p->get_AT() == timeStep) {
 		NewList.dequeue(p);
-		int RT = p->get_AT() - timeStep;
-		p->set_RT(RT);
 		//Find shortest prcsr
 		set_SQF_LQF(0);
 		SQF->moveToRDY(p);
@@ -260,7 +258,6 @@ void Scheduler::fork(Process* parent) {
 	Process* ch = new Process(timeStep, -1, parent->get_timer(), 0);
 	parent->insert_ch(ch);
 	noProcesses++;	//Update variable for scheduler
-	ch->set_RT(0);	//RT is 0 as child immediately gets a processor
 	set_SQF_LQF(1);	//Get shortest FCFS queue to process child
 	SQF->moveToRDY(ch);
 }
@@ -368,6 +365,11 @@ int Scheduler::getTimeSlice()
 int Scheduler::getRTF()
 {
 	return RTF;
+}
+
+void Scheduler::calc_RT(Process* p)
+{
+	p->set_RT(timeStep - p->get_AT());
 }
 
 int Scheduler::getMaxW()

@@ -16,9 +16,9 @@ class Scheduler
 {
 	private:
 		int timeStep;
-		int NF;
-		int NS;
-		int NR;
+		int NF;							// Number of FCFS processors
+		int NS;							// Number of SJF processors
+		int NR;							// Number of RR processors
 		int NE;							//Number of EDF processors
 		int timeSlice;
 		int RTF;						//Remaining Time to finish
@@ -103,6 +103,7 @@ public:
 	void kill_orph(Process* parent);	//Kill orphans of a parent
 	void schedToTRM(Process* p);
 	void schedToBLk(Process* p);
+	void calc_RT(Process* p);			// to calculate response time of process
 	int getTimeSlice();
 	int getRTF();
 	int getMaxW();
