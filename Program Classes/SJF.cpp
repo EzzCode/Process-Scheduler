@@ -73,7 +73,14 @@ void SJF::ScheduleAlgo()
 		TManager();
 		return;
 	}
-	hasEnded(RUN);
+	if (RUN)
+	{
+		if (RUN->get_timer() == 0)
+		{
+			pScheduler->BeforeDDManager(RUN);
+			hasEnded(RUN);
+		}
+	}
 
 	//Following conditions in case RDY is empty
 	if (RUN)
@@ -82,7 +89,11 @@ void SJF::ScheduleAlgo()
 	}
 	if (RUN)
 	{
-		hasEnded(RUN);
+		if (RUN->get_timer() == 0)
+		{
+			pScheduler->BeforeDDManager(RUN);
+			hasEnded(RUN);
+		}
 	}
 	if (RUN)
 	{

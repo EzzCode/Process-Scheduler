@@ -38,6 +38,7 @@ class Scheduler
 		float AvgWT;
 		float AvgRT;
 		float AvgTRT;
+		int BeforeDD;
 
 		Processor* myProcessor;			// Processor ptr for processor creation
 		Process* myProcess;				// process ptr for process creation
@@ -79,6 +80,7 @@ class Scheduler
 		float getForkedpercent();
 		float getKillpercent();
 		float getSTLpercent();
+		float getBeforeDDpercent();
 
 
 		//Private Simulation methods
@@ -104,6 +106,7 @@ public:
 	int getMaxW();
 	void Migrate(Process* pPtr, int processor);
 	bool canMigrate(Process* pPtr, int processor);
+	void BeforeDDManager(Process* pPtr);
 
 	~Scheduler();
 
