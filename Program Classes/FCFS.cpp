@@ -43,7 +43,7 @@ void FCFS::moveToRUN()
 	if (!RUN && RDY.GetCount() != 0) {
 		RUN = RDY.GetHeadData();
 		RUN->set_state(2);		//Process state: RUN
-		//if (RDY.GetCount() == 0) state = 1; commented bec outdated ~S
+		if(RUN->get_RT() == -1) pScheduler->calc_RT(RUN);
 	}
 	UpdateState();
 }
@@ -82,6 +82,7 @@ void FCFS::moveToTRM(Process* p) {
 void FCFS::ScheduleAlgo()
 {
 	if (!RUN) {
+		UpdateState();
 		TManager();
 		return;
 	}
@@ -182,7 +183,7 @@ void FCFS::printRDY() {
 void FCFS::UpdateState()
 {
 	if (!RUN && RDY.GetCount() == 0)
-		state = 1;
+		state = 1; // busy
 	else
-		state = 0;
+		state = 0; // idle
 }

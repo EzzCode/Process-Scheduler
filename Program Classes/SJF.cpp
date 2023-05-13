@@ -35,6 +35,7 @@ void SJF::moveToRUN()
 	if (!RUN && RDY.isEmpty() == false) {
 		RDY.dequeue(RUN);
 		RUN->set_state(2);		//Process state: RUN
+		if (RUN->get_RT() == -1) pScheduler->calc_RT(RUN);
 	}
 	UpdateState();
 }
@@ -115,7 +116,7 @@ void SJF::printRDY() {
 void SJF::UpdateState()
 {
 	if (!RUN && RDY.isEmpty())
-		state = 1;
+		state = 1;	// busy
 	else
-		state = 0;
+		state = 0;	// idle
 }
