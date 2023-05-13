@@ -40,13 +40,14 @@ void EDF::moveToBLK()
 
 void EDF::moveToTRM(Process* p)
 {
-	Total_TRT += p->get_TRT();
+	
 	p->set_state(4);			//Process state: TRM
 	//if removed prcss is the running move a prcss from RDY to Run
 	if (p == RUN)
 	{
 		RUN = nullptr;
 		pScheduler->schedToTRM(p);
+		Total_TRT += p->get_TRT();
 		moveToRUN(); // to add another process in run
 	}
 	// if its not a running process
