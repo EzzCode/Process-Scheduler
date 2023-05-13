@@ -54,7 +54,7 @@ void UI::updateTerminal(int tStep, Processor** prcsrList, int prcsrCount, Linked
 	cout << TrmList.GetCount() << " TRM: ";
 	TrmList.printInfo();
 	cout << endl;
-	
+
 	//Time step end print
 	if (mode == 0) {
 		cout << "PRESS ANY KEY TO MOVE TO NEXT STEP!" << endl;

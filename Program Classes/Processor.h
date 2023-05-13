@@ -11,6 +11,12 @@ class Processor
 {
 protected:
 	Scheduler* pScheduler;
+	int T_BUSY;
+	int T_IDLE;
+	int Total_TRT;
+	int Qtime;
+	int state;		 //state var has values: {0,1} which represent states: {BUSY, IDLE}
+	Process* RUN = nullptr;
 public:
 	Processor(Scheduler* pSch) { pScheduler = pSch; };
 	virtual void ScheduleAlgo() = 0;
@@ -18,21 +24,47 @@ public:
 	virtual void moveToRUN() = 0;
 	virtual void moveToBLK() = 0;
 	virtual void moveToTRM(Process* p) = 0;
-	virtual void RDYKill(int pID) {}
-	virtual int getQueueLength() = 0;
-	virtual float getpUtil() = 0;
-	virtual float getpLoad() = 0;
-	virtual int getstate() = 0;
-	virtual int getT_BUSY() = 0;
-	virtual int getT_IDLE() = 0;
+	virtual void kill_orph() {}	//To kill orphans in FCFS
+	virtual Process* steal() = 0;
 	virtual void printRDY() = 0;
-	virtual void printRUN() = 0;
-	virtual bool isRunning() = 0;
 	virtual void UpdateState() = 0;			//Updates State
-	virtual void TManager() = 0;			//Manages T_Busy and T_Idle for output statistics
+	virtual void RDYKill(int pID) {}
 	
-	//IO Algo
-	virtual void ioAlgo(Process* RUN,int & Qtime) 
+	int getstate()
+	{
+		return state;
+	}
+	int getT_BUSY()
+	{
+		return T_BUSY;
+	}
+	int getT_IDLE()
+	{
+		return T_IDLE;
+	}
+	int getQueueLength()
+	{
+		return Qtime;
+	}
+	float getpUtil()
+	{
+		return (float)T_BUSY / (T_BUSY + T_IDLE);
+	}
+	float getpLoad()
+	{
+		return (float)T_BUSY / Total_TRT;
+	}
+	
+	bool isRunning()
+	{
+		return (RUN != nullptr);
+	}
+	//Print RUN process
+	void printRUN() {
+		cout << *(RUN);
+	}
+	//IO Algo	
+	void ioAlgo(Process* RUN,int & Qtime) 
 	{
 		IO* io;
 		bool b = RUN->peek_io(io);
@@ -48,7 +80,7 @@ public:
 		}
 	}
 	//Checks if Running process is finished
-	virtual void hasEnded(Process* RUN) 
+	void hasEnded(Process* RUN) 
 	{
 		if (RUN->get_timer() == 0) {
 			moveToTRM(RUN);
@@ -58,23 +90,14 @@ public:
 	int RNG() {
 		return (rand() % 100 + 1);
 	}
-
-	//Generate decision
-	virtual int decide() {
-		int rng = RNG();
-		if (rng >= 1 && rng <= 15) {
-			return 0;
-		}
-		else if (rng >= 20 && rng <= 30) {
-			return 1;
-		}
-		else if (rng >= 50 && rng <= 60) {
-			return 2;
-		}
-		else {
-			return 3;
-		}
+	//Manages T_Busy and T_Idle for output statistics
+	void TManager()
+	{
+		if (state == 0)
+			T_BUSY++;
+		else
+			T_IDLE++;
 	}
-
+	 
 	virtual ~Processor() {};
 };
