@@ -270,8 +270,9 @@ Process::Process(const Process& other) {
 	has_moved = other.has_moved;
 	//cpy Fork Tree
 	parent = other.parent;
-	if (parent)
+	if (parent)	// if this process has a parent
 	{
+		// check if this process is lch or rch
 		if (parent->lch)
 		{
 			if (parent->lch->get_PID() == PID) parent->lch = this;
@@ -281,6 +282,7 @@ Process::Process(const Process& other) {
 			if (parent->rch->get_PID() == PID) parent->rch = this;
 		}
 	}
+	// check if this process has lch and/or rch
 	if (other.lch) {
 		other.lch->parent = this;
 		lch = other.lch;
