@@ -167,8 +167,9 @@ Process* Process::get_rch() {
 
 //Fork tree operations
 int Process::get_count_fork() {
-	//Currently a process can only fork once
-	return rec_get_count_fork(lch) + rec_get_count_fork(rch);
+	if (lch && rch) return 2;
+	else if (lch || rch) return 1;
+	else return 0;
 }
 
 bool Process::insert_ch(Process* p) {
@@ -203,8 +204,8 @@ void Process::mark_orphan(int pid_parent)
 {
 	Process* p = nullptr;
 	if (find(pid_parent, p)) {
-		rec_mark_orphan(p->lch);
-		rec_mark_orphan(p->rch);
+		if (p->lch) p->lch->set_state(5);
+		if (p->rch) p->rch->set_state(5);
 	}
 }
 
@@ -286,12 +287,27 @@ Process::Process(const Process& other) {
 	//Motion status
 	has_moved = other.has_moved;
 	//cpy Fork Tree
-	//Assumes only one fork is done per lifetime
 	parent = other.parent;
-	if (parent) parent->lch = this;
+	if (parent)	// if this process has a parent
+	{
+		// check if this process is lch or rch
+		if (parent->lch)
+		{
+			if (parent->lch->get_PID() == PID) parent->lch = this;
+		}
+		else if(parent->rch)
+		{
+			if (parent->rch->get_PID() == PID) parent->rch = this;
+		}
+	}
+	// check if this process has lch and/or rch
 	if (other.lch) {
 		other.lch->parent = this;
 		lch = other.lch;
+	}
+	if (other.rch) {
+		other.rch->parent = this;
+		rch = other.rch;
 	}
 	total_IOD = other.total_IOD;
 }

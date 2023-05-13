@@ -23,6 +23,12 @@ Scheduler::Scheduler(int modeVal)
 	LQF = nullptr;
 	tSQF = -1;
 	tLQF = -1;
+	//Statistics
+	KillCount = 0;
+	ForkCount = 0;
+	STLCount = 0;
+	RTF_migCount = 0;
+	MaxW_migCount = 0;
 
 	//RNG SEED
 	srand(time(nullptr));
@@ -44,6 +50,7 @@ void Scheduler::simulate() {
 		RUNAlgo();
 		BLKAlgo();
 		Kill();
+		Steal();
 		printTerminal();
 		timeStep++;
 	}
@@ -118,6 +125,41 @@ void Scheduler::RDYtoRUN() {
 	}
 }
 
+void Scheduler::Migrate(Process* pPtr, int processor)
+{
+	set_SQF_LQF(processor); //3 for RR -- 2 for SJF 
+	SQF->moveToRDY(pPtr);
+	if (processor == 3) MaxW_migCount++; //Count for FCFS migration
+	else if (processor == 2) RTF_migCount++; //Count for RR migration
+}
+
+bool Scheduler::canMigrate(Process* pPtr, int processor)
+{
+	if (pPtr->has_parent())
+		return false;
+	switch (processor)
+	{
+		case 3:
+		{
+			if ((timeStep - pPtr->get_AT() - pPtr->get_CT() + pPtr->get_timer()) > MaxW)
+			{
+				return true;
+			}
+			return false;
+		}
+		case 2:
+		{
+			if (pPtr->get_timer() < RTF)
+			{
+				return true;
+			}
+			return false;
+		}
+		default:
+			return false;
+	}
+}
+
 //RUN Algorithm
 void Scheduler::RUNAlgo() {
 	for (int i = 0; i < ProcessorsCounter; i++) {
@@ -154,15 +196,35 @@ void Scheduler::BLKAlgo() {
 //Random Kill
 void Scheduler::Kill() {
 	killQ.peek(sigPtr);
-	if (sigPtr->tstep == timeStep) 
+	if (sigPtr->tstep == timeStep)
 	{
 		killQ.dequeue(sigPtr);
 		for (int i = 0; i < NF; i++) {
 			processorList[i]->RDYKill(sigPtr->pID);
 		}
 	}
-	
+
 }
+
+void Scheduler::Steal()
+{
+	if (timeStep % STL == 0)
+	{
+		while (getSTL_limit() > 0.4)
+		{
+			set_SQF_LQF(0);
+			Process* s = LQF->steal();
+			if (!s)
+			{
+				return;
+			}
+			SQF->moveToRDY(s);
+			STLCount++;
+		}
+	}
+}
+
+
 
 int Scheduler::RNG() {
 	return (rand() % 100 + 1);
@@ -184,14 +246,25 @@ void Scheduler::schedToBLk(Process* p)
 void Scheduler::fork(Process* parent) {
 	//check probability
 	int rng = RNG();
-	if (rng > forkProb || parent->has_both_ch()) return;	//No fork
-	//Fork
+	if (rng > forkProb || parent->has_both_ch()) return;	//Can't fork
+	//Can Fork
 	Process* ch = new Process(timeStep, -1, parent->get_timer(), 0);
 	parent->insert_ch(ch);
 	noProcesses++;	//Update variable for scheduler
-	ch->set_RT(0);
-	set_SQF_LQF(1);	//Get shortest FCFS queue
+	ch->set_RT(0);	//RT is 0 as child immediately gets a processor
+	set_SQF_LQF(1);	//Get shortest FCFS queue to process child
 	SQF->moveToRDY(ch);
+}
+
+void Scheduler::kill_orph(Process* parent)
+{
+	// mark orphans of parent
+	parent->mark_orphan(parent->get_PID());
+	// loop on FCFS processors and kill found orphans
+	for (int i = 0; i < NF; i++)
+	{
+		processorList[i]->kill_orph();
+	}
 }
 
 //Print Terminal
@@ -279,6 +352,21 @@ void Scheduler::setStats()
 	AvgTRT = (float)AvgTRT / noProcesses;
 	AvgRT = (float)AvgRT / noProcesses;
 	AvgWT = (float)AvgWT / noProcesses;
+}
+
+int Scheduler::getTimeSlice()
+{
+	return timeSlice;
+}
+
+int Scheduler::getRTF()
+{
+	return RTF;
+}
+
+int Scheduler::getMaxW()
+{
+	return MaxW;
 }
 
 float Scheduler::getAvgWT()

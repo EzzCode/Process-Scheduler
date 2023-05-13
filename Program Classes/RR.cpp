@@ -1,19 +1,40 @@
 #include "Scheduler.h"
 #include "RR.h"
 
-RR::RR(Scheduler* pSch):Processor(pSch)
+RR::RR(Scheduler* pSch) :Processor(pSch)
 {
 	state = 1;
 	Qtime = 0;
 	T_BUSY = 0;
 	T_IDLE = 0;
 	Total_TRT = 0;
+	TimeSlice = pSch->getTimeSlice();
+	RunTS = 0;
+	RTF = pSch->getRTF();
 	RUN = nullptr;
+}
+
+Process* RR::steal()
+{
+	Process* s;
+	if (RDY.isEmpty() == false)
+	{
+		RDY.dequeue(s);
+		return s;
+	}
+	return nullptr;
+}
+
+void RR::migrateToSJF()
+{
+	pScheduler->Migrate(RUN,2);
+	RUN = NULL;
+	moveToRUN();
 }
 
 void RR::moveToRDY(Process* Rptr)
 {
-	Qtime += Rptr->get_CT();
+	Qtime += Rptr->get_timer();
 	Rptr->set_state(1);			//Process state: RDY
 	RDY.enqueue(Rptr);
 	state = 0;					//Processor is busy
@@ -21,80 +42,76 @@ void RR::moveToRDY(Process* Rptr)
 
 void RR::moveToRUN()
 {
-	if (!RUN && state == 0) {
+	if (!RUN && RDY.isEmpty() == false) {
 		RDY.dequeue(RUN);
+		if (RUN->get_timer() < RTF)
+		{
+			migrateToSJF();
+			return;
+		}
 		RUN->set_state(2);		//Process state: RUN
-		if (RDY.GetCount() == 0) state = 1;
+		RunTS = TimeSlice;
 	}
+	UpdateState();
 }
 
-void RR::moveToBLK() {
-	RUN->set_state(3);
+void RR::moveToBLK()
+{
+	RUN->set_state(3);			//Process state: BLK
 	pScheduler->schedToBLk(RUN);
+	RUN = nullptr;
+	moveToRUN(); // to add another process in run
 }
 
 void RR::moveToTRM(Process* p) {
 	Total_TRT += p->get_TRT();
-	p->set_state(4);
+	p->set_state(4);			//Process state: TRM
 	pScheduler->schedToTRM(p);
+	RUN = nullptr;
+	moveToRUN(); // to add another process in run
 }
 
 void RR::ScheduleAlgo()
 {
-	if (!RUN) return;
-	int choice = decide();
-	//0 -> go BLK, 1 -> go RDY, 2 -> go TRM, 3 -> stay RUN
-	switch (choice)
+	if (!RUN)
 	{
-	case 0:
-		//Commented because the BLKAlgo has been updated but here FCFS is still depending on probability
-		/*Qtime -= RUN->get_CT();
-		moveToBLK();
-		RUN = nullptr;*/
-		break;
-	case 1:
-		Qtime -= RUN->get_CT();
-		moveToRDY(RUN);
-		RUN = nullptr;
-		break;
-	case 2:
-		Qtime -= RUN->get_CT();
-		moveToTRM(RUN);
-		RUN = nullptr;
-		break;
-	default:
-		break;
+		UpdateState();
+		TManager();
+		return;
 	}
-}
 
-int RR::getQueueLength()
-{
-	return Qtime;
-}
+	hasEnded(RUN);
 
+	//Following conditions in case RDY is empty
+	if (RUN)
+	{
+		ioAlgo(RUN, Qtime);
+	}
+	if (RUN)
+	{
+		if (pScheduler->canMigrate(RUN,2))
+		{
+			migrateToSJF();
+		}
+	}
+	if (RUN)
+	{
+		hasEnded(RUN);
+	}
+	if (RUN && RunTS > 0)
+	{
+		RUN->set_timer(RUN->get_timer() - 1);
+		RunTS--;
+		Qtime--;
+	}
+	else if (RUN && RunTS == 0)
+	{
+		moveToRDY(RUN);
+		RUN = NULL;
+	}
 
-float RR::getpUtil()
-{
-	return (float)T_BUSY / (T_BUSY + T_IDLE);
-}
-
-float RR::getpLoad()
-{
-	return (float)T_BUSY / Total_TRT;
-}
-
-int RR::getstate()
-{
-	return state;
-}
-
-int RR::getT_BUSY()
-{
-	return T_BUSY;
-}
-int RR::getT_IDLE()
-{
-	return T_IDLE;
+	UpdateState();
+	TManager();
 }
 
 void RR::printRDY() {
@@ -102,28 +119,10 @@ void RR::printRDY() {
 	RDY.printInfo();
 }
 
-//Print RUN process
-void RR::printRUN() {
-	cout << *(RUN);
-}
-
-bool RR::isRunning()
-{
-	return (RUN != nullptr);
-}
-
 void RR::UpdateState()
 {
 	if (!RUN && RDY.isEmpty())
-		state = 0;
-	else
 		state = 1;
-}
-
-void RR::TManager()
-{
-	if (state == 0)
-		T_BUSY++;
 	else
-		T_IDLE++;
+		state = 0;
 }
