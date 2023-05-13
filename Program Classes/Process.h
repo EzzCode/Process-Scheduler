@@ -29,7 +29,7 @@ private:
 	//Input/Output Request time & Duration
 	int N_IO;
 	LinkedQueue<IO> ioQ;	//Queue contains all IOs the process will need
-
+	int total_IOD; //Total io duration of a process
 	//Kill Signal
 	bool SIGKILL;
 
@@ -71,7 +71,7 @@ public:
 	void set_IO(int ior, int iod);
 	void set_sig_kill(bool signal);
 	void set_has_moved(bool motion);
-
+	void set_total_IO(int tot);
 	//getters
 	int get_PID();
 	int get_AT();
@@ -86,11 +86,13 @@ public:
 	bool get_IO(IO*& io);
 	bool get_sig_kill();
 	bool get_has_moved();
+	int get_total_IO();
 	void Load(ifstream& Infile); // load its data members from input file
 
 	//Print ID
 	friend ostream& operator<<(ostream& os, Process& p);
-
+	// Write in output File
+	void writeData(ofstream& OutFile);
 	/*Fork Tree Methods
 	Fork Tree is used to keep track of ancestors & descendants and update them if needed*/
 	//Fork Tree operations

@@ -95,6 +95,7 @@ public:
 	void fork(Process* parent);			//Fork
 	void schedToTRM(Process* p);
 	void schedToBLk(Process* p);
+	void outputFile();
 	~Scheduler();
 
 	//RNG

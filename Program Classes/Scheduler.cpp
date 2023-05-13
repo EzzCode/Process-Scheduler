@@ -47,6 +47,7 @@ void Scheduler::simulate() {
 		printTerminal();
 		timeStep++;
 	}
+	outputFile();
 	ui.print_end();
 }
 
@@ -131,7 +132,7 @@ void Scheduler::BLKAlgo() {
 	bool canPeek = BlkList.peek(p);
 	if (canPeek)
 	{
-		bool b = p->peek_io(io);	//Get IO ptr
+		bool b = p->peek_io(io);//Get IO ptr
 		if (b && io->IO_D == 0)
 		{
 			BlkList.dequeue(p);
@@ -144,6 +145,7 @@ void Scheduler::BLKAlgo() {
 			io = NULL;
 		}
 		else {
+			p->set_total_IO((p->get_total_IO())+1);//increments the total io Duration for the output file
 			io->IO_D--;
 		}
 	}
@@ -318,7 +320,22 @@ float Scheduler::getSTLpercent()
 {
 	return (float)STLCount / noProcesses;
 }
-
+//Output File
+void Scheduler::outputFile()
+{
+	Process* p;
+	ofstream OutFile("Output.txt");
+	OutFile << "TT  PID  AT  CT  IO_D  WT  RT  TRT" << endl;
+	while (!TrmList.isEmpty())
+	{
+		TrmList.peek(p);
+		p->writeData(OutFile);
+		TrmList.dequeue(p);
+	}
+	OutFile <<"Processes: "<< noProcesses << endl;
+	OutFile << "Avg WT: " << AvgWT << ",  " << "Avg RT: " << AvgRT << "," << "Avg TRT: " << AvgTRT << endl;
+	OutFile << "Forked Process" << getForkedpercent()*100<<endl;
+}
 //Destructor
 Scheduler::~Scheduler()
 {

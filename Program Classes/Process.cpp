@@ -1,5 +1,7 @@
 #include "Process.h"
-
+#include <iostream>
+#include <iomanip>
+using namespace std;
 int Process::free_id = 0;
 
 Process::Process(int at, int id, int ct, int stt) {
@@ -14,6 +16,7 @@ Process::Process(int at, int id, int ct, int stt) {
 	parent = nullptr;
 	lch = nullptr;
 	rch = nullptr;
+	total_IOD;
 }
 Process::Process() {
 	set_RT(-1);		//-1 indicates that process has never entered CPU
@@ -58,6 +61,11 @@ void Process::set_IO(int ior, int iod) {
 	IO* ioData = new IO(iod, ior);
 	ioQ.enqueue(ioData);
 }
+void Process::set_total_IO(int tot)
+{
+	total_IOD = tot;
+}
+
 void Process::set_sig_kill(bool signal) {
 	SIGKILL = signal;
 }
@@ -101,6 +109,7 @@ bool Process::peek_io(IO*& io) {
 }
 bool Process::get_IO(IO*& io) {
 	return ioQ.dequeue(io);
+	
 }
 bool Process::get_sig_kill() {
 	return SIGKILL;
@@ -108,6 +117,10 @@ bool Process::get_sig_kill() {
 bool Process::get_has_moved()
 {
 	return has_moved;
+}
+int Process::get_total_IO()
+{
+	return total_IOD;
 }
 void Process::Load(ifstream& Infile)
 {
@@ -245,6 +258,11 @@ void Process::rec_mark_orphan(Process* subroot) {
 	rec_mark_orphan(subroot->lch);
 	rec_mark_orphan(subroot->rch);
 }
+//Write in output file 
+void Process::writeData(ofstream& OutFile)
+{
+	OutFile << TT << " " << PID << " " << AT << " " << CT << " " << total_IOD << " " << WT << " " << RT <<" " << TRT << endl;
+}
 
 //copy ctor
 Process::Process(const Process& other) {
@@ -275,7 +293,10 @@ Process::Process(const Process& other) {
 		other.lch->parent = this;
 		lch = other.lch;
 	}
+	total_IOD = other.total_IOD;
 }
 
 
+
 Process::~Process() {}
+
