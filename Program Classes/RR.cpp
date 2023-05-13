@@ -89,7 +89,7 @@ void RR::ScheduleAlgo()
 	}
 	if (RUN)
 	{
-		if (RUN->get_timer() < RTF)
+		if (pScheduler->canMigrate(RUN,2))
 		{
 			migrateToSJF();
 		}

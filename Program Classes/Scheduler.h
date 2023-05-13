@@ -99,7 +99,10 @@ public:
 	void schedToBLk(Process* p);
 	int getTimeSlice();
 	int getRTF();
+	int getMaxW();
 	void Migrate(Process* pPtr, int processor);
+	bool canMigrate(Process* pPtr, int processor);
+
 	~Scheduler();
 
 	//RNG
