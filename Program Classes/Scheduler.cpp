@@ -478,15 +478,13 @@ void Scheduler::outputFile()
 	OutFile<< "Processors Util" << endl;
 	for (int i = 0; i < ProcessorsCounter; i++)
 	{
-		if (i >= NF + NS && i <= NF + NS + NR - 1)
-		{
-			OutFile << "P" << i + 1 << "=" << "N/A" << ", ";
-		}
-		else
-		{
+
+		
+		
 			OutFile << "P" << i + 1 << "=" << processorList[i]->getpUtil() * 100 << "%" << ", ";
 			avgUtil += processorList[i]->getpUtil() * 100;
-		}
+		
+		
 	}
 	OutFile << endl;
 	OutFile << "Avg Util: " << avgUtil / ProcessorsCounter <<"%" << endl;
