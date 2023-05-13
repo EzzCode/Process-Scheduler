@@ -20,7 +20,7 @@ void RR::migrateToSJF(Process* Rptr)
 
 void RR::moveToRDY(Process* Rptr)
 {
-	Qtime += Rptr->get_CT();
+	Qtime += Rptr->get_timer();
 	Rptr->set_state(1);			//Process state: RDY
 	RDY.enqueue(Rptr);
 	state = 0;					//Processor is busy

@@ -211,7 +211,7 @@ public:
 		UpdateTail();
 		return b;
 	}
-	
+
 	bool DeleteNodes(int pID)			//Only works for Processes
 	{
 		bool b = false;
@@ -260,12 +260,20 @@ public:
 		return NULL;
 	}
 
-	bool sig_kill(int pID, Process*& p)		//For SIGKILL
+	bool kill_prcs(int pID, bool killOrph, Process*& p)		// For SIGKILL and killing orphans
 	{
+		// when sigkill is intended: pID is set to ID of prcs to be killed
+		// and killOrph is set to false
+		// when killing orphans is intended: pID is set to a -ve number
+		// so any checks on it will never be true as all IDs are +ve
+		// and killOrph is set to true
 		PNode<Process>* ptr = Head;
 		if (ptr != NULL)
 		{
-			if (ptr->GetItem()->get_PID() == pID)
+			// check for 2 cond:
+			// 1- sigkill is performed
+			// 2- killOrph is performed
+			if (ptr->GetItem()->get_PID() == pID || (killOrph && ptr->GetItem()->get_state() == 5))
 			{
 				PNode<Process>* temp = Head;
 				Head = ptr->GetNext();
@@ -273,11 +281,12 @@ public:
 				delete temp;
 				temp = nullptr;
 				count--;
+				UpdateTail();
 				return true;
 			}
 			while (ptr->GetNext() != NULL)
 			{
-				if (ptr->GetNext()->GetItem()->get_PID() == pID)
+				if (ptr->GetNext()->GetItem()->get_PID() == pID || (killOrph && ptr->GetItem()->get_state() == 5))
 				{
 					PNode<Process>* temp = ptr->GetNext();
 					PNode<Process>* R = ptr->GetNext()->GetNext();
@@ -305,6 +314,6 @@ public:
 			if (ptr) cout << ", ";
 		}
 	}
-	
+
 };
 
