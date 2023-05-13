@@ -115,7 +115,7 @@ void RR::ScheduleAlgo()
 }
 
 void RR::printRDY() {
-	cout << "[RR  ]" << ": " << RDY.GetCount() << " RDY: ";
+	cout << "[RR ]" << ": " << RDY.GetCount() << " RDY: ";
 	RDY.printInfo();
 }
 

@@ -7,6 +7,7 @@
 #include "FCFS.h"
 #include "RR.h"
 #include "SJF.h"
+#include "EDF.h"
 #include "../DS Implementations/LinkedQueue.h"
 #include "../DS Implementations/LinkedList.h"
 #include "../DEFS.h"
@@ -18,6 +19,7 @@ class Scheduler
 		int NF;
 		int NS;
 		int NR;
+		int NE;							//Number of EDF processors
 		int timeSlice;
 		int RTF;						//Remaining Time to finish
 		int MaxW;						//Maximum Wait time

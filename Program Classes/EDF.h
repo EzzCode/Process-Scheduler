@@ -1,13 +1,12 @@
 #pragma once
 #include "Processor.h"
 class Scheduler;
-class SJF :
-	public Processor
+class EDF : public Processor
 {
 private:
 	PQueue RDY;
 public:
-	SJF(Scheduler* pSch);
+	EDF(Scheduler* pSch);
 	virtual void moveToRDY(Process* Rptr);
 	virtual void moveToRUN();
 	virtual void moveToBLK();
@@ -16,5 +15,6 @@ public:
 	virtual void ScheduleAlgo();
 	virtual void printRDY();
 	virtual void UpdateState();
-	~SJF() {};
+	~EDF() {};
 };
+
