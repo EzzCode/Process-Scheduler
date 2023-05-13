@@ -190,8 +190,8 @@ void Process::mark_orphan(int pid_parent)
 {
 	Process* p = nullptr;
 	if (find(pid_parent, p)) {
-		rec_mark_orphan(p->lch);
-		rec_mark_orphan(p->rch);
+		if (p->lch) p->lch->set_state(5);
+		if (p->rch) p->rch->set_state(5);
 	}
 }
 

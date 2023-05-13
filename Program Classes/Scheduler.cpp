@@ -188,14 +188,25 @@ void Scheduler::schedToBLk(Process* p)
 void Scheduler::fork(Process* parent) {
 	//check probability
 	int rng = RNG();
-	if (rng > forkProb || parent->has_both_ch()) return;	//No fork
-	//Fork
+	if (rng > forkProb || parent->has_both_ch()) return;	//Can't fork
+	//Can Fork
 	Process* ch = new Process(timeStep, -1, parent->get_timer(), 0);
 	parent->insert_ch(ch);
 	noProcesses++;	//Update variable for scheduler
-	ch->set_RT(0);
-	set_SQF_LQF(1);	//Get shortest FCFS queue
+	ch->set_RT(0);	//RT is 0 as child immediately gets a processor
+	set_SQF_LQF(1);	//Get shortest FCFS queue to process child
 	SQF->moveToRDY(ch);
+}
+
+void Scheduler::kill_orph(Process* parent)
+{
+	// mark orphans of parent
+	parent->mark_orphan(parent->get_PID());
+	// loop on FCFS processors and kill found orphans
+	for (int i = 0; i < NF; i++)
+	{
+		processorList[i]->kill_orph();
+	}
 }
 
 //Print Terminal

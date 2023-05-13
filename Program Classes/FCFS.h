@@ -19,6 +19,7 @@ public:
 	virtual void moveToRUN();
 	virtual void moveToBLK();
 	virtual void moveToTRM(Process* p);
+	virtual void kill_orph();
 	virtual void RDYKill(int pID);
 	virtual void ScheduleAlgo();
 	virtual int getQueueLength();

@@ -18,6 +18,7 @@ public:
 	virtual void moveToRUN() = 0;
 	virtual void moveToBLK() = 0;
 	virtual void moveToTRM(Process* p) = 0;
+	virtual void kill_orph() {}	//To kill orphans in FCFS
 	virtual void RDYKill(int pID) {}
 	virtual int getQueueLength() = 0;
 	virtual float getpUtil() = 0;
