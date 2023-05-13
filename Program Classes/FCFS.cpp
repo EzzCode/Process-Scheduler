@@ -56,7 +56,7 @@ void FCFS::moveToBLK() {
 }
 
 void FCFS::moveToTRM(Process* p) {
-	Total_TRT += p->get_TRT();
+	//Total_TRT += p->get_TRT();
 	p->set_state(4);			//Process state: TRM
 	//Check and kill process orphans
 	if (p->has_single_ch())
@@ -68,12 +68,14 @@ void FCFS::moveToTRM(Process* p) {
 	{
 		RUN = nullptr;
 		pScheduler->schedToTRM(p);
+		Total_TRT += p->get_TRT();
 		moveToRUN(); // to add another process in run
 	}
 	// if its not a running process 
 	else
 	{
 		pScheduler->schedToTRM(p);
+		Total_TRT += p->get_TRT();
 	}
 }
 

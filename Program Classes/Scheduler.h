@@ -71,7 +71,7 @@ class Scheduler
 		int getLQF_time(int section);
 		
 		//Statistics
-		void setStats();
+		void setStats(Process* p);
 		float getAvgWT();
 		float getAvgRT();
 		float getAvgTRT();
@@ -108,6 +108,7 @@ public:
 	bool canMigrate(Process* pPtr, int processor);
 	void BeforeDDManager(Process* pPtr);
 
+	void outputFile();
 	~Scheduler();
 
 	//RNG

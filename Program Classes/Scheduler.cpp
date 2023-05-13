@@ -55,6 +55,8 @@ void Scheduler::simulate() {
 		printTerminal();
 		timeStep++;
 	}
+	
+	outputFile();
 	ui.print_end();
 }
 
@@ -180,7 +182,7 @@ void Scheduler::BLKAlgo() {
 	bool canPeek = BlkList.peek(p);
 	if (canPeek)
 	{
-		bool b = p->peek_io(io);	//Get IO ptr
+		bool b = p->peek_io(io);//Get IO ptr
 		if (b && io->IO_D == 0)
 		{
 			BlkList.dequeue(p);
@@ -193,6 +195,7 @@ void Scheduler::BLKAlgo() {
 			io = NULL;
 		}
 		else {
+			p->set_total_IO((p->get_total_IO())+1);//increments the total io Duration for the output file
 			io->IO_D--;
 		}
 	}
@@ -347,16 +350,12 @@ int Scheduler::getLQF_time(int section)
 }
 
 //STATISTICS 
-void Scheduler::setStats()
+void Scheduler::setStats(Process* p)
 {
-	Process* p;
-	while (TrmList.dequeue(p))
-	{
-		AvgTRT += p->get_TRT();
-		AvgRT += p->get_RT();
-		AvgWT += p->get_WT();
-		ForkCount += p->get_count_fork();
-	}
+	AvgTRT += p->get_TRT();
+	AvgRT += p->get_RT();
+	AvgWT += p->get_WT();
+	ForkCount += p->get_count_fork();
 	AvgTRT = (float)AvgTRT / noProcesses;
 	AvgRT = (float)AvgRT / noProcesses;
 	AvgWT = (float)AvgWT / noProcesses;
@@ -429,7 +428,32 @@ float Scheduler::getSTLpercent()
 {
 	return (float)STLCount / noProcesses;
 }
-
+//Output File
+void Scheduler::outputFile()
+{
+	Process* p;
+	ofstream OutFile("Output.txt");
+	OutFile << "TT  PID  AT  CT  IO_D  WT  RT  TRT" << endl;
+	while (!TrmList.isEmpty())
+	{
+		TrmList.peek(p);
+		p->writeData(OutFile);
+		setStats(p);
+		TrmList.dequeue(p);
+	}
+	OutFile << "Processes: " << noProcesses << endl;
+	OutFile << "Avg WT: " << getAvgWT() << ",  " << "Avg RT: " << getAvgRT() << ", " << "Avg TRT: " << getAvgTRT() << endl;
+	OutFile << "Migration %: " << "RTF:" << getRTFpercent() * 100 << "% " << "MaxW: " << getMaxWpercent() * 100 << "%" << endl;
+	OutFile << "Work Steal % : " << getSTLpercent() * 100 << endl;
+	OutFile << "Forked Process " << getForkedpercent() * 100 << "%" << endl;
+	OutFile << endl;
+	OutFile << "Processors: " << ProcessorsCounter << " " << "[" << NF << " " << "FCFS, " << NS << " " << "SJF, " << NR << " " << "RR" << "]" << endl;
+	OutFile << "Processors Load" << endl;
+	for (int i = 0; i < ProcessorsCounter; i++)
+	{
+		OutFile << "P" << i+1 << "=" << processorList[i]->getpLoad()*100 << "%" << ", ";
+	}
+}
 //Destructor
 Scheduler::~Scheduler()
 {
