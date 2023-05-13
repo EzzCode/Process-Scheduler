@@ -13,14 +13,28 @@ RR::RR(Scheduler* pSch) :Processor(pSch)
 	RTF = pSch->getRTF();
 	RUN = nullptr;
 }
-void RR::migrateToSJF(Process* Rptr)
+
+Process* RR::steal()
 {
-	pScheduler->Migrate(Rptr, 2);
+	Process* s;
+	if (RDY.isEmpty() == false)
+	{
+		RDY.dequeue(s);
+		return s;
+	}
+	return nullptr;
+}
+
+void RR::migrateToSJF()
+{
+	pScheduler->Migrate(RUN,2);
+	RUN = NULL;
+	moveToRUN();
 }
 
 void RR::moveToRDY(Process* Rptr)
 {
-	Qtime += Rptr->get_CT();
+	Qtime += Rptr->get_timer();
 	Rptr->set_state(1);			//Process state: RDY
 	RDY.enqueue(Rptr);
 	state = 0;					//Processor is busy
@@ -30,11 +44,12 @@ void RR::moveToRUN()
 {
 	if (!RUN && RDY.isEmpty() == false) {
 		RDY.dequeue(RUN);
-		RUN->set_state(2);		//Process state: RUN
-		if (RUN->get_timer() > RTF)
+		if (RUN->get_timer() < RTF)
 		{
-			migrateToSJF(RUN);
+			migrateToSJF();
+			return;
 		}
+		RUN->set_state(2);		//Process state: RUN
 		RunTS = TimeSlice;
 	}
 	UpdateState();
@@ -74,9 +89,9 @@ void RR::ScheduleAlgo()
 	}
 	if (RUN)
 	{
-		if (RUN->get_timer() > RTF)
+		if (RUN->get_timer() < RTF)
 		{
-			migrateToSJF(RUN);
+			migrateToSJF();
 		}
 	}
 	if (RUN)
@@ -99,49 +114,9 @@ void RR::ScheduleAlgo()
 	TManager();
 }
 
-int RR::getQueueLength()
-{
-	return Qtime;
-}
-
-
-float RR::getpUtil()
-{
-	return (float)T_BUSY / (T_BUSY + T_IDLE);
-}
-
-float RR::getpLoad()
-{
-	return (float)T_BUSY / Total_TRT;
-}
-
-int RR::getstate()
-{
-	return state;
-}
-
-int RR::getT_BUSY()
-{
-	return T_BUSY;
-}
-int RR::getT_IDLE()
-{
-	return T_IDLE;
-}
-
 void RR::printRDY() {
 	cout << "[RR  ]" << ": " << RDY.GetCount() << " RDY: ";
 	RDY.printInfo();
-}
-
-//Print RUN process
-void RR::printRUN() {
-	cout << *(RUN);
-}
-
-bool RR::isRunning()
-{
-	return (RUN != nullptr);
 }
 
 void RR::UpdateState()
@@ -151,12 +126,3 @@ void RR::UpdateState()
 	else
 		state = 0;
 }
-
-void RR::TManager()
-{
-	if (state == 0)
-		T_BUSY++;
-	else
-		T_IDLE++;
-}
-

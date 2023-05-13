@@ -6,13 +6,6 @@ class RR :
 {
 private:
 	LinkedQueue<Process> RDY;
-	Process* RUN;
-  //state var has values: {0,1} which represent states: {BUSY, IDLE}
-	int state;
-	int Qtime;
-	int T_BUSY;
-	int T_IDLE;
-	int Total_TRT;
 	int TimeSlice;
 	int RunTS;
 	int RTF;
@@ -23,18 +16,10 @@ public:
 	virtual void moveToRUN();
 	virtual void moveToBLK();
 	virtual void moveToTRM(Process* p);
-	virtual int getQueueLength();
-	virtual float getpUtil();
-	virtual float getpLoad();
-	virtual int getstate();
-	virtual int getT_BUSY();
-	virtual int getT_IDLE();
+	virtual Process* steal();
 	virtual void printRDY();
-	virtual void printRUN();
-	virtual bool isRunning();
 	virtual void UpdateState();
-	virtual void TManager();
-	void migrateToSJF(Process* Rptr);
+	void migrateToSJF();
 
 	~RR() {};
 };

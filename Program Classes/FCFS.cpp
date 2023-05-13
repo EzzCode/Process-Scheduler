@@ -11,9 +11,20 @@ FCFS::FCFS(Scheduler* pSch) :Processor(pSch)
 	RUN = nullptr;
 }
 
+Process* FCFS::steal()
+{
+	if (RDY.GetCount() != 0)
+	{
+		Process* s = RDY.GetHeadData();
+		if (!s->has_parent()) return s;
+		else RDY.InsertBeg(s);
+	}
+	return NULL;
+}
+
 void FCFS::moveToRDY(Process* Rptr)
 {
-	Qtime += Rptr->get_CT();
+	Qtime += Rptr->get_timer();
 	Rptr->set_state(1);			//Process state: RDY
 	RDY.InsertEnd(Rptr);
 	state = 0;					//Processor is busy
@@ -25,7 +36,7 @@ void FCFS::moveToRUN()
 		RUN = RDY.GetHeadData();
 		RUN->set_state(2);		//Process state: RUN
 		//if (RDY.GetCount() == 0) state = 1; commented bec outdated ~S
-	}		
+	}
 	UpdateState();
 }
 
@@ -39,8 +50,13 @@ void FCFS::moveToBLK() {
 void FCFS::moveToTRM(Process* p) {
 	Total_TRT += p->get_TRT();
 	p->set_state(4);			//Process state: TRM
+	//Check and kill process orphans
+	if (p->has_single_ch())
+	{
+		pScheduler->kill_orph(p);
+	}
 	//if removed prcss is the running move a prcss from RDY to Run
-	if (p==RUN)
+	if (p == RUN)
 	{
 		RUN = nullptr;
 		pScheduler->schedToTRM(p);
@@ -55,86 +71,80 @@ void FCFS::moveToTRM(Process* p) {
 
 void FCFS::ScheduleAlgo()
 {
-    if (!RUN) {
-        TManager();
-        return;
-    }
+	if (!RUN) {
+		TManager();
+		return;
+	}
 	// a check if process has ended because of a bizarre special case
 	hasEnded(RUN);
-	
-	if (RUN) 
+
+	if (RUN)
 	{
 		ioAlgo(RUN, Qtime);// how processor deals with IO
 	}
-	
+
 	if (RUN) // i made this cond in case run was blk and no process to replace it 
 	{
 		hasEnded(RUN);
 	}
-	
+
 	//Forking
-	if (RUN) pScheduler->fork(RUN); //i commented it out for now 
-	
+	if (RUN) pScheduler->fork(RUN);
+
 	if (RUN)// i made this cond in case run was trm and no process to replace it 
 	{
-		
+
 		RUN->set_timer(RUN->get_timer() - 1);
 		Qtime--;
 	}
-	
+
 	UpdateState();
-    TManager();
+	TManager();
 
 }
 
-//Random RDY Kill
-void FCFS::RDYKill(int pID) {
-	Process* p = nullptr;
-	bool canKill = RDY.sig_kill(pID, p);
-	if (canKill) {
-		Qtime -= p->get_CT();
+// Search and kill orphans
+void FCFS::kill_orph()
+{
+	Process* p;
+	bool canKill = RDY.kill_prcs(-1, true, p);
+	while (canKill)
+	{
+		Qtime -= p->get_timer();
 		moveToTRM(p);
+		canKill = RDY.kill_prcs(-1, true, p);
 		UpdateState();
 	}
-	if (RUN) 
+	if (RUN)
 	{
-		if (RUN->get_PID() == pID)
+		if (RUN->get_state() == 5)
 		{
-			Qtime -= RUN->get_CT();
+			Qtime -= RUN->get_timer();
 			moveToTRM(RUN);
 			UpdateState();
 		}
 	}
-	
 }
 
-int FCFS::getQueueLength()
-{
-	return Qtime;
-}
+// SigKill
+void FCFS::RDYKill(int pID) {
+	Process* p = nullptr;
+	bool canKill = RDY.kill_prcs(pID, false, p);
+	if (canKill) {
+		Qtime -= p->get_timer();
+		moveToTRM(p);
+		UpdateState();
+	}
+	if (RUN)
+	{
+		if (RUN->get_PID() == pID)
+		{
+			Qtime -= RUN->get_timer();
+			moveToTRM(RUN);
+			UpdateState();
+		}
+	}
 
-
-float FCFS::getpUtil()
-{
-	return (float)T_BUSY / (T_BUSY + T_IDLE);
-}
-
-int FCFS::getstate()
-{
-	return state;
-}
-
-int FCFS::getT_BUSY()
-{
-	return T_BUSY;
-}
-float FCFS::getpLoad()
-{
-	return (float)T_BUSY / Total_TRT;
-}
-int FCFS::getT_IDLE()
-{
-	return T_IDLE;
 }
 
 void FCFS::printRDY() {
@@ -142,28 +152,10 @@ void FCFS::printRDY() {
 	RDY.printInfo();
 }
 
-//Print RUN process
-void FCFS::printRUN() {
-	cout << *(RUN);
-}
-
-bool FCFS::isRunning()
-{
-	return (RUN != nullptr);
-}
-
 void FCFS::UpdateState()
 {
-	if (!RUN && RDY.GetCount()==0)
+	if (!RUN && RDY.GetCount() == 0)
 		state = 1;
 	else
 		state = 0;
-}
-
-void FCFS::TManager()
-{
-	if (state == 0)
-		T_BUSY++;
-	else
-		T_IDLE++;
 }

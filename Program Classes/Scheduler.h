@@ -87,12 +87,14 @@ class Scheduler
 		void RUNAlgo();
 		void BLKAlgo();
 		void Kill();
+		void Steal();
 		void printTerminal();
 
 public:
 	Scheduler(int modeVal);
 	void simulate();					//Simulator Fn.
 	void fork(Process* parent);			//Fork
+	void kill_orph(Process* parent);	//Kill orphans of a parent
 	void schedToTRM(Process* p);
 	void schedToBLk(Process* p);
 	int getTimeSlice();
