@@ -87,6 +87,7 @@ class Scheduler
 		void RUNAlgo();
 		void BLKAlgo();
 		void Kill();
+		void Steal();
 		void printTerminal();
 
 public:

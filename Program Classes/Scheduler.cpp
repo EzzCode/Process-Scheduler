@@ -23,6 +23,12 @@ Scheduler::Scheduler(int modeVal)
 	LQF = nullptr;
 	tSQF = -1;
 	tLQF = -1;
+	//Statistics
+	KillCount = 0;
+	ForkCount = 0;
+	STLCount = 0;
+	RTF_migCount = 0;
+	MaxW_migCount = 0;
 
 	//RNG SEED
 	srand(time(nullptr));
@@ -44,6 +50,7 @@ void Scheduler::simulate() {
 		RUNAlgo();
 		BLKAlgo();
 		Kill();
+		Steal();
 		printTerminal();
 		timeStep++;
 	}
@@ -119,8 +126,10 @@ void Scheduler::RDYtoRUN() {
 
 void Scheduler::Migrate(Process* pPtr, int processor)
 {
-	set_SQF_LQF(processor);
+	set_SQF_LQF(processor); //3 for RR -- 2 for SJF 
 	SQF->moveToRDY(pPtr);
+	if (processor == 3) MaxW_migCount++; //Count for FCFS migration
+	else if (processor == 2) RTF_migCount++; //Count for RR migration
 }
 
 //RUN Algorithm
@@ -158,15 +167,35 @@ void Scheduler::BLKAlgo() {
 //Random Kill
 void Scheduler::Kill() {
 	killQ.peek(sigPtr);
-	if (sigPtr->tstep == timeStep) 
+	if (sigPtr->tstep == timeStep)
 	{
 		killQ.dequeue(sigPtr);
 		for (int i = 0; i < NF; i++) {
 			processorList[i]->RDYKill(sigPtr->pID);
 		}
 	}
-	
+
 }
+
+void Scheduler::Steal()
+{
+	if (timeStep % STL == 0)
+	{
+		while (getSTL_limit() > 0.4)
+		{
+			set_SQF_LQF(0);
+			Process* s = LQF->steal();
+			if (!s)
+			{
+				return;
+			}
+			SQF->moveToRDY(s);
+			STLCount++;
+		}
+	}
+}
+
+
 
 int Scheduler::RNG() {
 	return (rand() % 100 + 1);

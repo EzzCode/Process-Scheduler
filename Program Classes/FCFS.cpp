@@ -11,6 +11,17 @@ FCFS::FCFS(Scheduler* pSch) :Processor(pSch)
 	RUN = nullptr;
 }
 
+Process* FCFS::steal()
+{
+	if (RDY.GetCount() != 0)
+	{
+		Process* s = RDY.GetHeadData();
+		if (!s->has_parent()) return s;
+		else RDY.InsertBeg(s);
+	}
+	return NULL;
+}
+
 void FCFS::moveToRDY(Process* Rptr)
 {
 	Qtime += Rptr->get_timer();
@@ -136,48 +147,9 @@ void FCFS::RDYKill(int pID) {
 
 }
 
-int FCFS::getQueueLength()
-{
-	return Qtime;
-}
-
-
-float FCFS::getpUtil()
-{
-	return (float)T_BUSY / (T_BUSY + T_IDLE);
-}
-
-int FCFS::getstate()
-{
-	return state;
-}
-
-int FCFS::getT_BUSY()
-{
-	return T_BUSY;
-}
-float FCFS::getpLoad()
-{
-	return (float)T_BUSY / Total_TRT;
-}
-int FCFS::getT_IDLE()
-{
-	return T_IDLE;
-}
-
 void FCFS::printRDY() {
 	cout << "[FCFS]" << ": " << RDY.GetCount() << " RDY: ";
 	RDY.printInfo();
-}
-
-//Print RUN process
-void FCFS::printRUN() {
-	cout << *(RUN);
-}
-
-bool FCFS::isRunning()
-{
-	return (RUN != nullptr);
 }
 
 void FCFS::UpdateState()
@@ -186,12 +158,4 @@ void FCFS::UpdateState()
 		state = 1;
 	else
 		state = 0;
-}
-
-void FCFS::TManager()
-{
-	if (state == 0)
-		T_BUSY++;
-	else
-		T_IDLE++;
 }

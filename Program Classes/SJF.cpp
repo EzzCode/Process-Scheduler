@@ -11,6 +11,16 @@ SJF::SJF(Scheduler* pSch) :Processor(pSch)
 	RUN = nullptr;
 }
 
+Process* SJF::steal()
+{
+	Process* s;
+	if (RDY.isEmpty() == false) {
+		RDY.dequeue(s);
+		return s;
+	}
+	return nullptr;
+}
+
 void SJF::moveToRDY(Process* Rptr)
 {
 	int priority = Rptr->get_timer();
@@ -84,49 +94,9 @@ void SJF::ScheduleAlgo()
 	TManager();
 }
 
-int SJF::getQueueLength()
-{
-	return Qtime;
-}
-
-
-float SJF::getpUtil()
-{
-	return (float)T_BUSY / (T_BUSY + T_IDLE);
-}
-float SJF::getpLoad()
-{
-	return (float)T_BUSY / Total_TRT;
-}
-int SJF::getstate()
-{
-	return state;
-}
-
-int SJF::getT_BUSY()
-{
-	return T_BUSY;
-}
-
-int SJF::getT_IDLE()
-{
-	return T_IDLE;
-}
-
-
 void SJF::printRDY() {
 	cout << "[SJF ]" << ": " << RDY.GetCount() << " RDY: ";
 	RDY.printInfo();
-}
-
-//Print RUN process
-void SJF::printRUN() {
-	cout << *(RUN);
-}
-
-bool SJF::isRunning()
-{
-	return (RUN != nullptr);
 }
 
 void SJF::UpdateState()
@@ -135,12 +105,4 @@ void SJF::UpdateState()
 		state = 1;
 	else
 		state = 0;
-}
-
-void SJF::TManager()
-{
-	if (state == 0)
-		T_BUSY++;
-	else
-		T_IDLE++;
 }

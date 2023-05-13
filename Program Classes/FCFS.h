@@ -6,33 +6,18 @@ class FCFS :
 {
 private:
 	LinkedList<Process> RDY;
-	Process* RUN;
-	//state var has values: {0,1} which represent states: {BUSY, IDLE}
-	int state;
-	int Qtime;
-	int T_BUSY;
-	int T_IDLE;
-	int Total_TRT;
 public:
 	FCFS(Scheduler* pSch);
 	virtual void moveToRDY(Process* Rptr);
 	virtual void moveToRUN();
 	virtual void moveToBLK();
 	virtual void moveToTRM(Process* p);
+	virtual Process* steal();
 	virtual void kill_orph();
 	virtual void RDYKill(int pID);
 	virtual void ScheduleAlgo();
-	virtual int getQueueLength();
-	virtual float getpUtil();
-	virtual float getpLoad();
-	virtual int getstate();
-	virtual int getT_BUSY();
-	virtual int getT_IDLE();
 	virtual void printRDY();
-	virtual void printRUN();
-	virtual bool isRunning();
 	virtual void UpdateState();
-	virtual void TManager();
 
 	~FCFS() {};
 };
