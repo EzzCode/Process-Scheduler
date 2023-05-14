@@ -83,15 +83,7 @@ void RR::ScheduleAlgo()
 		TManager();
 		return;
 	}
-
-	if (RUN)
-	{
-		if (RUN->get_timer() == 0)
-		{
-			pScheduler->BeforeDDManager(RUN);
-			hasEnded(RUN);
-		}
-	}
+	hasEnded();
 
 	//Following conditions in case RDY is empty
 	if (RUN)
@@ -107,11 +99,7 @@ void RR::ScheduleAlgo()
 	}
 	if (RUN)
 	{
-		if (RUN->get_timer() == 0)
-		{
-			pScheduler->BeforeDDManager(RUN);
-			hasEnded(RUN);
-		}
+		hasEnded();
 	}
 	if (RUN && RunTS > 0)
 	{
