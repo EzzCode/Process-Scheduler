@@ -217,7 +217,7 @@ void Scheduler::Steal()
 {
 	if (timeStep % STL == 0)
 	{
-		while (getSTL_limit() > 0.4)
+		while (getSTL_limit() > 0.4 && (TrmList.GetCount() + BlkList.GetCount()) - noProcesses > 1)
 		{
 			set_SQF_LQF(0);
 			Process* s = LQF->steal();
