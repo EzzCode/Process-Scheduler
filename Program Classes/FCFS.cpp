@@ -58,11 +58,6 @@ void FCFS::moveToBLK() {
 void FCFS::moveToTRM(Process* p) {
 	//Total_TRT += p->get_TRT();
 	p->set_state(4);			//Process state: TRM
-	//Check and kill process orphans
-	if (p->has_single_ch())
-	{
-		pScheduler->kill_orph(p);
-	}
 	//if removed prcss is the running move a prcss from RDY to Run
 	if (p == RUN)
 	{
