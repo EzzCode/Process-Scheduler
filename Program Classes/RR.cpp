@@ -17,7 +17,7 @@ RR::RR(Scheduler* pSch) :Processor(pSch)
 Process* RR::steal()
 {
 	Process* s;
-	if (RDY.isEmpty() == false)
+	if (RUN && RDY.isEmpty() == false)
 	{
 		RDY.dequeue(s);
 		Qtime -= s->get_timer();
