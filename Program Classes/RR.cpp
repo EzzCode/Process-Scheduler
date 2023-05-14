@@ -109,6 +109,7 @@ void RR::ScheduleAlgo()
 	}
 	else if (RUN && RunTS == 0)
 	{
+		Qtime -= RUN->get_timer();
 		moveToRDY(RUN);
 		RUN = NULL;
 	}
