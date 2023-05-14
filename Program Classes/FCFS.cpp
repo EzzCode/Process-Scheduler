@@ -17,11 +17,14 @@ Process* FCFS::steal()
 	if (RDY.GetCount() != 0)
 	{
 		Process* s = RDY.GetHeadData();
-		if (!s->has_parent()) return s;
+		if (!s->has_parent())
+		{
+			Qtime -= s->get_timer();
+			return s;
+		}
 		else
 		{
 			RDY.InsertBeg(s);
-			Qtime -= s->get_timer();
 		}
 	}
 	return NULL;
