@@ -20,6 +20,7 @@ Process* RR::steal()
 	if (RDY.isEmpty() == false)
 	{
 		RDY.dequeue(s);
+		Qtime -= s->get_timer();
 		return s;
 	}
 	return nullptr;
@@ -28,6 +29,7 @@ Process* RR::steal()
 void RR::migrateToSJF()
 {
 	pScheduler->Migrate(RUN,2);
+	Qtime -= RUN->get_timer();
 	RUN = NULL;
 	moveToRUN();
 }

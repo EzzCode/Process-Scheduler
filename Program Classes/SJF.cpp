@@ -16,6 +16,7 @@ Process* SJF::steal()
 	Process* s;
 	if (RDY.isEmpty() == false) {
 		RDY.dequeue(s);
+		Qtime -= s->get_timer();
 		return s;
 	}
 	return nullptr;

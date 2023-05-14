@@ -18,7 +18,11 @@ Process* FCFS::steal()
 	{
 		Process* s = RDY.GetHeadData();
 		if (!s->has_parent()) return s;
-		else RDY.InsertBeg(s);
+		else
+		{
+			RDY.InsertBeg(s);
+			Qtime -= s->get_timer();
+		}
 	}
 	return NULL;
 }
@@ -26,6 +30,7 @@ Process* FCFS::steal()
 void FCFS::migrateToRR()
 {
 	pScheduler->Migrate(RUN, 3);
+	Qtime -= RUN->get_timer();
 	RUN = NULL;
 	moveToRUN();
 }
@@ -121,7 +126,6 @@ void FCFS::ScheduleAlgo()
 
 	if (RUN)// i made this cond in case run was trm and no process to replace it 
 	{
-
 		RUN->set_timer(RUN->get_timer() - 1);
 		Qtime--;
 	}
