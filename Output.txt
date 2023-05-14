@@ -36,10 +36,10 @@ Processes: 33
 Avg WT: 9.78788,  Avg RT: 2.42424, Avg TRT: 14.1212
 Migration %: RTF:21.2121% MaxW: 15.1515%
 Work Steal % : 0
-Forked Process 9.09091%
-Killed process 6.06061%
+Forked Process 0%
+Killed process 6.66667%
 
-Processors: 13 [5 FCFS, 4 SJF, 2 RR, 2EDF]
+Processors: 4 [0 FCFS, 1 SJF, 3 RR, 0EDF]
 Processors Load
 P1=2.36052%, P2=2.57511%, P3=1.71674%, P4=2.14592%, P5=1.50215%, P6=9.01288%, P7=1.71674%, P8=1.93133%, P9=1.07296%, P10=1.50215%, P11=1.93133%, P12=1.28755%, P13=1.50215%, 
 Processors Util

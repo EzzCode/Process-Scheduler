@@ -463,15 +463,28 @@ void Scheduler::outputFile()
 	}
 	for (int i = 0; i < ProcessorsCounter; i++)
 	{
-		processorList[i]->setTotalTRT(total_TRT_ALL);
-		OutFile << "P" << i+1 << "=" << processorList[i]->getpLoad()*100 << "%" << ", ";
+		if (i >= NF + NS && i <= NF + NS + NR - 1)
+		{
+			OutFile << "P" << i + 1 << "=" << "N/A" << ", ";
+		}
+		else 
+		{
+			processorList[i]->setTotalTRT(total_TRT_ALL);
+			OutFile << "P" << i + 1 << "=" << processorList[i]->getpLoad() * 100 << "%" << ", ";
+		}
+		
 	}
 	OutFile << endl;
 	OutFile<< "Processors Util" << endl;
 	for (int i = 0; i < ProcessorsCounter; i++)
 	{
-		OutFile << "P" << i + 1 << "=" << processorList[i]->getpUtil() * 100 << "%" << ", ";
-		avgUtil += processorList[i]->getpUtil() * 100;
+
+		
+		
+			OutFile << "P" << i + 1 << "=" << processorList[i]->getpUtil() * 100 << "%" << ", ";
+			avgUtil += processorList[i]->getpUtil() * 100;
+		
+		
 	}
 	OutFile << endl;
 	OutFile << "Avg Util: " << avgUtil / ProcessorsCounter <<"%" << endl;
