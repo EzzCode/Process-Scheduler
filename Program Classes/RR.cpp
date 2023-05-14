@@ -20,6 +20,7 @@ Process* RR::steal()
 	if (RDY.isEmpty() == false)
 	{
 		RDY.dequeue(s);
+		Qtime -= s->get_timer();
 		return s;
 	}
 	return nullptr;
@@ -28,6 +29,7 @@ Process* RR::steal()
 void RR::migrateToSJF()
 {
 	pScheduler->Migrate(RUN,2);
+	Qtime -= RUN->get_timer();
 	RUN = NULL;
 	moveToRUN();
 }
@@ -81,15 +83,7 @@ void RR::ScheduleAlgo()
 		TManager();
 		return;
 	}
-
-	if (RUN)
-	{
-		if (RUN->get_timer() == 0)
-		{
-			pScheduler->BeforeDDManager(RUN);
-			hasEnded(RUN);
-		}
-	}
+	hasEnded();
 
 	//Following conditions in case RDY is empty
 	if (RUN)
@@ -105,11 +99,7 @@ void RR::ScheduleAlgo()
 	}
 	if (RUN)
 	{
-		if (RUN->get_timer() == 0)
-		{
-			pScheduler->BeforeDDManager(RUN);
-			hasEnded(RUN);
-		}
+		hasEnded();
 	}
 	if (RUN && RunTS > 0)
 	{
@@ -119,6 +109,7 @@ void RR::ScheduleAlgo()
 	}
 	else if (RUN && RunTS == 0)
 	{
+		Qtime -= RUN->get_timer();
 		moveToRDY(RUN);
 		RUN = NULL;
 	}

@@ -493,7 +493,7 @@ void Scheduler::outputFile()
 	}
 	OutFile << endl;
 	OutFile << "Avg Util: " << avgUtil / ProcessorsCounter <<"%" << endl;
-	OutFile << "EDF Percentage of processes before deadline: " << getBeforeDDpercent() * 100 <<"%" << endl;
+	OutFile << "Percentage of processes completed before tehir expected deadline: " << getBeforeDDpercent() * 100 <<"%" << endl;
 
 }
 //Destructor

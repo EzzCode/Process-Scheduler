@@ -63,6 +63,7 @@ Process* EDF::steal()
 	if (RDY.isEmpty() == false)
 	{
 		RDY.dequeue(s);
+		Qtime -= s->get_timer();
 		return s;
 	}
 	return nullptr;
@@ -76,16 +77,9 @@ void EDF::ScheduleAlgo()
 		TManager();
 		return;
 	}
-	if (RUN)
-	{
-		if (RUN->get_timer() == 0)
-		{
-			pScheduler->BeforeDDManager(RUN);
-			hasEnded(RUN);
-		}
-	}
+	hasEnded();
 
-	if (RUN)
+	if (RUN)						//if there is a process in RDY which has lower DD
 	{
 		Process* p = NULL;
 		if (RDY.peek(p))
@@ -105,11 +99,7 @@ void EDF::ScheduleAlgo()
 	}
 	if (RUN)
 	{
-		if (RUN->get_timer() == 0)
-		{
-			pScheduler->BeforeDDManager(RUN);
-			hasEnded(RUN);
-		}
+		hasEnded();
 	}
 	if (RUN)
 	{

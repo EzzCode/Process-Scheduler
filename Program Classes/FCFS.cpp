@@ -17,8 +17,15 @@ Process* FCFS::steal()
 	if (RDY.GetCount() != 0)
 	{
 		Process* s = RDY.GetHeadData();
-		if (!s->has_parent()) return s;
-		else RDY.InsertBeg(s);
+		if (!s->has_parent())
+		{
+			Qtime -= s->get_timer();
+			return s;
+		}
+		else
+		{
+			RDY.InsertBeg(s);
+		}
 	}
 	return NULL;
 }
@@ -26,6 +33,7 @@ Process* FCFS::steal()
 void FCFS::migrateToRR()
 {
 	pScheduler->Migrate(RUN, 3);
+	Qtime -= RUN->get_timer();
 	RUN = NULL;
 	moveToRUN();
 }
@@ -82,14 +90,7 @@ void FCFS::ScheduleAlgo()
 		return;
 	}
 	// a check if process has ended because of a bizarre special case
-	if (RUN)
-	{
-		if (RUN->get_timer() == 0)
-		{
-			pScheduler->BeforeDDManager(RUN);
-			hasEnded(RUN);
-		}
-	}
+	hasEnded();
 
 	if (RUN)
 	{
@@ -104,11 +105,7 @@ void FCFS::ScheduleAlgo()
 	}
 	if (RUN)	// i made this cond in case run was blk and no process to replace it 
 	{
-		if (RUN->get_timer() == 0)
-		{
-			pScheduler->BeforeDDManager(RUN);
-			hasEnded(RUN);
-		}
+		hasEnded();
 	}
 
 	//Forking
@@ -116,7 +113,6 @@ void FCFS::ScheduleAlgo()
 
 	if (RUN)// i made this cond in case run was trm and no process to replace it 
 	{
-
 		RUN->set_timer(RUN->get_timer() - 1);
 		Qtime--;
 	}

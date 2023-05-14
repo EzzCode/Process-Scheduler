@@ -16,6 +16,7 @@ Process* SJF::steal()
 	Process* s;
 	if (RDY.isEmpty() == false) {
 		RDY.dequeue(s);
+		Qtime -= s->get_timer();
 		return s;
 	}
 	return nullptr;
@@ -76,14 +77,7 @@ void SJF::ScheduleAlgo()
 		TManager();
 		return;
 	}
-	if (RUN)
-	{
-		if (RUN->get_timer() == 0)
-		{
-			pScheduler->BeforeDDManager(RUN);
-			hasEnded(RUN);
-		}
-	}
+	hasEnded();
 
 	//Following conditions in case RDY is empty
 	if (RUN)
@@ -92,11 +86,7 @@ void SJF::ScheduleAlgo()
 	}
 	if (RUN)
 	{
-		if (RUN->get_timer() == 0)
-		{
-			pScheduler->BeforeDDManager(RUN);
-			hasEnded(RUN);
-		}
+		hasEnded();
 	}
 	if (RUN)
 	{

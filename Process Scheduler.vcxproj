@@ -128,6 +128,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="Processor.cpp" />
     <ClCompile Include="Program Classes\EDF.cpp" />
     <ClCompile Include="Program Classes\FCFS.cpp" />
     <ClCompile Include="Program Classes\Process.cpp" />
