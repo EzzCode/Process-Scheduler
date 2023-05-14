@@ -17,8 +17,15 @@ Process* FCFS::steal()
 	if (RDY.GetCount() != 0)
 	{
 		Process* s = RDY.GetHeadData();
-		if (!s->has_parent()) return s;
-		else RDY.InsertBeg(s);
+		if (!s->has_parent())
+		{
+			Qtime -= s->get_timer();
+			return s;
+		}
+		else
+		{
+			RDY.InsertBeg(s);
+		}
 	}
 	return NULL;
 }
@@ -26,6 +33,7 @@ Process* FCFS::steal()
 void FCFS::migrateToRR()
 {
 	pScheduler->Migrate(RUN, 3);
+	Qtime -= RUN->get_timer();
 	RUN = NULL;
 	moveToRUN();
 }
@@ -43,7 +51,7 @@ void FCFS::moveToRUN()
 	if (!RUN && RDY.GetCount() != 0) {
 		RUN = RDY.GetHeadData();
 		RUN->set_state(2);		//Process state: RUN
-		//if (RDY.GetCount() == 0) state = 1; commented bec outdated ~S
+		if(RUN->get_RT() == -1) pScheduler->calc_RT(RUN);
 	}
 	UpdateState();
 }
@@ -56,7 +64,7 @@ void FCFS::moveToBLK() {
 }
 
 void FCFS::moveToTRM(Process* p) {
-	Total_TRT += p->get_TRT();
+	//Total_TRT += p->get_TRT();
 	p->set_state(4);			//Process state: TRM
 	//Check and kill process orphans
 	if (p->has_single_ch())
@@ -68,18 +76,21 @@ void FCFS::moveToTRM(Process* p) {
 	{
 		RUN = nullptr;
 		pScheduler->schedToTRM(p);
+		Total_TRT += p->get_TRT();
 		moveToRUN(); // to add another process in run
 	}
 	// if its not a running process 
 	else
 	{
 		pScheduler->schedToTRM(p);
+		Total_TRT += p->get_TRT();
 	}
 }
 
 void FCFS::ScheduleAlgo()
 {
 	if (!RUN) {
+		UpdateState();
 		TManager();
 		return;
 	}
@@ -118,7 +129,6 @@ void FCFS::ScheduleAlgo()
 
 	if (RUN)// i made this cond in case run was trm and no process to replace it 
 	{
-
 		RUN->set_timer(RUN->get_timer() - 1);
 		Qtime--;
 	}
@@ -180,7 +190,7 @@ void FCFS::printRDY() {
 void FCFS::UpdateState()
 {
 	if (!RUN && RDY.GetCount() == 0)
-		state = 1;
+		state = 1; // busy
 	else
-		state = 0;
+		state = 0; // idle
 }

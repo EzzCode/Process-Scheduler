@@ -89,10 +89,10 @@
     <ClInclude Include="DEFS.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Program Classes\UI.h">
+    <ClInclude Include="Program Classes\EDF.h">
       <Filter>Header Files\Program Classes</Filter>
     </ClInclude>
-    <ClInclude Include="Program Classes\EDF.h">
+    <ClInclude Include="Program Classes\UI.h">
       <Filter>Header Files\Program Classes</Filter>
     </ClInclude>
   </ItemGroup>

@@ -20,6 +20,7 @@ Process* RR::steal()
 	if (RDY.isEmpty() == false)
 	{
 		RDY.dequeue(s);
+		Qtime -= s->get_timer();
 		return s;
 	}
 	return nullptr;
@@ -28,6 +29,7 @@ Process* RR::steal()
 void RR::migrateToSJF()
 {
 	pScheduler->Migrate(RUN,2);
+	Qtime -= RUN->get_timer();
 	RUN = NULL;
 	moveToRUN();
 }
@@ -44,6 +46,7 @@ void RR::moveToRUN()
 {
 	if (!RUN && RDY.isEmpty() == false) {
 		RDY.dequeue(RUN);
+		if (RUN->get_RT() == -1) pScheduler->calc_RT(RUN);
 		if (RUN->get_timer() < RTF)
 		{
 			migrateToSJF();
@@ -64,9 +67,10 @@ void RR::moveToBLK()
 }
 
 void RR::moveToTRM(Process* p) {
-	Total_TRT += p->get_TRT();
+	//Total_TRT += p->get_TRT();
 	p->set_state(4);			//Process state: TRM
 	pScheduler->schedToTRM(p);
+	Total_TRT += p->get_TRT();
 	RUN = nullptr;
 	moveToRUN(); // to add another process in run
 }
@@ -133,7 +137,7 @@ void RR::printRDY() {
 void RR::UpdateState()
 {
 	if (!RUN && RDY.isEmpty())
-		state = 1;
+		state = 1;	// busy
 	else
-		state = 0;
+		state = 0;	// idle
 }

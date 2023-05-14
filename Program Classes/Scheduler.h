@@ -16,9 +16,9 @@ class Scheduler
 {
 	private:
 		int timeStep;
-		int NF;
-		int NS;
-		int NR;
+		int NF;							// Number of FCFS processors
+		int NS;							// Number of SJF processors
+		int NR;							// Number of RR processors
 		int NE;							//Number of EDF processors
 		int timeSlice;
 		int RTF;						//Remaining Time to finish
@@ -39,6 +39,8 @@ class Scheduler
 		float AvgRT;
 		float AvgTRT;
 		int BeforeDD;
+		int total_TRT_ALL;
+		int avgUtil;
 
 		Processor* myProcessor;			// Processor ptr for processor creation
 		Process* myProcess;				// process ptr for process creation
@@ -71,7 +73,7 @@ class Scheduler
 		int getLQF_time(int section);
 		
 		//Statistics
-		void setStats();
+		void setStats(Process* p);
 		float getAvgWT();
 		float getAvgRT();
 		float getAvgTRT();
@@ -81,7 +83,7 @@ class Scheduler
 		float getKillpercent();
 		float getSTLpercent();
 		float getBeforeDDpercent();
-
+		
 
 		//Private Simulation methods
 		void initializeUI(int modeVal);
@@ -101,13 +103,15 @@ public:
 	void kill_orph(Process* parent);	//Kill orphans of a parent
 	void schedToTRM(Process* p);
 	void schedToBLk(Process* p);
+	void calc_RT(Process* p);			// to calculate response time of process
 	int getTimeSlice();
 	int getRTF();
 	int getMaxW();
 	void Migrate(Process* pPtr, int processor);
 	bool canMigrate(Process* pPtr, int processor);
 	void BeforeDDManager(Process* pPtr);
-
+	int getTotalTRTALL();
+	void outputFile();
 	~Scheduler();
 
 	//RNG

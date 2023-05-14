@@ -30,7 +30,7 @@ Scheduler::Scheduler(int modeVal)
 	RTF_migCount = 0;
 	MaxW_migCount = 0;
 	BeforeDD = 0;
-
+	avgUtil = 0;
 	//RNG SEED
 	srand(time(nullptr));
 
@@ -55,6 +55,8 @@ void Scheduler::simulate() {
 		printTerminal();
 		timeStep++;
 	}
+	
+	outputFile();
 	ui.print_end();
 }
 
@@ -113,8 +115,6 @@ void Scheduler::NEWtoRDY() {
 	bool canPeek = NewList.peek(p);
 	while (canPeek && p->get_AT() == timeStep) {
 		NewList.dequeue(p);
-		int RT = p->get_AT() - timeStep;
-		p->set_RT(RT);
 		//Find shortest prcsr
 		set_SQF_LQF(0);
 		SQF->moveToRDY(p);
@@ -180,7 +180,7 @@ void Scheduler::BLKAlgo() {
 	bool canPeek = BlkList.peek(p);
 	if (canPeek)
 	{
-		bool b = p->peek_io(io);	//Get IO ptr
+		bool b = p->peek_io(io);//Get IO ptr
 		if (b && io->IO_D == 0)
 		{
 			BlkList.dequeue(p);
@@ -193,6 +193,7 @@ void Scheduler::BLKAlgo() {
 			io = NULL;
 		}
 		else {
+			p->set_total_IO((p->get_total_IO())+1);//increments the total io Duration for the output file
 			io->IO_D--;
 		}
 	}
@@ -204,6 +205,7 @@ void Scheduler::Kill() {
 	if (sigPtr->tstep == timeStep)
 	{
 		killQ.dequeue(sigPtr);
+		KillCount++;
 		for (int i = 0; i < NF; i++) {
 			processorList[i]->RDYKill(sigPtr->pID);
 		}
@@ -256,7 +258,6 @@ void Scheduler::fork(Process* parent) {
 	Process* ch = new Process(timeStep, -1, parent->get_timer(), 0);
 	parent->insert_ch(ch);
 	noProcesses++;	//Update variable for scheduler
-	ch->set_RT(0);	//RT is 0 as child immediately gets a processor
 	set_SQF_LQF(1);	//Get shortest FCFS queue to process child
 	SQF->moveToRDY(ch);
 }
@@ -347,19 +348,13 @@ int Scheduler::getLQF_time(int section)
 }
 
 //STATISTICS 
-void Scheduler::setStats()
+void Scheduler::setStats(Process* p)
 {
-	Process* p;
-	while (TrmList.dequeue(p))
-	{
-		AvgTRT += p->get_TRT();
-		AvgRT += p->get_RT();
-		AvgWT += p->get_WT();
-		ForkCount += p->get_count_fork();
-	}
-	AvgTRT = (float)AvgTRT / noProcesses;
-	AvgRT = (float)AvgRT / noProcesses;
-	AvgWT = (float)AvgWT / noProcesses;
+	AvgTRT += p->get_TRT();
+	AvgRT += p->get_RT();
+	AvgWT += p->get_WT();
+	ForkCount += p->get_count_fork();
+	
 }
 
 int Scheduler::getTimeSlice()
@@ -370,6 +365,11 @@ int Scheduler::getTimeSlice()
 int Scheduler::getRTF()
 {
 	return RTF;
+}
+
+void Scheduler::calc_RT(Process* p)
+{
+	p->set_RT(timeStep - p->get_AT());
 }
 
 int Scheduler::getMaxW()
@@ -387,22 +387,27 @@ void Scheduler::BeforeDDManager(Process* pPtr)
 
 float Scheduler::getAvgWT()
 {
-	return AvgWT;
+	return (float)AvgWT / noProcesses;;
 }
 
 float Scheduler::getAvgRT()
 {
-	return AvgRT;
+	return (float)AvgRT / noProcesses;
 }
 
 float Scheduler::getAvgTRT()
 {
-	return AvgTRT;
+	return (float)AvgTRT / noProcesses;
 }
 
 float Scheduler::getBeforeDDpercent()
 {
 	return (float)BeforeDD / noProcesses;
+}
+
+int Scheduler::getTotalTRTALL()
+{
+	return total_TRT_ALL;
 }
 
 float Scheduler::getRTFpercent()
@@ -429,7 +434,63 @@ float Scheduler::getSTLpercent()
 {
 	return (float)STLCount / noProcesses;
 }
+//Output File
+void Scheduler::outputFile()
+{
+	Process* p;
+	ofstream OutFile("Output.txt");
+	OutFile << "TT  PID  AT  CT  IO_D  WT  RT  TRT" << endl;
+	while (!TrmList.isEmpty())
+	{
+		TrmList.peek(p);
+		p->writeData(OutFile);
+		setStats(p);
+		TrmList.dequeue(p);
+	}
 
+	OutFile << "Processes: " << noProcesses << endl;
+	OutFile << "Avg WT: " << getAvgWT() << ",  " << "Avg RT: " << getAvgRT() << ", " << "Avg TRT: " << getAvgTRT() << endl;
+	OutFile << "Migration %: " << "RTF:" << getRTFpercent() * 100 << "% " << "MaxW: " << getMaxWpercent() * 100 << "%" << endl;
+	OutFile << "Work Steal % : " << getSTLpercent() * 100 << endl;
+	OutFile << "Forked Process " << getForkedpercent() * 100 << "%" << endl;
+	OutFile << "Killed process " << getKillpercent() * 100 << "%" << endl;
+	OutFile << endl;
+	OutFile << "Processors: " << ProcessorsCounter << " " << "[" << NF << " " << "FCFS, " << NS << " " << "SJF, " << NR << " " << "RR, " <<NE<<"EDF" <<"]" << endl;
+	OutFile << "Processors Load" << endl;
+	for (int i = 0; i < ProcessorsCounter; i++) 
+	{
+		total_TRT_ALL += processorList[i]->getTotalTRT();
+	}
+	for (int i = 0; i < ProcessorsCounter; i++)
+	{
+		if (i >= NF + NS && i <= NF + NS + NR - 1)
+		{
+			OutFile << "P" << i + 1 << "=" << "N/A" << ", ";
+		}
+		else 
+		{
+			processorList[i]->setTotalTRT(total_TRT_ALL);
+			OutFile << "P" << i + 1 << "=" << processorList[i]->getpLoad() * 100 << "%" << ", ";
+		}
+		
+	}
+	OutFile << endl;
+	OutFile<< "Processors Util" << endl;
+	for (int i = 0; i < ProcessorsCounter; i++)
+	{
+
+		
+		
+			OutFile << "P" << i + 1 << "=" << processorList[i]->getpUtil() * 100 << "%" << ", ";
+			avgUtil += processorList[i]->getpUtil() * 100;
+		
+		
+	}
+	OutFile << endl;
+	OutFile << "Avg Util: " << avgUtil / ProcessorsCounter <<"%" << endl;
+	OutFile << "EDF Percentage of processes before deadline: " << getBeforeDDpercent() * 100 <<"%" << endl;
+
+}
 //Destructor
 Scheduler::~Scheduler()
 {
