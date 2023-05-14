@@ -42,7 +42,7 @@ public:
 	//Print RUN process
 	void printRUN();
 	//IO Algo	
-	void ioAlgo(Process* RUN, int& Qtime);
+	void ioAlgo(int& Qtime);
 	void setTotalTRT(int total);
 	int getTotalTRT();
 	//Checks if Running process is finished

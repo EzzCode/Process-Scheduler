@@ -82,7 +82,7 @@ void SJF::ScheduleAlgo()
 	//Following conditions in case RDY is empty
 	if (RUN)
 	{
-		ioAlgo(RUN, Qtime);
+		ioAlgo(Qtime);
 	}
 	if (RUN)
 	{
