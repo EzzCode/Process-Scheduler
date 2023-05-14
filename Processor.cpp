@@ -49,7 +49,7 @@ void Processor::printRUN()
 	cout << *(RUN);
 }
 
-void Processor::ioAlgo(Process* RUN, int& Qtime)
+void Processor::ioAlgo(int& Qtime)
 {
 	IO* io;
 	bool b = RUN->peek_io(io);
