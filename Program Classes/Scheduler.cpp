@@ -240,6 +240,11 @@ int Scheduler::RNG() {
 //Move to TRM list
 void Scheduler::schedToTRM(Process* p)
 {
+	//Check and kill process orphans
+	if (p->has_single_ch())
+	{
+		kill_orph(p);
+	}
 	p->set_TT(timeStep);
 	TrmList.enqueue(p);
 }
