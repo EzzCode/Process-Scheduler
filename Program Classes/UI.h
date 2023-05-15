@@ -18,7 +18,8 @@ private:
 	int mode;
 public:
 	UI();
-	void set_mode(int val);
+	void request_mode();
+	void silent_print();
 	void updateTerminal(int timestep, Processor** processorList, int processorCount, LinkedQueue<Process>& Blk, LinkedQueue<Process>& Trm);
 	void print_end();
 	~UI();
