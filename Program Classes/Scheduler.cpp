@@ -3,7 +3,7 @@
 #include <fstream>
 
 using namespace std;
-Scheduler::Scheduler(int modeVal)
+Scheduler::Scheduler()
 {
 	timeStep = 1;
 	NF = 0;
@@ -16,7 +16,6 @@ Scheduler::Scheduler(int modeVal)
 	forkProb = 0;
 	noProcesses = 0;
 	ProcessorsCounter = 0;
-	mode = modeVal;
 
 	processorList = nullptr;
 	SQF = nullptr;
@@ -35,15 +34,16 @@ Scheduler::Scheduler(int modeVal)
 	srand(time(nullptr));
 
 	//UI initialization
-	initializeUI(modeVal);
+	initializeUI();
 }
 
-void Scheduler::initializeUI(int modeVal) {
-	ui.set_mode(mode);
+void Scheduler::initializeUI() {
+	ui.request_mode();
 }
 
 //Simulator Fn.
 void Scheduler::simulate() {
+	ui.silent_print();
 	fileLoading();
 	while (TrmList.GetCount() != noProcesses) {
 		NEWtoRDY();

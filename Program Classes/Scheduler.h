@@ -27,7 +27,6 @@ class Scheduler
 		int forkProb;
 		int noProcesses;				//number of processes
 		int ProcessorsCounter;			//just a counter for the creation
-		int mode;						//print mode
 		
 		//statistics
 		int KillCount;
@@ -86,7 +85,7 @@ class Scheduler
 		
 
 		//Private Simulation methods
-		void initializeUI(int modeVal);
+		void initializeUI();
 		void fileLoading();
 		void NEWtoRDY();
 		void RDYtoRUN();
@@ -97,7 +96,7 @@ class Scheduler
 		void printTerminal();
 
 public:
-	Scheduler(int modeVal);
+	Scheduler();
 	void simulate();					//Simulator Fn.
 	void fork(Process* parent);			//Fork
 	void kill_orph(Process* parent);	//Kill orphans of a parent
