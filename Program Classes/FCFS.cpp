@@ -14,7 +14,7 @@ FCFS::FCFS(Scheduler* pSch) :Processor(pSch)
 
 Process* FCFS::steal()
 {
-	if (RDY.GetCount() != 0)
+	if (RUN && RDY.GetCount() != 0)
 	{
 		Process* s = RDY.GetHeadData();
 		if (!s->has_parent())
@@ -94,7 +94,7 @@ void FCFS::ScheduleAlgo()
 
 	if (RUN)
 	{
-		ioAlgo(RUN, Qtime);// how processor deals with IO
+		ioAlgo(Qtime);// how processor deals with IO
 	}
 	if (RUN)
 	{
