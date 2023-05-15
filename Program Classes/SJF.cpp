@@ -14,7 +14,7 @@ SJF::SJF(Scheduler* pSch) :Processor(pSch)
 Process* SJF::steal()
 {
 	Process* s;
-	if (RUN && RDY.isEmpty() == false) {
+	if (RDY.isEmpty() == false) {
 		RDY.dequeue(s);
 		Qtime -= s->get_timer();
 		return s;

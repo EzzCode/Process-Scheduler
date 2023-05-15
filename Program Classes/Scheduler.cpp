@@ -188,6 +188,7 @@ void Scheduler::BLKAlgo() {
 			//Find shortest prcsr
 			set_SQF_LQF(0);
 			SQF->moveToRDY(p);
+			SQF->moveToRUN();
 			p = nullptr;
 			delete io;
 			io = NULL;
@@ -226,6 +227,7 @@ void Scheduler::Steal()
 				return;
 			}
 			SQF->moveToRDY(s);
+			SQF->moveToRUN();
 			STLCount++;
 		}
 	}
