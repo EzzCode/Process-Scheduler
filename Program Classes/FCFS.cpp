@@ -14,7 +14,7 @@ FCFS::FCFS(Scheduler* pSch) :Processor(pSch)
 
 Process* FCFS::steal()
 {
-	if (RUN && RDY.GetCount() != 0)
+	if (RDY.GetCount() != 0)
 	{
 		Process* s = RDY.GetHeadData();
 		if (!s->has_parent())
