@@ -135,9 +135,13 @@ void Process::Load(ifstream& Infile)
 {
 	Infile >> AT >> PID >> CT >> DD >> N_IO;
 	IO* ioData = new IO;
+	int tR = 0;
 	for (int i = 0; i < N_IO; i++) {
 		char c1, c2;
-		Infile >> c1 >> ioData->IO_R >> c2 >> ioData->IO_D >> c1 >> c2;
+		int x;
+		Infile >> c1 >> x >> c2 >> ioData->IO_D >> c1 >> c2;
+		ioData->IO_R = x - tR;
+		tR = x;
 		ioQ.enqueue(ioData);
 		if (i != N_IO - 1) {
 			ioData = new IO;
