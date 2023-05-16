@@ -53,7 +53,7 @@ void RR::moveToRUN()
 	if (!RUN && RDY.isEmpty() == false) {
 		RDY.dequeue(RUN);
 		if (RUN->get_RT() == -1) pScheduler->calc_RT(RUN);
-		if (RUN->get_timer() < RTF)
+		if (pScheduler->canMigrate(RUN,2))
 		{
 			migrateToSJF();
 			return;
