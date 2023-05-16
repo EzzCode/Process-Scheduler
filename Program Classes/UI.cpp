@@ -1,11 +1,21 @@
 #include "UI.h"
 
-UI::UI() {
-	set_mode(-1);
+UI::UI() { mode = -1; }
+
+void UI::request_mode()
+{
+	int val;
+	cout << "Please enter operation mode {0, 1, 2}: ";
+	cin >> val;
+	while (val > 2 || val < 0) {
+		cout << "Error! enter a valid operation mode: ";
+		cin >> val;
+	}
+	system("cls");
+	mode = val;
 }
 
-void UI::set_mode(int val) {
-	mode = val;
+void UI::silent_print() {
 	//If Silent mode
 	if (mode == 2) {
 		cout << "Silent Mode...................     Simulation starts..." << endl;

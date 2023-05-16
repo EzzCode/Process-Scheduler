@@ -4,6 +4,7 @@
 FCFS::FCFS(Scheduler* pSch) :Processor(pSch)
 {
 	state = 1;
+	overheated = false;
 	Qtime = 0;
 	T_BUSY = 0;
 	T_IDLE = 0;
@@ -17,8 +18,15 @@ Process* FCFS::steal()
 	if (RDY.GetCount() != 0)
 	{
 		Process* s = RDY.GetHeadData();
-		if (!s->has_parent()) return s;
-		else RDY.InsertBeg(s);
+		if (!s->has_parent())
+		{
+			Qtime -= s->get_timer();
+			return s;
+		}
+		else
+		{
+			RDY.InsertBeg(s);
+		}
 	}
 	return NULL;
 }
@@ -26,8 +34,14 @@ Process* FCFS::steal()
 void FCFS::migrateToRR()
 {
 	pScheduler->Migrate(RUN, 3);
+	Qtime -= RUN->get_timer();
 	RUN = NULL;
 	moveToRUN();
+}
+
+int FCFS::get_rdy_count()
+{
+	return RDY.GetCount();
 }
 
 void FCFS::moveToRDY(Process* Rptr)
@@ -58,11 +72,6 @@ void FCFS::moveToBLK() {
 void FCFS::moveToTRM(Process* p) {
 	//Total_TRT += p->get_TRT();
 	p->set_state(4);			//Process state: TRM
-	//Check and kill process orphans
-	if (p->has_single_ch())
-	{
-		pScheduler->kill_orph(p);
-	}
 	//if removed prcss is the running move a prcss from RDY to Run
 	if (p == RUN)
 	{
@@ -81,24 +90,18 @@ void FCFS::moveToTRM(Process* p) {
 
 void FCFS::ScheduleAlgo()
 {
+	if (overheated) return;
 	if (!RUN) {
 		UpdateState();
 		TManager();
 		return;
 	}
 	// a check if process has ended because of a bizarre special case
-	if (RUN)
-	{
-		if (RUN->get_timer() == 0)
-		{
-			pScheduler->BeforeDDManager(RUN);
-			hasEnded(RUN);
-		}
-	}
+	hasEnded();
 
 	if (RUN)
 	{
-		ioAlgo(RUN, Qtime);// how processor deals with IO
+		ioAlgo(Qtime);// how processor deals with IO
 	}
 	if (RUN)
 	{
@@ -109,11 +112,7 @@ void FCFS::ScheduleAlgo()
 	}
 	if (RUN)	// i made this cond in case run was blk and no process to replace it 
 	{
-		if (RUN->get_timer() == 0)
-		{
-			pScheduler->BeforeDDManager(RUN);
-			hasEnded(RUN);
-		}
+		hasEnded();
 	}
 
 	//Forking
@@ -121,7 +120,6 @@ void FCFS::ScheduleAlgo()
 
 	if (RUN)// i made this cond in case run was trm and no process to replace it 
 	{
-
 		RUN->set_timer(RUN->get_timer() - 1);
 		Qtime--;
 	}
@@ -155,13 +153,14 @@ void FCFS::kill_orph()
 }
 
 // SigKill
-void FCFS::RDYKill(int pID) {
+bool FCFS::RDYKill(int pID) {
 	Process* p = nullptr;
 	bool canKill = RDY.kill_prcs(pID, false, p);
 	if (canKill) {
 		Qtime -= p->get_timer();
 		moveToTRM(p);
 		UpdateState();
+		return true;
 	}
 	if (RUN)
 	{
@@ -170,14 +169,22 @@ void FCFS::RDYKill(int pID) {
 			Qtime -= RUN->get_timer();
 			moveToTRM(RUN);
 			UpdateState();
+			return true;
 		}
 	}
-
+	return false;
 }
 
 void FCFS::printRDY() {
 	cout << "[FCFS]" << ": " << RDY.GetCount() << " RDY: ";
-	RDY.printInfo();
+	if (!overheated)
+	{
+		RDY.printInfo();
+	}
+	else
+	{
+		cout << "OVHT";
+	}
 }
 
 void FCFS::UpdateState()
@@ -186,4 +193,40 @@ void FCFS::UpdateState()
 		state = 1; // busy
 	else
 		state = 0; // idle
+}
+
+void FCFS::ovht_manager()
+{
+	bool cleared = true;
+	int count_rdy = RDY.GetCount();
+	Process* ptr = nullptr;
+	if (RUN)
+	{
+		cleared = pScheduler->clear_ovht_prcsr(RUN);
+		if (cleared)
+		{
+			Qtime -= RUN->get_timer();
+			RUN = nullptr;
+		}
+		else
+		{
+			Qtime -= RUN->get_timer();
+			moveToRDY(RUN);
+			RUN = nullptr;
+		}
+	}
+	for (int i = 0; i < count_rdy; i++)
+	{
+		ptr = RDY.GetHeadData();
+		cleared = pScheduler->clear_ovht_prcsr(ptr);
+		if (!cleared)
+		{
+			Qtime -= ptr->get_timer();
+			moveToRDY(ptr);
+		}
+		else
+		{
+			Qtime -= ptr->get_timer();
+		}
+	}
 }

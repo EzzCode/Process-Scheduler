@@ -4,6 +4,7 @@ EDF::EDF(Scheduler* pSch) :Processor(pSch)
 {
 	{
 		state = 1;
+		overheated = false;
 		Qtime = 0;
 		T_BUSY = 0;
 		T_IDLE = 0;
@@ -40,7 +41,6 @@ void EDF::moveToBLK()
 
 void EDF::moveToTRM(Process* p)
 {
-	
 	p->set_state(4);			//Process state: TRM
 	//if removed prcss is the running move a prcss from RDY to Run
 	if (p == RUN)
@@ -63,6 +63,7 @@ Process* EDF::steal()
 	if (RDY.isEmpty() == false)
 	{
 		RDY.dequeue(s);
+		Qtime -= s->get_timer();
 		return s;
 	}
 	return nullptr;
@@ -70,22 +71,16 @@ Process* EDF::steal()
 
 void EDF::ScheduleAlgo()
 {
+	if (overheated) return;
 	if (!RUN)
 	{
 		UpdateState();
 		TManager();
 		return;
 	}
-	if (RUN)
-	{
-		if (RUN->get_timer() == 0)
-		{
-			pScheduler->BeforeDDManager(RUN);
-			hasEnded(RUN);
-		}
-	}
+	hasEnded();
 
-	if (RUN)
+	if (RUN)						//if there is a process in RDY which has lower DD
 	{
 		Process* p = NULL;
 		if (RDY.peek(p))
@@ -101,15 +96,11 @@ void EDF::ScheduleAlgo()
 	//Following conditions in case RDY is empty
 	if (RUN)
 	{
-		ioAlgo(RUN, Qtime);
+		ioAlgo(Qtime);
 	}
 	if (RUN)
 	{
-		if (RUN->get_timer() == 0)
-		{
-			pScheduler->BeforeDDManager(RUN);
-			hasEnded(RUN);
-		}
+		hasEnded();
 	}
 	if (RUN)
 	{
@@ -124,7 +115,14 @@ void EDF::ScheduleAlgo()
 void EDF::printRDY()
 {
 	cout << "[EDF]" << ": " << RDY.GetCount() << " RDY: ";
-	RDY.printInfo();
+	if (!overheated)
+	{
+		RDY.printInfo();
+	}
+	else
+	{
+		cout << "OVHT";
+	}
 }
 
 void EDF::UpdateState()
@@ -133,4 +131,45 @@ void EDF::UpdateState()
 		state = 1;	// busy
 	else
 		state = 0;	// idle
+}
+
+int EDF::get_rdy_count()
+{
+	return RDY.GetCount();
+}
+
+void EDF::ovht_manager()
+{
+	bool cleared = true;
+	int count_rdy = RDY.GetCount();
+	Process* ptr = nullptr;
+	if (RUN)
+	{
+		cleared = pScheduler->clear_ovht_prcsr(RUN);
+		if (cleared)
+		{
+			Qtime -= RUN->get_timer();
+			RUN = nullptr;
+		}
+		else
+		{
+			Qtime -= RUN->get_timer();
+			moveToRDY(RUN);
+			RUN = nullptr;
+		}
+	}
+	for (int i = 0; i < count_rdy; i++)
+	{
+		RDY.dequeue(ptr);
+		cleared = pScheduler->clear_ovht_prcsr(ptr);
+		if (!cleared)
+		{
+			Qtime -= ptr->get_timer();
+			moveToRDY(ptr);
+		}
+		else
+		{
+			Qtime -= ptr->get_timer();
+		}
+	}
 }

@@ -17,6 +17,9 @@ protected:
 	int Qtime;
 	int state;		 //state var has values: {0,1} which represent states: {BUSY, IDLE}
 	Process* RUN = nullptr;
+	//overheat variables
+	bool overheated;	// true when prcsr overheats
+	int rem_ovht_tSteps;	// number of time steps of overheat remaining
 public:
 	Processor(Scheduler* pSch) { pScheduler = pSch; };
 	virtual void ScheduleAlgo() = 0;
@@ -24,88 +27,41 @@ public:
 	virtual void moveToRUN() = 0;
 	virtual void moveToBLK() = 0;
 	virtual void moveToTRM(Process* p) = 0;
-	virtual void kill_orph() {}	//To kill orphans in FCFS
+	virtual void kill_orph() {}	// To kill orphans in FCFS
 	virtual Process* steal() = 0;
 	virtual void printRDY() = 0;
 	virtual void UpdateState() = 0;			//Updates State
-	virtual void RDYKill(int pID) {}
+	virtual bool RDYKill(int pID) { return false; }
+	void hasEnded();
+	virtual int get_rdy_count() = 0;
 	
-	int getstate()
-	{
-		return state;
-	}
-	int getT_BUSY()
-	{
-		return T_BUSY;
-	}
-	int getT_IDLE()
-	{
-		return T_IDLE;
-	}
-	int getQueueLength()
-	{
-		return Qtime;
-	}
-	float getpUtil()
-	{
-		return (float)T_BUSY / (T_BUSY + T_IDLE);
-	}
-	float getpLoad()
-	{
-		return (float)T_BUSY /Total_TRT;
-	}
+	int getstate();
+	int getT_BUSY();
+	int getT_IDLE();
+	int getQueueLength();
+	float getpUtil();
+	float getpLoad();
 	
-	bool isRunning()
-	{
-		return (RUN != nullptr);
-	}
+	bool isRunning();
 	//Print RUN process
-	void printRUN() {
-		cout << *(RUN);
-	}
+	void printRUN();
 	//IO Algo	
-	void ioAlgo(Process* RUN,int & Qtime) 
-	{
-		IO* io;
-		bool b = RUN->peek_io(io);
-		if (b) {
-			if (io->IO_R == 0) {
-				Qtime = Qtime - RUN->get_timer();
-				moveToBLK();
-
-			}
-			else {
-				io->IO_R--;
-			}
-		}
-	}
-	void setTotalTRT(int total)
-	{
-		Total_TRT = total;
-	}
-	int getTotalTRT()
-	{
-		return Total_TRT;
-	}
+	void ioAlgo(int& Qtime);
+	void setTotalTRT(int total);
+	int getTotalTRT();
 	//Checks if Running process is finished
-	void hasEnded(Process* RUN) 
-	{
-		if (RUN->get_timer() == 0) {
-			moveToTRM(RUN);
-		}
-	}
+	
 	//RNG
-	int RNG() {
-		return (rand() % 100 + 1);
-	}
+	int RNG();
 	//Manages T_Busy and T_Idle for output statistics
-	void TManager()
-	{
-		if (state == 0)
-			T_BUSY++;
-		else
-			T_IDLE++;
-	}
+	void TManager();
+
+	// overheat funtions
+	bool is_overheated();
+	void set_overheat(bool status, int ovht_tSteps = 0);
+	int get_rem_ovht_steps();
+	void decrement_ovht_steps();
+	virtual void ovht_manager() = 0;
 	 
-	virtual ~Processor() {};
+	virtual ~Processor() {}
 };

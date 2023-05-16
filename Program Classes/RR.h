@@ -20,6 +20,8 @@ public:
 	virtual void printRDY();
 	virtual void UpdateState();
 	void migrateToSJF();
-
+	virtual int get_rdy_count();
+	// overheat manager
+	virtual void ovht_manager();
 	~RR() {};
 };
