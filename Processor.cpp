@@ -49,7 +49,7 @@ void Processor::printRUN()
 	cout << *(RUN);
 }
 
-void Processor::ioAlgo(Process* RUN, int& Qtime)
+void Processor::ioAlgo(int& Qtime)
 {
 	IO* io;
 	bool b = RUN->peek_io(io);
@@ -86,4 +86,29 @@ void Processor::TManager()
 		T_BUSY++;
 	else
 		T_IDLE++;
+}
+
+bool Processor::is_overheated()
+{
+	return overheated;
+}
+
+void Processor::set_overheat(bool status, int ovht_tSteps)
+{
+	overheated = status;
+	if (overheated)
+	{
+		rem_ovht_tSteps = ovht_tSteps;
+		ovht_manager();
+	}
+}
+
+int Processor::get_rem_ovht_steps()
+{
+	return rem_ovht_tSteps;
+}
+
+void Processor::decrement_ovht_steps()
+{
+	rem_ovht_tSteps--;
 }

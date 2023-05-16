@@ -15,6 +15,9 @@ public:
 	virtual void ScheduleAlgo();
 	virtual void printRDY();
 	virtual void UpdateState();
+	virtual int get_rdy_count();
+	// overheat manager
+	virtual void ovht_manager();
 	~EDF() {};
 };
 

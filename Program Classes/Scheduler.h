@@ -19,15 +19,15 @@ class Scheduler
 		int NF;							// Number of FCFS processors
 		int NS;							// Number of SJF processors
 		int NR;							// Number of RR processors
-		int NE;							//Number of EDF processors
-		int timeSlice;
-		int RTF;						//Remaining Time to finish
-		int MaxW;						//Maximum Wait time
-		int STL;						//Steal Time
-		int forkProb;
-		int noProcesses;				//number of processes
-		int ProcessorsCounter;			//just a counter for the creation
-		int mode;						//print mode
+		int NE;							// Number of EDF processors
+		int timeSlice;					// RR time slice
+		int RTF;						// Remaining Time to finish
+		int MaxW;						// Maximum Wait time
+		int STL;						// Steal Time
+		int ovht_tSteps;				// Number of time steps for processor overheat
+		int forkProb;					// fork probability
+		int noProcesses;				// number of processes
+		int ProcessorsCounter;			// just a counter for the creation
 		
 		//statistics
 		int KillCount;
@@ -86,7 +86,7 @@ class Scheduler
 		
 
 		//Private Simulation methods
-		void initializeUI(int modeVal);
+		void initializeUI();
 		void fileLoading();
 		void NEWtoRDY();
 		void RDYtoRUN();
@@ -94,10 +94,11 @@ class Scheduler
 		void BLKAlgo();
 		void Kill();
 		void Steal();
+		void OVHT();	// processor overheat
 		void printTerminal();
 
 public:
-	Scheduler(int modeVal);
+	Scheduler();
 	void simulate();					//Simulator Fn.
 	void fork(Process* parent);			//Fork
 	void kill_orph(Process* parent);	//Kill orphans of a parent
@@ -109,6 +110,7 @@ public:
 	int getMaxW();
 	void Migrate(Process* pPtr, int processor);
 	bool canMigrate(Process* pPtr, int processor);
+	bool clear_ovht_prcsr(Process* p);	// empty overheated prcsr
 	void BeforeDDManager(Process* pPtr);
 	int getTotalTRTALL();
 	void outputFile();

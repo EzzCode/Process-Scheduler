@@ -2,7 +2,7 @@
 #include <iostream>
 #include <iomanip>
 using namespace std;
-int Process::free_id = 0;
+int Process::free_id = 1;
 
 Process::Process(int at, int id, int ct, int stt) {
 	set_PID(id);
@@ -16,6 +16,7 @@ Process::Process(int at, int id, int ct, int stt) {
 	parent = nullptr;
 	lch = nullptr;
 	rch = nullptr;
+
 	total_IOD;
 }
 Process::Process() {
@@ -174,10 +175,18 @@ Process* Process::get_rch() {
 }
 
 //Fork tree operations
-int Process::get_count_fork() {
+int Process::get_count_ch() {
 	if (lch && rch) return 2;
 	else if (lch || rch) return 1;
 	else return 0;
+}
+
+int Process::count_direct_orph()
+{
+	int count = 0;
+	if (lch && lch->get_state() != 4) count++;
+	if (rch && rch->get_state() != 4)count++;
+	return count;
 }
 
 bool Process::insert_ch(Process* p) {
@@ -210,11 +219,8 @@ bool Process::find(int pid, Process*& p)
 
 void Process::mark_orphan(int pid_parent)
 {
-	Process* p = nullptr;
-	if (find(pid_parent, p)) {
-		if (p->lch && p->lch->state != 4) p->lch->set_state(5);
-		if (p->rch && p->rch->state != 4) p->rch->set_state(5);
-	}
+	if (lch && lch->state != 4) lch->set_state(5);
+	if (rch && rch->state != 4) rch->set_state(5);
 }
 
 bool Process::has_parent()
@@ -304,7 +310,7 @@ Process::Process(const Process& other) {
 		{
 			if (parent->lch->get_PID() == PID) parent->lch = this;
 		}
-		else if(parent->rch)
+		if(parent->rch)
 		{
 			if (parent->rch->get_PID() == PID) parent->rch = this;
 		}
