@@ -99,7 +99,8 @@ public:
 	/*Fork Tree Methods
 	Fork Tree is used to keep track of ancestors & descendants and update them if needed*/
 	//Fork Tree operations
-	int get_count_fork();
+	int get_count_ch();
+	int count_direct_orph();
 	bool insert_ch(Process* p);
 	bool remove_subtree(int pid);
 	bool find(int pid, Process*& p);

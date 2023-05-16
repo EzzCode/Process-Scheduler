@@ -4,6 +4,7 @@
 FCFS::FCFS(Scheduler* pSch) :Processor(pSch)
 {
 	state = 1;
+	overheated = false;
 	Qtime = 0;
 	T_BUSY = 0;
 	T_IDLE = 0;
@@ -36,6 +37,11 @@ void FCFS::migrateToRR()
 	Qtime -= RUN->get_timer();
 	RUN = NULL;
 	moveToRUN();
+}
+
+int FCFS::get_rdy_count()
+{
+	return RDY.GetCount();
 }
 
 void FCFS::moveToRDY(Process* Rptr)
@@ -84,6 +90,7 @@ void FCFS::moveToTRM(Process* p) {
 
 void FCFS::ScheduleAlgo()
 {
+	if (overheated) return;
 	if (!RUN) {
 		UpdateState();
 		TManager();
@@ -146,13 +153,14 @@ void FCFS::kill_orph()
 }
 
 // SigKill
-void FCFS::RDYKill(int pID) {
+bool FCFS::RDYKill(int pID) {
 	Process* p = nullptr;
 	bool canKill = RDY.kill_prcs(pID, false, p);
 	if (canKill) {
 		Qtime -= p->get_timer();
 		moveToTRM(p);
 		UpdateState();
+		return true;
 	}
 	if (RUN)
 	{
@@ -161,14 +169,22 @@ void FCFS::RDYKill(int pID) {
 			Qtime -= RUN->get_timer();
 			moveToTRM(RUN);
 			UpdateState();
+			return true;
 		}
 	}
-
+	return false;
 }
 
 void FCFS::printRDY() {
 	cout << "[FCFS]" << ": " << RDY.GetCount() << " RDY: ";
-	RDY.printInfo();
+	if (!overheated)
+	{
+		RDY.printInfo();
+	}
+	else
+	{
+		cout << "OVHT";
+	}
 }
 
 void FCFS::UpdateState()
@@ -177,4 +193,40 @@ void FCFS::UpdateState()
 		state = 1; // busy
 	else
 		state = 0; // idle
+}
+
+void FCFS::ovht_manager()
+{
+	bool cleared = true;
+	int count_rdy = RDY.GetCount();
+	Process* ptr = nullptr;
+	if (RUN)
+	{
+		cleared = pScheduler->clear_ovht_prcsr(RUN);
+		if (cleared)
+		{
+			Qtime -= RUN->get_timer();
+			RUN = nullptr;
+		}
+		else
+		{
+			Qtime -= RUN->get_timer();
+			moveToRDY(RUN);
+			RUN = nullptr;
+		}
+	}
+	for (int i = 0; i < count_rdy; i++)
+	{
+		ptr = RDY.GetHeadData();
+		cleared = pScheduler->clear_ovht_prcsr(ptr);
+		if (!cleared)
+		{
+			Qtime -= ptr->get_timer();
+			moveToRDY(ptr);
+		}
+		else
+		{
+			Qtime -= ptr->get_timer();
+		}
+	}
 }

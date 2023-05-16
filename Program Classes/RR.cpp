@@ -4,6 +4,7 @@
 RR::RR(Scheduler* pSch) :Processor(pSch)
 {
 	state = 1;
+	overheated = false;
 	Qtime = 0;
 	T_BUSY = 0;
 	T_IDLE = 0;
@@ -32,6 +33,11 @@ void RR::migrateToSJF()
 	Qtime -= RUN->get_timer();
 	RUN = NULL;
 	moveToRUN();
+}
+
+int RR::get_rdy_count()
+{
+	return RDY.GetCount();
 }
 
 void RR::moveToRDY(Process* Rptr)
@@ -77,6 +83,7 @@ void RR::moveToTRM(Process* p) {
 
 void RR::ScheduleAlgo()
 {
+	if (overheated) return;
 	if (!RUN)
 	{
 		UpdateState();
@@ -120,7 +127,14 @@ void RR::ScheduleAlgo()
 
 void RR::printRDY() {
 	cout << "[RR ]" << ": " << RDY.GetCount() << " RDY: ";
-	RDY.printInfo();
+	if (!overheated)
+	{
+		RDY.printInfo();
+	}
+	else
+	{
+		cout << "OVHT";
+	}
 }
 
 void RR::UpdateState()
@@ -129,4 +143,40 @@ void RR::UpdateState()
 		state = 1;	// busy
 	else
 		state = 0;	// idle
+}
+
+void RR::ovht_manager()
+{
+	bool cleared = true;
+	int count_rdy = RDY.GetCount();
+	Process* ptr = nullptr;
+	if (RUN)
+	{
+		cleared = pScheduler->clear_ovht_prcsr(RUN);
+		if (cleared)
+		{
+			Qtime -= RUN->get_timer();
+			RUN = nullptr;
+		}
+		else
+		{
+			Qtime -= RUN->get_timer();
+			moveToRDY(RUN);
+			RUN = nullptr;
+		}
+	}
+	for (int i = 0; i < count_rdy; i++)
+	{
+		RDY.dequeue(ptr);
+		cleared = pScheduler->clear_ovht_prcsr(ptr);
+		if (!cleared)
+		{
+			Qtime -= ptr->get_timer();
+			moveToRDY(ptr);
+		}
+		else
+		{
+			Qtime -= ptr->get_timer();
+		}
+	}
 }
