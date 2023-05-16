@@ -175,10 +175,18 @@ Process* Process::get_rch() {
 }
 
 //Fork tree operations
-int Process::get_count_fork() {
+int Process::get_count_ch() {
 	if (lch && rch) return 2;
 	else if (lch || rch) return 1;
 	else return 0;
+}
+
+int Process::count_direct_orph()
+{
+	int count = 0;
+	if (lch && lch->get_state() != 4) count++;
+	if (rch && rch->get_state() != 4)count++;
+	return count;
 }
 
 bool Process::insert_ch(Process* p) {
