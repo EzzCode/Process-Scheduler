@@ -238,6 +238,33 @@ bool Process::has_both_ch()
 	return (lch != nullptr && rch != nullptr);
 }
 
+void Process::sever_connections()
+{
+	if (parent)	// process has a parent
+	{
+		// check if this process is lch or rch
+		if (parent->lch)
+		{
+			if (parent->lch->get_PID() == PID) parent->lch = nullptr;
+		}
+		if (parent->rch)
+		{
+			if (parent->rch->get_PID() == PID) parent->rch = nullptr;
+		}
+		parent = nullptr;
+	}
+	if (lch)	// process has left child
+	{
+		lch->parent = nullptr;
+		lch = nullptr;
+	}
+	if (rch)	// process has a right child
+	{
+		rch->parent = nullptr;
+		rch = nullptr;
+	}
+}
+
 //Fork tree assisting recursive functions
 int Process::rec_get_count_fork(Process* subroot)
 {
