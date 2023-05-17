@@ -216,9 +216,11 @@ void Scheduler::BLKAlgo() {
 void Scheduler::Kill() {
 	killQ.peek(sigPtr);
 	bool killed = false;
-	if (sigPtr->tstep == timeStep)
+	bool getOut = false;// bool to get out of while in case of running out of FCFS prcrs
+	while (sigPtr != nullptr &&  sigPtr->tstep == timeStep )
 	{
 		killQ.dequeue(sigPtr);
+		getOut = false;
 		for (int i = 0; i < NF; i++) {
 			if (processorList[i]->is_overheated()) continue;	// prcsr overheated
 			//fn returns true if killed
@@ -228,7 +230,21 @@ void Scheduler::Kill() {
 				KillCount++;
 				killed = false;
 			}
+			else if(!killed && i==NF-1)
+			{
+				getOut = true;
+			}
 		}
+		if(getOut==false)
+		{
+			killQ.peek(sigPtr); // can still find the process
+		}
+		else 
+		{
+			sigPtr = nullptr;// cant find it and no more fcfs ,so dQ this signal
+			killQ.peek(sigPtr);	
+		}
+		
 	}
 
 }
@@ -536,6 +552,10 @@ void Scheduler::outputFile()
 		p->writeData(OutFile);
 		setStats(p);
 		TrmList.dequeue(p);
+		//dealloc
+		p->sever_connections();
+		delete p;
+		p = nullptr;
 	}
 
 	OutFile << "Processes: " << noProcesses << endl;
