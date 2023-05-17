@@ -99,7 +99,7 @@ void Processor::set_overheat(bool status, int ovht_tSteps)
 	if (overheated)
 	{
 		rem_ovht_tSteps = ovht_tSteps;
-		ovht_manager();
+		ovht_manager();	// calls overheat manager to clear the queue of the processor
 	}
 }
 

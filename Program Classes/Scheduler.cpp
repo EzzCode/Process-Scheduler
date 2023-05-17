@@ -38,7 +38,7 @@ Scheduler::Scheduler()
 }
 
 void Scheduler::initializeUI() {
-	ui.request_mode();
+	ui.request_mode();	// gets mode of operation from user
 }
 
 //Simulator Fn.
@@ -56,7 +56,7 @@ void Scheduler::simulate() {
 		printTerminal();
 		timeStep++;
 	}
-	//clear any overheated prcsr
+	//remove overheat from any prcsr
 	for (int i = 0; i < ProcessorsCounter; i++)
 	{
 		processorList[i]->set_overheat(false);
@@ -121,10 +121,9 @@ void Scheduler::NEWtoRDY() {
 	Process* p = nullptr;
 	bool canPeek = NewList.peek(p);
 	while (canPeek && p->get_AT() == timeStep) {
-		NewList.dequeue(p);
 		//Find shortest prcsr
-		set_SQF_LQF(0);
-		if (!SQF) return;	// all prcsrs overheated
+		set_SQF_LQF(0, true);	// must return a value, can't delay to next timestep
+		NewList.dequeue(p);
 		SQF->moveToRDY(p);
 		p = nullptr;
 		//Recheck
@@ -267,7 +266,7 @@ void Scheduler::schedToTRM(Process* p)
 	if (p->has_single_ch())
 	{
 		KillCount += p->count_direct_orph();
-		kill_orph(p);
+		kill_orph(p);	// recursively killing orphans; from leaf to root
 	}
 	p->set_TT(timeStep);
 	TrmList.enqueue(p);
@@ -285,7 +284,7 @@ void Scheduler::fork(Process* parent) {
 	if (rng > forkProb || parent->has_both_ch()) return;	//Can't fork
 	//Can Fork
 	set_SQF_LQF(1);	//Get shortest FCFS queue to process child
-	if (!SQF) return;	// all prcsrs overheated
+	if (!SQF) return;	// all FCFS prcsrs overheated
 	Process* ch = new Process(timeStep, -1, parent->get_timer(), 0);
 	parent->insert_ch(ch);
 	noProcesses++;	//Update variable for scheduler
@@ -343,7 +342,7 @@ float Scheduler::getSTL_limit()
 }
 
 //Set Shortest Queue and Longest Queue (Time & Processor)
-void Scheduler::set_SQF_LQF(int section)
+void Scheduler::set_SQF_LQF(int section, bool forced)
 {
 	int max = INT_MIN;
 	int min = INT_MAX;
@@ -379,14 +378,15 @@ void Scheduler::set_SQF_LQF(int section)
 
 	SQF = nullptr; LQF = nullptr;
 
+	//if forced is true then it doesn't matter if processor is overheated
 	for (int i = start; i < end; i++)
 	{
-		if (processorList[i]->getQueueLength() > max && !processorList[i]->is_overheated())
+		if (processorList[i]->getQueueLength() > max && (forced || !processorList[i]->is_overheated()))
 		{
 			LQF = processorList[i];
 			max = processorList[i]->getQueueLength();
 		}
-		if (processorList[i]->getQueueLength() < min && !processorList[i]->is_overheated())
+		if (processorList[i]->getQueueLength() < min && (forced || !processorList[i]->is_overheated()))
 		{
 			SQF = processorList[i];
 			min = processorList[i]->getQueueLength();
