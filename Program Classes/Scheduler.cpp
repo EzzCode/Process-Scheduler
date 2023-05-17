@@ -216,7 +216,8 @@ void Scheduler::BLKAlgo() {
 void Scheduler::Kill() {
 	killQ.peek(sigPtr);
 	bool killed = false;
-	if (sigPtr->tstep == timeStep)
+	bool getOut = false;
+	while (sigPtr->tstep == timeStep)
 	{
 		killQ.dequeue(sigPtr);
 		for (int i = 0; i < NF; i++) {
@@ -228,7 +229,21 @@ void Scheduler::Kill() {
 				KillCount++;
 				killed = false;
 			}
+			else if(!killed && i==NF-1)
+			{
+				getOut = true;
+			}
 		}
+		if(getOut==false)
+		{
+			killQ.peek(sigPtr);
+		}
+		else 
+		{
+			killQ.dequeue(sigPtr);
+			break;
+		}
+		
 	}
 
 }
@@ -536,7 +551,8 @@ void Scheduler::outputFile()
 		p->writeData(OutFile);
 		setStats(p);
 		TrmList.dequeue(p);
-		//delloc
+		//dealloc
+		p->sever_connections();
 		delete p;
 		p = nullptr;
 	}
