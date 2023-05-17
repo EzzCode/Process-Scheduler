@@ -241,10 +241,8 @@ void Scheduler::Kill() {
 		}
 		else 
 		{
-			//killQ.dequeue(sigPtr);// cant find it and no more fcfs ,so dQ this signal
-			sigPtr = nullptr;
-			killQ.peek(sigPtr);
-			
+			sigPtr = nullptr;// cant find it and no more fcfs ,so dQ this signal
+			killQ.peek(sigPtr);	
 		}
 		
 	}
