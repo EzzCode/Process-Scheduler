@@ -103,6 +103,7 @@ public:
 	bool has_parent();
 	bool has_single_ch();	// has at least 1 child
 	bool has_both_ch();
+	void sever_connections();
 
 	//cpy ctor
 	Process(const Process& other);
