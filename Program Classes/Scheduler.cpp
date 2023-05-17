@@ -536,6 +536,9 @@ void Scheduler::outputFile()
 		p->writeData(OutFile);
 		setStats(p);
 		TrmList.dequeue(p);
+		//delloc
+		delete p;
+		p = nullptr;
 	}
 
 	OutFile << "Processes: " << noProcesses << endl;
