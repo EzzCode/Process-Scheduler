@@ -34,9 +34,6 @@ private:
 	//Kill Signal
 	bool SIGKILL;
 
-	//Motion status
-	bool has_moved;
-
 	//Private setters for data members that are calculated in terms of existing data members
 	void set_TRT();
 	void set_WT();
@@ -72,7 +69,6 @@ public:
 	void set_state(int stt);
 	void set_IO(int ior, int iod);
 	void set_sig_kill(bool signal);
-	void set_has_moved(bool motion);
 	void set_total_IO(int tot);
 	//getters
 	int get_PID();
@@ -88,7 +84,6 @@ public:
 	bool peek_io(IO*& io);
 	bool get_IO(IO*& io);
 	bool get_sig_kill();
-	bool get_has_moved();
 	int get_total_IO();
 	void Load(ifstream& Infile); // load its data members from input file
 
@@ -99,15 +94,16 @@ public:
 	/*Fork Tree Methods
 	Fork Tree is used to keep track of ancestors & descendants and update them if needed*/
 	//Fork Tree operations
-	int get_count_ch();
-	int count_direct_orph();
+	int get_count_ch();	// gets count of direct children
+	int count_direct_orph();	// gets count of direct orphans
 	bool insert_ch(Process* p);
 	bool remove_subtree(int pid);
 	bool find(int pid, Process*& p);
-	void mark_orphan(int pid_parent);
+	void mark_orphan(int pid_parent);	// mark direct children as orphans
 	bool has_parent();
-	bool has_single_ch();
+	bool has_single_ch();	// has at least 1 child
 	bool has_both_ch();
+	void sever_connections();
 
 	//cpy ctor
 	Process(const Process& other);
