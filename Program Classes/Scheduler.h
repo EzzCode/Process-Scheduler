@@ -59,7 +59,7 @@ class Scheduler
 		sigKill* sigPtr;				// placeholder ptr 
 		int sigkillTime , killID;
 		
-		//UI class
+		//UI class object
 		UI ui;
 
 		//Steal 
@@ -68,7 +68,7 @@ class Scheduler
 		//SQF & LQF
 		//The variable section decides which section of processors to search in
 		//Section 0 is full loop, 1 is FCFS, 2 is SJF, 3 is RR
-		void set_SQF_LQF(int section);
+		void set_SQF_LQF(int section, bool forced = false);
 		int getSQF_time(int section);
 		int getLQF_time(int section);
 		

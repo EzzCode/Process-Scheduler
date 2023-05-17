@@ -3,19 +3,20 @@ TT  PID  AT  CT  IO_D  WT  RT  TRT
 4   1    2   2    0   0   0   2
 14   4    2   5    0   7   7   12
 16   5    2   2    0   12   12   14
-32   6    31   1    0   0   -1   1
-32   3    2   13    12   17   2   30
-Processes: 6
-Avg WT: 5.5,  Avg RT: 3.16667, Avg TRT: 10
+17   6    13   1    0   3   3   4
+24   7    16   1    0   7   7   8
+33   3    2   13    12   18   2   31
+Processes: 7
+Avg WT: 6.28571,  Avg RT: 4.28571, Avg TRT: 10.2857
 Migration %: RTF:0% MaxW: 0%
 Work Steal % : 0%
-Forked Process % : 16.6667%
-Killed process % : 33.3333%
+Forked Process % : 28.5714%
+Killed process % : 42.8571%
 
 Processors: 1 [1 FCFS, 0 SJF, 0 RR, 0EDF]
 Processors Load
-P1=36.6667%, 
+P1=33.3333%, 
 Processors Util
-P1=68.75%, 
-Avg Util: 68%
-Percentage of processes completed before their expected deadline: 16.6667%
+P1=72.7273%, 
+Avg Util: 72%
+Percentage of processes completed before their expected deadline: 14.2857%
