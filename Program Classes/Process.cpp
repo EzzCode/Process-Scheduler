@@ -2,6 +2,8 @@
 #include <iostream>
 #include <iomanip>
 using namespace std;
+
+//1st possible free id is always 1
 int Process::free_id = 1;
 
 Process::Process(int at, int id, int ct, int stt) {
@@ -75,11 +77,6 @@ void Process::set_sig_kill(bool signal) {
 	SIGKILL = signal;
 }
 
-void Process::set_has_moved(bool motion)
-{
-	has_moved = motion;
-}
-
 //getters
 int Process::get_PID() {
 	return PID;
@@ -123,10 +120,6 @@ bool Process::get_IO(IO*& io) {
 bool Process::get_sig_kill() {
 	return SIGKILL;
 }
-bool Process::get_has_moved()
-{
-	return has_moved;
-}
 int Process::get_total_IO()
 {
 	return total_IOD;
@@ -135,9 +128,13 @@ void Process::Load(ifstream& Infile)
 {
 	Infile >> AT >> PID >> CT >> DD >> N_IO;
 	IO* ioData = new IO;
+	int tR = 0;
 	for (int i = 0; i < N_IO; i++) {
 		char c1, c2;
-		Infile >> c1 >> ioData->IO_R >> c2 >> ioData->IO_D >> c1 >> c2;
+		int x;
+		Infile >> c1 >> x >> c2 >> ioData->IO_D >> c1 >> c2;
+		ioData->IO_R = x - tR;
+		tR = x;
 		ioQ.enqueue(ioData);
 		if (i != N_IO - 1) {
 			ioData = new IO;
@@ -183,6 +180,8 @@ int Process::get_count_ch() {
 
 int Process::count_direct_orph()
 {
+	// this differes from get_count_ch() as the children of a parent may have 
+	// been already terminated, no reason to count them as orhpans
 	int count = 0;
 	if (lch && lch->get_state() != 4) count++;
 	if (rch && rch->get_state() != 4)count++;
@@ -190,6 +189,7 @@ int Process::count_direct_orph()
 }
 
 bool Process::insert_ch(Process* p) {
+	// a parent can only insert direct children
 	if (!this->lch) {
 		this->lch = p;
 		p->parent = this;
@@ -236,6 +236,33 @@ bool Process::has_single_ch()
 bool Process::has_both_ch()
 {
 	return (lch != nullptr && rch != nullptr);
+}
+
+void Process::sever_connections()
+{
+	if (parent)	// process has a parent
+	{
+		// check if this process is lch or rch
+		if (parent->lch)
+		{
+			if (parent->lch->get_PID() == PID) parent->lch = nullptr;
+		}
+		if (parent->rch)
+		{
+			if (parent->rch->get_PID() == PID) parent->rch = nullptr;
+		}
+		parent = nullptr;
+	}
+	if (lch)	// process has left child
+	{
+		lch->parent = nullptr;
+		lch = nullptr;
+	}
+	if (rch)	// process has a right child
+	{
+		rch->parent = nullptr;
+		rch = nullptr;
+	}
 }
 
 //Fork tree assisting recursive functions
@@ -297,10 +324,9 @@ Process::Process(const Process& other) {
 	//cpy IO data
 	N_IO = other.N_IO;
 	ioQ = LinkedQueue<IO>(other.ioQ);
+	total_IOD = other.total_IOD;
 	//cpy kill signal
 	SIGKILL = other.SIGKILL;
-	//Motion status
-	has_moved = other.has_moved;
 	//cpy Fork Tree
 	parent = other.parent;
 	if (parent)	// if this process has a parent
@@ -324,7 +350,6 @@ Process::Process(const Process& other) {
 		other.rch->parent = this;
 		rch = other.rch;
 	}
-	total_IOD = other.total_IOD;
 }
 
 

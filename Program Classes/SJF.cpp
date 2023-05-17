@@ -127,6 +127,8 @@ int SJF::get_rdy_count()
 
 void SJF::ovht_manager()
 {
+	// if process cant be transferred to another processor
+	// process remains in RDY of current processor
 	bool cleared = true;
 	int count_rdy = RDY.GetCount();
 	Process* ptr = nullptr;
