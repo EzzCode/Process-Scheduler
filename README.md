@@ -10,8 +10,6 @@ This GitHub repository contains a robust process scheduler simulation implemente
 
 - **Data Structures Implementation**: Various data structures, including Linked List, Queue, and Binary Tree, have been utilized and implemented to optimize algorithmic efficiency, contributing to the overall performance of the simulation.
 
-- **Version Control with GitHub**: The project is integrated with GitHub for version control, facilitating collaborative development and ensuring efficient code management. Developers can easily contribute, track changes, and maintain a clear version history.
-
 ## Output 📊
 
 The simulation generates comprehensive output files with detailed statistics, including:
